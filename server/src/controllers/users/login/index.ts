@@ -25,8 +25,8 @@ export const login = async (req: Request, res: Response) => {
   if (hashedPassword !== existingUser.password) {
     return helpers.sendError(res, "Invalid password");
   }
-  const accessToken = helpers.createToken({ uid: existingUser.uid }, "1d");
-  const refreshToken = helpers.createToken({ uid: existingUser.uid }, "15m");
+  const accessToken = helpers.createToken({ uid: existingUser.uid }, "15m");
+  const refreshToken = helpers.createToken({ uid: existingUser.uid }, "1d");
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
