@@ -8,6 +8,7 @@ import path from "path";
 import Router from "./routes";
 import config from "./lib/config";
 import createLogger from "./lib/logger";
+import { getDbTools } from "./db/db_tools";
 dotenv.config();
 const app = express();
 const httpServer = http.createServer(app);
@@ -24,23 +25,29 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   }),
 );
-app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(cookieParser(config.COOKIE_SECRET));
 app.use(morgan("dev"));
 
 // serve static files
 app.use(express.static("public"));
 app.use("/images", express.static(path.join(__dirname, "../public/images")));
 
-app.get("/*", function (req: Request, res: Response, next: NextFunction) {
-  if (req.headers && req.headers.host && req.headers.host.match(/^www/) !== null) {
-    res.redirect("https://" + req.headers.host.replace(/^www\./, "") + req.url);
-  } else {
-    next();
+app.use((req: Request, res: Response, next: NextFunction) => {
+  if (req.headers.host?.startsWith("www.")) {
+    return res.redirect("https://" + req.headers.host.replace(/^www\./, "") + req.url);
   }
+  next();
 });
+
 
 app.use("/api", Router);
 
-httpServer.listen(port, () => {
-  logger.info(`SERVER RUNNING ON ${port}`);
+httpServer.listen(port, async() => {
+  try {
+    const dbTools = await getDbTools();
+    logger.info(`SERVER RUNNING ON ${port}`);
+    app.locals.db = dbTools;
+  } catch (error) {
+    logger.error("Failed to connect to the database", error);
+  }
 });

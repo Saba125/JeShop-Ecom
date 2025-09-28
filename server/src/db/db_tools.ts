@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { PoolConnection } from "mysql2/promise";
 import { IDbResponse } from "../interfaces/db";
+import { IUser } from "../interfaces/user";
 import pool from "./db_connection";
-
 export type TTableNames =
   "users"
 async function getConnection(): Promise<PoolConnection | undefined> {
@@ -11,7 +11,7 @@ async function getConnection(): Promise<PoolConnection | undefined> {
   try {
     conn = await pool.getConnection();
   } catch (error: any) {
-    console.error("getConnection error:", error.message)
+    console.error("getConnection error:", error.message);
   }
 
   return conn;
@@ -78,7 +78,7 @@ export interface IDbTools {
 }
 
 export async function getDbTools(): Promise<IDbTools> {
-  const connection: PoolConnection | undefined = await getConnection()
+  const connection: PoolConnection | undefined = await getConnection();
 
   function release() {
     connection?.release();
@@ -114,7 +114,7 @@ export async function getDbTools(): Promise<IDbTools> {
       const [rows] = await connection!.query(parsedQuery.query, listParams);
       return {
         list: (rows as any[]) || [],
-      }
+      };
     } catch (error: any) {
       console.error("select error:", error.message);
       return {
@@ -127,8 +127,8 @@ export async function getDbTools(): Promise<IDbTools> {
     query: string,
     params?: any
   ): Promise<unknown | null> {
-    const dbRes: IDbResponse | null = await select(query, params)
-    if (dbRes.list && dbRes.list?.length > 0) return dbRes.list[0]
+    const dbRes: IDbResponse | null = await select(query, params);
+    if (dbRes.list && dbRes.list?.length > 0) return dbRes.list[0];
     else return null;
   }
 
@@ -201,7 +201,7 @@ export async function getDbTools(): Promise<IDbTools> {
     query: string,
     params?: any
   ): Promise<IDbResponse> {
-    return await queryNonResponse(query, params)
+    return await queryNonResponse(query, params);
   }
 
   async function queryNonResponse(
@@ -221,7 +221,7 @@ export async function getDbTools(): Promise<IDbTools> {
       console.error("queryNonResponse1 error:", error.message);
       return {
         error: { message: error.message },
-      }
+      };
     }
   }
 
@@ -236,12 +236,12 @@ export async function getDbTools(): Promise<IDbTools> {
       const [rows] = await connection!.query(parsedQuery.query, listParams);
       return {
         list: (rows as any[]) || [],
-      }
+      };
     } catch (error: any) {
       console.error("delete error:", error.message);
       return {
         error: { message: error.message },
-      }
+      };
     }
   }
 
