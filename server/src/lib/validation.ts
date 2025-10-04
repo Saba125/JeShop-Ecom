@@ -11,8 +11,16 @@ export const registerSchema = z.object({
     .string()
     .min(6, "Password must be at least 6 characters long")
     .max(20, "Password must be at most 20 characters long"),
-  phone: z.string().regex(/^(\+995)?5\d{8}$/, "Invalid Georgian phone number"),
+  phone: z
+    .string()
+    .min(1, "Phone number is required")
+    .regex(
+      /^(\+995)?5\d{8}$/,
+      "Phone number must be a valid Georgian number"
+    ),
 });
+
+
 export const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z

@@ -6,6 +6,7 @@ import helpers from "../../../lib/helpers";
 export const registerUser = async (req: Request, res: Response) => {
   const db: IDbTools = req.app.locals.db;
   const body = req.body;
+  console.log(body);
   const validateBody = validateSchema(registerSchema, body);
   if (!validateBody.success) {
     return helpers.sendError(res, validateBody.error);
@@ -16,7 +17,7 @@ export const registerUser = async (req: Request, res: Response) => {
     username: data.username,
     email: data.email,
     password: hashedPassword,
-    phone: data.phone,
+    phone: data.phone || "",
   });
   if (dbRes.error) {
     return helpers.sendError(res, dbRes.error);

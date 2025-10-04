@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { API_URL } from '@/constants';
+console.log(API_URL)
 const api = axios.create({
-    baseURL: `${API_URL}/api`,
+    baseURL: `${API_URL}api`,
     withCredentials: true,
 });
 
@@ -20,7 +21,7 @@ api.interceptors.response.use(
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
             const refreshRes = await axios.post(
-                `${API_URL}/api/refresh_token`,
+                `${API_URL}api/refresh_token`,
                 {},
                 { withCredentials: true }
             );
