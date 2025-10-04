@@ -1,13 +1,11 @@
-import express, { Request } from "express";
+import express from "express";
 import UsersRes from "../controllers/users/export";
 import { authMiddleware } from "../middlewares/auth";
 const Router = express.Router();
 Router.post("/register", UsersRes.registerUser);
 Router.post("/login", UsersRes.login);
 Router.post("/refresh_token", UsersRes.validateRefreshToken);
-Router.post("/test", authMiddleware, (req,res) => {
-  res.send(req.user);
-});
+Router.get("/checkUser", authMiddleware, UsersRes.checkUserInfo);
 
 
 export default Router;

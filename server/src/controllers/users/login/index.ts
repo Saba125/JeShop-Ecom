@@ -3,19 +3,22 @@ import { IDbTools } from "../../../db/db_tools";
 import { loginSchema, validateSchema } from "../../../lib/validation";
 import helpers from "../../../lib/helpers";
 import { IUser } from "../../../interfaces/user";
-
+import checkDevice from "../../../lib/check_device";
+import { detect } from "detect-browser";
+import geoip from "geoip-lite";
+import { IEmailNotifications } from "../../../interfaces/email_notifications";
 export const login = async (req: Request, res: Response) => {
   const db: IDbTools = req.app.locals.db;
   const body = req.body;
   const validateBody = validateSchema(loginSchema, body);
   const data = validateBody.data;
+  const userAgent = req.headers["user-agent"] as string;
   if (!validateBody.success) {
     return helpers.sendError(res, validateBody.error);
   }
   const existingUser = (await db.selectSingle("select * from users where email = :email", {
     email: data?.email,
   })) as IUser;
-  const { password, ...user } = existingUser;
   if (!existingUser) {
     return helpers.sendError(res, "User not found");
   }
@@ -28,10 +31,48 @@ export const login = async (req: Request, res: Response) => {
   }
   const accessToken = helpers.createToken({ uid: existingUser.uid }, "15m");
   const refreshToken = helpers.createToken({ uid: existingUser.uid }, "1d");
+  const { password, ...user } = existingUser;
+  const checkDeviceType = checkDevice(userAgent);
+  const userPCData = detect(userAgent);
+  const ipAddress = body.ip;
+  const geo = geoip.lookup(ipAddress);
+  // შევქმანთ ჩაფლავებული ლოგი
+  if (hashedPassword !== existingUser.password) {
+    const dbRes = await db.insert("user_logs", {
+      user_uid: existingUser.uid,
+      status: "failed",
+      ip_address: ipAddress,
+      browser: userPCData?.name,
+      city: geo?.city,
+      country: geo?.country,
+      device: checkDeviceType ? "mobile" : "desktop",
+    });
+    if (dbRes.error) {
+      return helpers.sendError(res, dbRes.error);
+    }
+  }
+  // შევქმანთ წარმატებული ლოგი
+  const dbRes = await db.insert("user_logs", {
+    user_uid: existingUser.uid,
+    status: "success",
+    ip_address: ipAddress,
+    browser: userPCData?.name,
+    city: geo?.city,
+    country: geo?.country,
+    device: checkDeviceType ? "mobile" : "desktop",
+  });
+  if (dbRes.error) {
+    return helpers.sendError(res, dbRes.error);
+  }
+  const checkEmailNotifications = await db.selectSingle("select * from email_notifications where user_uid = :uid`, { uid: existingUser.uid }") as IEmailNotifications
+
+  if (checkEmailNotifications && checkEmailNotifications.login_notification) {
+    // Send login notification
+  }
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     path: "/refresh_token",
   });
-  helpers.sendSuccess(res, { accessToken, user:existingUser });
+  helpers.sendSuccess(res, { accessToken, user });
 };

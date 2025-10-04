@@ -8,7 +8,6 @@ import {
     FormLabel,
     FormMessage,
 } from '@/components/ui/form';
-import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import formSchema from '@/schemas/login';
@@ -19,8 +18,14 @@ import { FaGithub } from 'react-icons/fa';
 
 import { CButton } from '@/components/common/custom-button';
 import api from '@/api/axios';
+import CFlex from '@/components/ui/flex';
+import { useLogin } from '@/api/users/login';
+import { useSelector } from 'react-redux';
+import type { RootState } from '@/store/store';
 const SignIn = () => {
-     const form = useForm<z.infer<typeof formSchema>>({
+    const user = useSelector((state:RootState) => state.user)
+    const { mutate: loginUser, isPending } = useLogin();
+    const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             email: '',
@@ -28,17 +33,10 @@ const SignIn = () => {
         },
     });
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        const res: any = await api.post("login", {
-            email: values.email,
-            password: values.password,
-        });
-        console.log(res)
-        if (res?.error) {
-            return
-        }
-        localStorage.setItem('accessToken', res.data.accessToken);
+        loginUser(values);
     }
-  return (
+
+    return (
         <AuthForm
             title="მოგესალმებით!"
             subtitle="შეყივანეთ მონაცემები"
@@ -46,7 +44,6 @@ const SignIn = () => {
                 <>
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                          
                             <FormField
                                 control={form.control}
                                 name="email"
@@ -76,27 +73,46 @@ const SignIn = () => {
                             <Button type="submit" className="block w-full ">
                                 შესვლა
                             </Button>
-                            <Button type='button' onClick={async() => {
-                                const res = await api.post("test");
-                            }}  className="block w-full ">
+                            <Button
+                                disabled={isPending}
+                                type="button"
+                                onClick={async () => {
+                                    const res = await api.post('test');
+                                }}
+                                className="block w-full "
+                            >
                                 Test
                             </Button>
                             {/* divider */}
-                            <div className="flex gap-x-3  items-center">
-                                <div className="bg-border h-[1px] w-3 w-full" />
+                            <CFlex gap="13px" align="center">
+                                <div className="bg-border h-[1px] w-full" />
                                 ან
-                                <div className="bg-border h-[1px] w-3 w-full" />
-                            </div>
-                            <div className="flex justify-center items-center gap-x-5">
-                                <CButton type='button'  size="lg" variant="outline" text="Google" icon={FcGoogle} />
-                                <CButton type='button'  size="lg" variant="outline" text="Github" icon={FaGithub} />
-                            </div>
+                                <div className="bg-border h-[1px] w-full" />
+                            </CFlex>
+                            <CFlex align="center" justify="center" gap="15px">
+                                <CButton
+                                    disabled={isPending}
+                                    type="button"
+                                    size="lg"
+                                    variant="outline"
+                                    text="Google"
+                                    icon={FcGoogle}
+                                />
+                                <CButton
+                                    disabled={isPending}
+                                    type="button"
+                                    size="lg"
+                                    variant="outline"
+                                    text="Github"
+                                    icon={FaGithub}
+                                />
+                            </CFlex>
                         </form>
                     </Form>
                 </>
             }
         />
     );
-}
+};
 
-export default SignIn
+export default SignIn;

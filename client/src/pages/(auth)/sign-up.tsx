@@ -19,6 +19,7 @@ import { FaGithub } from 'react-icons/fa';
 
 import { CButton } from '@/components/common/custom-button';
 import api from '@/api/axios';
+import CFlex from '@/components/ui/flex';
 const SignUp = () => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -26,15 +27,15 @@ const SignUp = () => {
             username: '',
             email: '',
             password: '',
-            phone: ''
+            phone: '',
         },
     });
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        const res = await api.post("register", {
+        const res = await api.post('register', {
             username: values.username,
             email: values.email,
             password: values.password,
-            phone: values.phone || ""
+            phone: values.phone || '',
         });
         console.log(values);
     }
@@ -53,7 +54,7 @@ const SignUp = () => {
                                     <FormItem>
                                         <FormLabel>მობილური</FormLabel>
                                         <FormControl>
-                                            <Input type='number' {...field} />
+                                            <Input type="number" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -101,16 +102,28 @@ const SignUp = () => {
                             <Button type="submit" className="block w-full ">
                                 რეგისტრაცია
                             </Button>
-                            {/* divider */}
-                            <div className="flex gap-x-3  items-center">
-                                <div className="bg-border h-[1px] w-3 w-full" />
+
+                            <CFlex gap="13px" align="center">
+                                <div className="bg-border h-[1px] w-full" />
                                 ან
-                                <div className="bg-border h-[1px] w-3 w-full" />
-                            </div>
-                            <div className="flex justify-center items-center gap-x-5">
-                                <CButton type='button'  size="lg" variant="outline" text="Google" icon={FcGoogle} />
-                                <CButton type='button'  size="lg" variant="outline" text="Github" icon={FaGithub} />
-                            </div>
+                                <div className="bg-border h-[1px] w-full" />
+                            </CFlex>
+                            <CFlex align='center' justify='center' gap='15px'>
+                                <CButton
+                                    type="button"
+                                    size="lg"
+                                    variant="outline"
+                                    text="Google"
+                                    icon={FcGoogle}
+                                />
+                                <CButton
+                                    type="button"
+                                    size="lg"
+                                    variant="outline"
+                                    text="Github"
+                                    icon={FaGithub}
+                                />
+                            </CFlex>
                         </form>
                     </Form>
                 </>

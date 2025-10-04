@@ -23,7 +23,7 @@ export const useLogin = () => {
             toast.success(`Welcome back, ${user.username}!`);
         },
         onError: () => {
-            toast.error('Login failed. Please check your credentials and try again.');
+            toast.error('მონაცემები არასწორია. გთხოვთ სცადეთ მოგვიანებით.');
         },
     });
     return mutation;
