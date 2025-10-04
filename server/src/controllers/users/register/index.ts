@@ -6,7 +6,6 @@ import helpers from "../../../lib/helpers";
 export const registerUser = async (req: Request, res: Response) => {
   const db: IDbTools = req.app.locals.db;
   const body = req.body;
-  console.log(body);
   const validateBody = validateSchema(registerSchema, body);
   if (!validateBody.success) {
     return helpers.sendError(res, validateBody.error);

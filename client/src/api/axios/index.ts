@@ -1,20 +1,20 @@
 import axios from 'axios';
 import { API_URL } from '@/constants';
 console.log(API_URL)
-const api = axios.create({
+const Api = axios.create({
     baseURL: `${API_URL}api`,
     withCredentials: true,
 });
 
 // Request interceptor to add access token
-api.interceptors.request.use((config) => {
+Api.interceptors.request.use((config) => {
     const token = localStorage.getItem('accessToken');
     if (token && config.headers) config.headers['Authorization'] = `Bearer ${token}`;
     return config;
 });
 
 // Response interceptor to refresh token
-api.interceptors.response.use(
+Api.interceptors.response.use(
     (res) => res,
     async (error) => {
         const originalRequest = error.config;
@@ -33,4 +33,4 @@ api.interceptors.response.use(
     }
 );
 
-export default api;
+export default Api;

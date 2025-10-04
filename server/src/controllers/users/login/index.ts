@@ -15,6 +15,7 @@ export const login = async (req: Request, res: Response) => {
   const existingUser = (await db.selectSingle("select * from users where email = :email", {
     email: data?.email,
   })) as IUser;
+  const { password, ...user } = existingUser;
   if (!existingUser) {
     return helpers.sendError(res, "User not found");
   }
@@ -32,5 +33,5 @@ export const login = async (req: Request, res: Response) => {
     secure: process.env.NODE_ENV === "production",
     path: "/refresh_token",
   });
-  helpers.sendSuccess(res, { accessToken });
+  helpers.sendSuccess(res, { accessToken, user:existingUser });
 };
