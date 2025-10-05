@@ -1,4 +1,4 @@
-import Header from '@/components/layout/header';
+import AuthHeader from '@/components/layout/auth-header';
 import type { RootState } from '@/store/store';
 import { useSelector } from 'react-redux';
 import { Outlet, useNavigate } from 'react-router-dom';
@@ -11,7 +11,6 @@ const AuthLayout = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // simulate a short check
         if (user.uid) {
             navigate('/');
         } else {
@@ -20,13 +19,12 @@ const AuthLayout = () => {
     }, [user.uid, navigate]);
 
     if (loading) {
-        // You can use a spinner or skeleton here
         return <Loading />;
     }
 
     return (
         <div>
-            <Header />
+            <AuthHeader />
             <div className="mt-6 flex justify-center">
                 <Outlet />
             </div>
