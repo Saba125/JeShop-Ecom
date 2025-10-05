@@ -1,23 +1,24 @@
 import { useState } from 'react';
 import './App.css';
-import { Button } from './components/ui/button';
 import PageRouter from './route';
-import { Loader } from 'lucide-react';
 import Loading from './components/common/loading';
 import CheckUser from './check_user';
-import { useSelector } from 'react-redux';
-import type { RootState } from './store/store';
 function App() {
-    const user = useSelector((state: RootState) => state.user)
+    const accessToken = localStorage.getItem('accessToken');
     const [isLoading, setIsLoading] = useState(true);
-    if (isLoading) {
+    if (accessToken && isLoading) {
+        return (
+            <>
+                <CheckUser isLoading={isLoading} setIsLoading={setIsLoading} />
+                <Loading />
+            </>
+        );
     }
     return (
         <>
-        <PageRouter />
-        <CheckUser isLoading={isLoading} setIsLoading={setIsLoading}   />
+            <PageRouter />
         </>
-    )
+    );
 }
 
 export default App;

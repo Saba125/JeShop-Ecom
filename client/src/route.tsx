@@ -3,6 +3,9 @@ import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import AuthLayout from './pages/(auth)/layout';
 import SignIn from './pages/(auth)/sign-in';
 import SignUp from './pages/(auth)/sign-up';
+import StoreLayout from './pages/(store)/layout';
+import MainPage from './pages/(store)';
+
 const router = createBrowserRouter([
     {
         path: '/auth',
@@ -20,6 +23,17 @@ const router = createBrowserRouter([
                 path: 'register',
                 element: <SignUp />,
             },
+        ],
+    },
+    {
+        path: '/',
+        element: <StoreLayout />,
+        children: [
+            {
+                path: '/',
+                element: <MainPage />,
+            },
+      
         ],
     },
 ]);

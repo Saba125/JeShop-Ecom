@@ -8,19 +8,20 @@ import {
     FormLabel,
     FormMessage,
 } from '@/components/ui/form';
-import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import formSchema from '@/schemas/register';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { FcGoogle } from 'react-icons/fc';
-import { FaGithub } from 'react-icons/fa';
+import { FaFacebook, FaGithub } from 'react-icons/fa';
 
 import { CButton } from '@/components/common/custom-button';
 import api from '@/api/axios';
 import CFlex from '@/components/ui/flex';
+import { useRegister } from '@/api/users/register';
 const SignUp = () => {
+    const { mutate: registerUser, isPending } = useRegister();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -31,13 +32,7 @@ const SignUp = () => {
         },
     });
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        const res = await api.post('register', {
-            username: values.username,
-            email: values.email,
-            password: values.password,
-            phone: values.phone || '',
-        });
-        console.log(values);
+        registerUser(values);
     }
     return (
         <AuthForm
@@ -54,7 +49,7 @@ const SignUp = () => {
                                     <FormItem>
                                         <FormLabel>მობილური</FormLabel>
                                         <FormControl>
-                                            <Input type="number" {...field} />
+                                            <Input {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -99,16 +94,19 @@ const SignUp = () => {
                                     </FormItem>
                                 )}
                             />
-                            <Button type="submit" className="block w-full ">
-                                რეგისტრაცია
-                            </Button>
+                            <CButton
+                                loading={isPending}
+                                type="submit"
+                                className="block w-full "
+                                text="რეგისტრაცია"
+                            />
 
                             <CFlex gap="13px" align="center">
                                 <div className="bg-border h-[1px] w-full" />
                                 ან
                                 <div className="bg-border h-[1px] w-full" />
                             </CFlex>
-                            <CFlex align='center' justify='center' gap='15px'>
+                            <CFlex align="center" justify="center" gap="15px">
                                 <CButton
                                     type="button"
                                     size="lg"
@@ -120,8 +118,8 @@ const SignUp = () => {
                                     type="button"
                                     size="lg"
                                     variant="outline"
-                                    text="Github"
-                                    icon={FaGithub}
+                                    text="Facebook"
+                                    icon={FaFacebook}
                                 />
                             </CFlex>
                         </form>

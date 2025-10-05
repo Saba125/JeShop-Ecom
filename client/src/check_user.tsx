@@ -4,12 +4,13 @@ interface CheckUserProps {
     isLoading: boolean;
     setIsLoading: (isLoading: boolean) => void;
 }
-const CheckUser = ({ isLoading, setIsLoading }: CheckUserProps) => {
-    const {data,isError,isSuccess} = useCurrentUser();
-    if (isSuccess) {
-        console.log(`i am success`)
+const CheckUser = ({ setIsLoading }: CheckUserProps) => {
+    const { isError, isSuccess } = useCurrentUser();
+    if (isSuccess || isError) {
+        setIsLoading(false);
     }
-    return <div>CheckUser</div>;
+
+    return null;
 };
 
 export default CheckUser;

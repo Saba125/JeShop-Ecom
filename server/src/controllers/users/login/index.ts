@@ -13,6 +13,10 @@ export const login = async (req: Request, res: Response) => {
   const validateBody = validateSchema(loginSchema, body);
   const data = validateBody.data;
   const userAgent = req.headers["user-agent"] as string;
+  const checkDeviceType = checkDevice(userAgent);
+  const userPCData = detect(userAgent);
+  const ipAddress = body.ip_address;
+  const geo = geoip.lookup(ipAddress);
   if (!validateBody.success) {
     return helpers.sendError(res, validateBody.error);
   }
@@ -27,18 +31,7 @@ export const login = async (req: Request, res: Response) => {
   }
   const hashedPassword = helpers.getCryptoHash(data!.password);
   if (hashedPassword !== existingUser.password) {
-    return helpers.sendError(res, "Invalid password");
-  }
-  const accessToken = helpers.createToken({ uid: existingUser.uid }, "15m");
-  const refreshToken = helpers.createToken({ uid: existingUser.uid }, "1d");
-  const { password, ...user } = existingUser;
-  const checkDeviceType = checkDevice(userAgent);
-  const userPCData = detect(userAgent);
-  const ipAddress = body.ip;
-  const geo = geoip.lookup(ipAddress);
-  // შევქმანთ ჩაფლავებული ლოგი
-  if (hashedPassword !== existingUser.password) {
-    const dbRes = await db.insert("user_logs", {
+    await db.insert("user_logs", {
       user_uid: existingUser.uid,
       status: "failed",
       ip_address: ipAddress,
@@ -47,10 +40,22 @@ export const login = async (req: Request, res: Response) => {
       country: geo?.country,
       device: checkDeviceType ? "mobile" : "desktop",
     });
-    if (dbRes.error) {
-      return helpers.sendError(res, dbRes.error);
-    }
+    return helpers.sendError(res, "Invalid password");
   }
+  const accessToken = helpers.createToken({ uid: existingUser.uid }, "15m");
+  const refreshToken = helpers.createToken({ uid: existingUser.uid }, "1d");
+  const { password, ...user } = existingUser;
+
+  console.log({
+    user_uid: existingUser.uid,
+    status: "success",
+    ip_address: ipAddress,
+    browser: userPCData?.name,
+    city: geo?.city,
+    country: geo?.country,
+    device: checkDeviceType ? "mobile" : "desktop",
+  });
+  // შევქმანთ ჩაფლავებული ლოგი
   // შევქმანთ წარმატებული ლოგი
   const dbRes = await db.insert("user_logs", {
     user_uid: existingUser.uid,
@@ -64,7 +69,11 @@ export const login = async (req: Request, res: Response) => {
   if (dbRes.error) {
     return helpers.sendError(res, dbRes.error);
   }
-  const checkEmailNotifications = await db.selectSingle("select * from email_notifications where user_uid = :uid`, { uid: existingUser.uid }") as IEmailNotifications
+  const checkEmailNotifications = (await db.selectSingle(
+    "select * from email_notifications where user_uid = :uid", {
+      uid: existingUser.uid
+    }
+  )) as IEmailNotifications;
 
   if (checkEmailNotifications && checkEmailNotifications.login_notification) {
     // Send login notification

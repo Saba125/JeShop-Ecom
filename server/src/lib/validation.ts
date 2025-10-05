@@ -4,29 +4,32 @@ import { z } from "zod";
 export const registerSchema = z.object({
   username: z
     .string()
-    .min(3, "Username must be at least 3 characters long")
-    .max(20, "Username must be at most 20 characters long"),
-  email: z.string().email("Invalid email address"),
+    .min(3, "სახელი უნდა შეიცავდეს მინიმუმ 3 სიმბოლოს")
+    .max(20, "სახელი უნდა შეიცავდეს მაქსიმუმ 20 სიმბოლოს"),
+  email: z.string().email("გთხოვთ შეიყვანოთ სწორი ელ.ფოსტა"),
   password: z
     .string()
-    .min(6, "Password must be at least 6 characters long")
-    .max(20, "Password must be at most 20 characters long"),
+    .min(8, "პაროლი უნდა შეიცავდეს მინიმუმ 8 სიმბოლოს")
+    .max(20, "პაროლი უნდა შეიცავდეს მაქსიმუმ 20 სიმბოლოს"),
   phone: z
     .string()
-    .min(1, "Phone number is required")
+    .min(1, "მობილური აუცილებელია")
     .regex(
       /^(\+995)?5\d{8}$/,
-      "Phone number must be a valid Georgian number"
+      "გთხოვთ შეიყვანეთ სწორი მობილური ნომერი!"
     ),
 });
 
 
 export const loginSchema = z.object({
-  email: z.string().email("Invalid email address"),
+  email: z.email("გთხოვთ შეიყვანოთ სწორი ელ.ფოსტა"),
   password: z
     .string()
-    .min(6, "Password must be at least 6 characters long")
-    .max(20, "Password must be at most 20 characters long"),
+    .min(8, "პაროლი უნდა შეიცავდეს მინიმუმ 8 სიმბოლოს")
+    .max(20, "პაროლი უნდა შეიცავდეს მაქსიმუმ 20 სიმბოლოს"),
+    ip_address: z
+        .string()
+        .regex(/^(?:\d{1,3}\.){3}\d{1,3}$/, "გთხოვთ შეიყვანოთ სწორი IP მისამართი"),
 });
 export const validateSchema = <T>(schema: z.ZodSchema<T>, data: any) => {
   const result = schema.safeParse(data);

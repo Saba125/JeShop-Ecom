@@ -22,8 +22,9 @@ import CFlex from '@/components/ui/flex';
 import { useLogin } from '@/api/users/login';
 import { useSelector } from 'react-redux';
 import type { RootState } from '@/store/store';
+import { useCurrentIp } from '@/api/ip_address/get_ip';
 const SignIn = () => {
-    const user = useSelector((state:RootState) => state.user)
+    const { data: currentIp } = useCurrentIp();
     const { mutate: loginUser, isPending } = useLogin();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -33,6 +34,7 @@ const SignIn = () => {
         },
     });
     async function onSubmit(values: z.infer<typeof formSchema>) {
+        values.ip_address = currentIp.ip;
         loginUser(values);
     }
 
@@ -70,19 +72,7 @@ const SignIn = () => {
                                     </FormItem>
                                 )}
                             />
-                            <Button type="submit" className="block w-full ">
-                                შესვლა
-                            </Button>
-                            <Button
-                                disabled={isPending}
-                                type="button"
-                                onClick={async () => {
-                                    const res = await api.post('test');
-                                }}
-                                className="block w-full "
-                            >
-                                Test
-                            </Button>
+                           <CButton type='submit' loading={isPending} className='block w-full' text='შესვლა' />
                             {/* divider */}
                             <CFlex gap="13px" align="center">
                                 <div className="bg-border h-[1px] w-full" />

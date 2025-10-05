@@ -12,7 +12,7 @@ createRoot(document.getElementById('root')!).render(
         <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
             <Provider store={store}>
                 <QueryProvider>
-                    <Toaster />
+                    <Toaster  />
                     <App />
                 </QueryProvider>
             </Provider>
