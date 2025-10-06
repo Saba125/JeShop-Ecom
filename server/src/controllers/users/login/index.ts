@@ -31,6 +31,7 @@ export const login = async (req: Request, res: Response) => {
   }
   const hashedPassword = helpers.getCryptoHash(data!.password);
   if (hashedPassword !== existingUser.password) {
+    // შევქმანთ ჩაფლავებული ლოგი
     await db.insert("user_logs", {
       user_uid: existingUser.uid,
       status: "failed",
@@ -44,18 +45,9 @@ export const login = async (req: Request, res: Response) => {
   }
   const accessToken = helpers.createToken({ uid: existingUser.uid }, "15m");
   const refreshToken = helpers.createToken({ uid: existingUser.uid }, "1d");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { password, ...user } = existingUser;
 
-  console.log({
-    user_uid: existingUser.uid,
-    status: "success",
-    ip_address: ipAddress,
-    browser: userPCData?.name,
-    city: geo?.city,
-    country: geo?.country,
-    device: checkDeviceType ? "mobile" : "desktop",
-  });
-  // შევქმანთ ჩაფლავებული ლოგი
   // შევქმანთ წარმატებული ლოგი
   const dbRes = await db.insert("user_logs", {
     user_uid: existingUser.uid,

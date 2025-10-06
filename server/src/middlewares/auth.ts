@@ -17,44 +17,46 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
   const token = authHeader?.split(" ")[1];
 
   if (!token) {
-    return res.status(401).json({ // Changed from helpers.sendError
+    return res.status(401).json({
+      // Changed from helpers.sendError
       success: false,
-      error: "Access token not found"
+      error: "Access token not found",
     });
   }
 
   try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const payload: any = jwt.verify(token, config.JWT_SECRET);
 
     const db = await getDbTools();
-    const user = await db.selectSingle(
+    const user = (await db.selectSingle(
       "SELECT uid, username, email, user_type, is_active, email_verified_date, create_date FROM users WHERE uid = :uid",
-      { uid: payload.uid }
-    ) as IUser;
+      { uid: payload.uid },
+    )) as IUser;
 
     if (!user) {
       return res.status(401).json({
         success: false,
-        error: "User not found"
+        error: "User not found",
       });
     }
 
     if (!user.is_active) {
       return res.status(403).json({
         success: false,
-        error: "Account is disabled"
+        error: "Account is disabled",
       });
     }
 
     req.user = { ...user };
     next();
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     // Send 401 so frontend interceptor triggers refresh
     return res.status(401).json({
       success: false,
-      error: error.name === "TokenExpiredError"
-        ? "Access token expired"
-        : "Invalid access token"
+      error: error.name === "TokenExpiredError" ? "Access token expired" : "Invalid access token",
     });
   }
 }

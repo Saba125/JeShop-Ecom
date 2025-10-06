@@ -1,5 +1,4 @@
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
 import { z } from 'zod';
 import { useDispatch } from 'react-redux';
 import { toast } from 'sonner';

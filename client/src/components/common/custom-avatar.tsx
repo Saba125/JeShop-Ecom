@@ -1,3 +1,4 @@
+import { useLogOut } from '@/api/users/logout';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
     DropdownMenu,
@@ -7,29 +8,27 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import type { RootState } from '@/store/store';
 import { User, Settings, Heart, ShoppingBag, LogOut } from 'lucide-react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 interface CAvatarProps {
-    user?: {
-        username?: string;
-        email?: string;
-        avatar?: string;
-    };
     onLogout?: () => void;
 }
 
-export const CAvatar = ({ user, onLogout }: CAvatarProps) => {
+export const CAvatar = ({ onLogout }: CAvatarProps) => {
+    const {mutate: logout} = useLogOut();
     const navigate = useNavigate();
-
+    const user = useSelector((state: RootState) => state.user);
     const getInitials = (username: string) => {
         if (!username) return '?';
         const cleanName = username.replace(/[0-9_\-\.]/g, ' ').trim();
         if (cleanName.includes(' ')) {
             return cleanName
                 .split(' ')
-                .filter(word => word.length > 0)
-                .map(word => word[0])
+                .filter((word) => word.length > 0)
+                .map((word) => word[0])
                 .join('')
                 .toUpperCase()
                 .slice(0, 2);
@@ -38,16 +37,14 @@ export const CAvatar = ({ user, onLogout }: CAvatarProps) => {
     };
 
     const getAvatarUrl = () => {
-        if (user?.avatar) return user.avatar;
+        // if (user?.avatar) return user.avatar;
         const seed = user?.username || user?.email || 'default';
         return `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`;
     };
 
-    const handleLogout = () => {
-        localStorage.removeItem('accessToken');
-        if (onLogout) onLogout();
-        navigate('/login');
-    };
+    const handleLogOut = () => {
+        logout();
+    }
 
     return (
         <DropdownMenu>
@@ -88,8 +85,8 @@ export const CAvatar = ({ user, onLogout }: CAvatarProps) => {
                     <span>პარამეტრები</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem 
-                    onClick={handleLogout}
+                <DropdownMenuItem
+                    onClick={handleLogOut}
                     className="text-red-600 focus:text-red-600 focus:bg-red-50"
                 >
                     <LogOut className="mr-2 h-4 w-4" />

@@ -38,10 +38,20 @@ export const userSlice = createSlice({
             state.email_verified_date = action.payload.email_verified_date;
             state.create_date = action.payload.create_date;
        },
+       clearUser: (state: UserState) => {
+            state.uid = null;
+            state.username = '';
+            state.email = '';
+            state.phone = '';
+            state.user_type = 2;
+            state.is_active = 1;
+            state.email_verified_date = '';
+            state.create_date = '';
+       }
     }
 });
 
-export const { setUser } = userSlice.actions;
+export const { setUser,clearUser } = userSlice.actions;
 
 export const selectUser = (state: RootState) => state.user;
 
