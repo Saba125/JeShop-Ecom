@@ -8,6 +8,7 @@ import { CButton } from '../common/custom-button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { SidebarTrigger, useSidebar } from '../ui/sidebar';
 import { Menu } from 'lucide-react';
+import { ModeToggle } from '../common/mode-toggle';
 const StoreHeader = () => {
     const user = useSelector((state: RootState) => state.user);
     const navigate = useNavigate();
@@ -21,6 +22,7 @@ const StoreHeader = () => {
                 ) : null}
             </div>
             <CFlex align="center" gap="15px">
+                <ModeToggle />
                 <Cart />
                 {user.uid ? (
                     <CAvatar />
