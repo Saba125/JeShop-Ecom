@@ -11,6 +11,12 @@ export const registerUser = async (req: Request, res: Response) => {
     return helpers.sendError(res, validateBody.error);
   }
   const data = validateBody.data;
+  const existingUser = await db.selectSingle("select * from users where email = :email", {
+    email: data?.email,
+  });
+  if (existingUser) {
+    return helpers.sendError(res, "User with this email already exists");
+  }
   const hashedPassword = helpers.getCryptoHash(data.password);
   const dbRes = await db.insert("users", {
     username: data.username,
