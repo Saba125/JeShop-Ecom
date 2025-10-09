@@ -11,17 +11,20 @@ import {
     SidebarFooter,
 } from '@/components/ui/sidebar';
 import Logo from '../common/logo';
-import sidebarItems from '@/lib/sidebar-items';
+import { type SidebarItems } from '@/lib/sidebar-items';
 import { useLocation } from 'react-router-dom';
-export function AppSidebar() {
+interface AppSidebarProps {
+    sidebarItems: SidebarItems;
+}
+export function AppSidebar({ sidebarItems }: AppSidebarProps) {
     const location = useLocation();
     const currentPath = location.pathname;
 
     const mainItems = sidebarItems.slice(0, 1);
-    const productCategories = sidebarItems.slice(1, 5); // Products
-    const brandAndDeals = sidebarItems.slice(5, 7); // Brands & Deals
-    const userItems = sidebarItems.slice(7, 8); // Wishlist
-    const bottomItems = sidebarItems.slice(8); // About, Contact, Settings
+    const productCategories = sidebarItems.slice(1, 5);
+    const brandAndDeals = sidebarItems.slice(5, 7);
+    const userItems = sidebarItems.slice(7, 8);
+    const bottomItems = sidebarItems.slice(8);
 
     const renderMenuItems = (items: typeof sidebarItems, colorClass?: string) => (
         <SidebarMenu>

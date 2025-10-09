@@ -13,9 +13,14 @@ import {
     Mail,
     Heart,
     Settings,
+    type LucideIcon,
 } from 'lucide-react';
-
-const sidebarItems = [
+export type SidebarItems = {
+    title: string;
+    url: string;
+    icon: LucideIcon
+}[];
+const clientSidebarItems: SidebarItems = [
     {
         title: 'მთავარი',
         url: '/',
@@ -72,5 +77,65 @@ const sidebarItems = [
         icon: Settings,
     },
 ];
+const adminSidebarItems: SidebarItems = [
+   {
+        title: 'მთავარი',
+        url: '/admin/dashboard',
+        icon: Home,
+    },
+    {
+        title: 'კლავიატურები',
+        url: '/admin/keyboards',
+        icon: Keyboard,
+    },
+    {
+        title: 'მაუსები',
+        url: '/admin/mouse',
+        icon: Mouse,
+    },
+    {
+        title: 'ყურსასმენები',
+        url: '/admin/headsets',
+        icon: Headphones,
+    },
+    {
+        title: 'მაუსპადები',
+        url: '/admin/mousepads',
+        icon: Square,
+    },
+    {
+        title: 'ბრენდები',
+        url: '/admin/brands',
+        icon: Tags,
+    },
+    {
+        title: 'ფასდაკლებები',
+        url: '/admin/deals',
+        icon: Percent,
+    },
+    {
+        title: 'სურვილების სია',
+        url: '/admin/wishlist',
+        icon: Heart,
+    },
+    {
+        title: 'ჩვენს შესახებ',
+        url: '/admin/about',
+        icon: Info,
+    },
+    {
+        title: 'კონტაქტი',
+        url: '/admin/contact',
+        icon: Mail,
+    },
+    {
+        title: 'პარამეტრები',
+        url: '/admin/settings',
+        icon: Settings,
+    },
+];
 
-export default sidebarItems;
+export default {
+    clientSidebarItems,
+    adminSidebarItems
+};

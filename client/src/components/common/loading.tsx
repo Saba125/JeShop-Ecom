@@ -1,10 +1,9 @@
-import { Loader } from 'lucide-react'
-import React from 'react'
+import {  Loader2 } from 'lucide-react'
 
 const Loading = () => {
   return (
     <div className='w-full h-screen flex justify-center items-center'>
-        <Loader className='animate-spin' />
+        <Loader2 className='animate-spin' />
     </div>
   )
 }

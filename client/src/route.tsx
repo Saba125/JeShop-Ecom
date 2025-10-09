@@ -1,15 +1,17 @@
-import  { useMemo } from 'react';
+import  { useMemo, lazy } from 'react';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
-import AuthLayout from './pages/(auth)/layout';
-import SignIn from './pages/(auth)/sign-in';
-import SignUp from './pages/(auth)/sign-up';
-import StoreLayout from './pages/(store)/layout';
-import MainPage from './pages/(store)';
-import AdminLayout from './pages/(store)/(admin)';
 import { useSelector } from 'react-redux';
 import type { RootState } from './store/store';
-
+// Component
+// Client import
+const AuthLayout = lazy(() => import('./pages/(auth)/layout'));
+const SignIn = lazy(() => import('./pages/(auth)/sign-in'));
+const SignUp = lazy(() => import('./pages/(auth)/sign-up'));
+const StoreLayout = lazy(() => import('./pages/(store)/(client)/layout'));
+const MainPage = lazy(() => import('./pages/(store)/(client)'));
 // Admin Imports
+const AdminLayout = lazy(() => import('./pages/(store)/(admin)/layout'));
+const AdminDashboard = lazy(() => import('./pages/(store)/(admin)/dashboard'));
 
 const PageRouter = () => {
     const user = useSelector((state: RootState) => state.user);
@@ -47,19 +49,18 @@ const PageRouter = () => {
 
         const adminRoutes = [
             {
-                path: '/admin',
+                path: '/',
                 element: <AdminLayout />,
                 children: [
                     {
                         index: true,
-                        element: <Navigate to="/admin/dashboard" replace />,
+                        element: <AdminDashboard />
                     },
                 ],
             },
         ];
-        console.log(user);
-        // Only include admin routes if user is admin
-        const routes = user?.user_type === 1 ? [...userRoutes, ...adminRoutes] : userRoutes;
+       
+        const routes = user?.user_type === 1 ? [ ...adminRoutes] : userRoutes;
         console.log(routes);
         return createBrowserRouter(routes);
     }, [user?.user_type]);

@@ -8,21 +8,11 @@ import NewsLetterSection from '@/components/common/newsletter-section';
 export default function MainPage() {
     return (
         <div className="min-h-screen bg-background">
-            {/* Hero Section */}
             <HeroSection />
-            {/* Categories Section */}
             <CategoriesSection />
-
-            {/* Featured Products */}
             <FeaturedProductsSection />
-
-            {/* Features Section */}
             <FeaturesSection />
-
-            {/* Brands Section */}
-
             <BrandsSection />
-            {/* Newsletter Section */}
             <NewsLetterSection />
         </div>
     );
