@@ -83,25 +83,30 @@ const adminSidebarItems: SidebarItems = [
         url: '/admin/dashboard',
         icon: Home,
     },
+    // {
+    //     title: 'კლავიატურები',
+    //     url: '/admin/keyboards',
+    //     icon: Keyboard,
+    // },
+    // {
+    //     title: 'მაუსები',
+    //     url: '/admin/mouse',
+    //     icon: Mouse,
+    // },
+    // {
+    //     title: 'ყურსასმენები',
+    //     url: '/admin/headsets',
+    //     icon: Headphones,
+    // },
+    // {
+    //     title: 'მაუსპადები',
+    //     url: '/admin/mousepads',
+    //     icon: Square,
+    // },
     {
-        title: 'კლავიატურები',
-        url: '/admin/keyboards',
-        icon: Keyboard,
-    },
-    {
-        title: 'მაუსები',
-        url: '/admin/mouse',
-        icon: Mouse,
-    },
-    {
-        title: 'ყურსასმენები',
-        url: '/admin/headsets',
-        icon: Headphones,
-    },
-    {
-        title: 'მაუსპადები',
-        url: '/admin/mousepads',
-        icon: Square,
+        title: "კატეგორიები",
+        url: '/admin/categories',
+        icon: Box,
     },
     {
         title: 'ბრენდები',

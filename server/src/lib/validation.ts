@@ -19,8 +19,6 @@ export const registerSchema = z.object({
       "გთხოვთ შეიყვანეთ სწორი მობილური ნომერი!"
     ),
 });
-
-
 export const loginSchema = z.object({
   email: z.email("გთხოვთ შეიყვანოთ სწორი ელ.ფოსტა"),
   password: z
@@ -30,6 +28,11 @@ export const loginSchema = z.object({
     ip_address: z
         .string()
         .regex(/^(?:\d{1,3}\.){3}\d{1,3}$/, "გთხოვთ შეიყვანოთ სწორი IP მისამართი"),
+});
+export const categorySchema = z.object({
+  uid: z.number().optional(),
+  name: z.string().min(3, "სახელი უნდა შეიცავდეს მინიმუმ 3 სიმბოლოს").max(50, "სახელი უნდა შეიცავდეს მაქსიმუმ 50 სიმბოლოს"),
+  description: z.string().max(255, "აღწერა უნდა შეიცავდეს მაქსიმუმ 255 სიმბოლოს").optional(),
 });
 export const validateSchema = <T>(schema: z.ZodSchema<T>, data: any) => {
   const result = schema.safeParse(data);

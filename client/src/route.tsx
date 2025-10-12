@@ -1,4 +1,4 @@
-import  { useMemo, lazy } from 'react';
+import { useMemo, lazy } from 'react';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { RootState } from './store/store';
@@ -12,7 +12,7 @@ const MainPage = lazy(() => import('./pages/(store)/(client)'));
 // Admin Imports
 const AdminLayout = lazy(() => import('./pages/(store)/(admin)/layout'));
 const AdminDashboard = lazy(() => import('./pages/(store)/(admin)/dashboard'));
-
+const AdminCategories = lazy(() => import('./pages/(store)/(admin)/categories'));
 const PageRouter = () => {
     const user = useSelector((state: RootState) => state.user);
     const router = useMemo(() => {
@@ -54,13 +54,17 @@ const PageRouter = () => {
                 children: [
                     {
                         index: true,
-                        element: <AdminDashboard />
+                        element: <AdminDashboard />,
+                    },
+                    {
+                        path: "admin/categories",
+                        element: <AdminCategories />,
                     },
                 ],
             },
         ];
-       
-        const routes = user?.user_type === 1 ? [ ...adminRoutes] : userRoutes;
+
+        const routes = user?.user_type === 1 ? [...adminRoutes] : userRoutes;
         console.log(routes);
         return createBrowserRouter(routes);
     }, [user?.user_type]);

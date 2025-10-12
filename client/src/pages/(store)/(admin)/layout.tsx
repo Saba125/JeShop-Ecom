@@ -3,7 +3,8 @@ import { AppSidebar } from '@/components/layout/app-sidebar';
 import StoreHeader from '@/components/layout/store-header';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { Outlet } from 'react-router-dom';
-import sidebarItems from '@/lib/sidebar-items'; "@/lib/sidebar-items"
+import sidebarItems from '@/lib/sidebar-items';
+('@/lib/sidebar-items');
 const AdminLayout = () => {
     return (
         <div>
@@ -11,10 +12,14 @@ const AdminLayout = () => {
                 <AppSidebar sidebarItems={sidebarItems.adminSidebarItems} />
                 <main className="min-h-screen w-full">
                     <StoreHeader />
-                    <Outlet />
-                    <Footer />
+                    <div className='pt-[120px] px-[20px]'>
+                        <Outlet />
+                    </div>
                 </main>
             </SidebarProvider>
+            <div className="ml-[256px]">
+                <Footer />
+            </div>
         </div>
     );
 };

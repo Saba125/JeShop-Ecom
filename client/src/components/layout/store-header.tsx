@@ -9,13 +9,20 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { SidebarTrigger, useSidebar } from '../ui/sidebar';
 import { Menu } from 'lucide-react';
 import { ModeToggle } from '../common/mode-toggle';
+import { useTheme } from '@/providers/theme-provider';
+
 const StoreHeader = () => {
     const user = useSelector((state: RootState) => state.user);
     const navigate = useNavigate();
     const isMobile = useIsMobile();
     const { toggleSidebar } = useSidebar();
+    const { theme } = useTheme();
+
     return (
-        <div className=" w-full px-5 h-[73.69px] border-b flex items-center justify-between">
+        <div 
+            className="fixed right-0 top-0 w-full z-10 px-5 h-[76px] border-b flex items-center justify-between"
+            style={{ backgroundColor: theme === 'dark' ? '#121212' : '#ffffff' }}
+        >
             <div>
                 {isMobile ? (
                     <CButton onClick={() => toggleSidebar()} variant="outline" icon={Menu} />
