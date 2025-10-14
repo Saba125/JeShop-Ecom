@@ -103,6 +103,11 @@ const adminSidebarItems: SidebarItems = [
     //     url: '/admin/mousepads',
     //     icon: Square,
     // },
+     {
+        title: "პროდუქტები",
+        url: '/admin/products',
+        icon: ShoppingBag,
+    },
     {
         title: "კატეგორიები",
         url: '/admin/categories',

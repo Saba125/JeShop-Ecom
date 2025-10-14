@@ -2,6 +2,7 @@ import { useMemo, lazy } from 'react';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { RootState } from './store/store';
+import AdminProducts from './pages/(store)/(admin)/products';
 // Component
 // Client import
 const AuthLayout = lazy(() => import('./pages/(auth)/layout'));
@@ -59,6 +60,10 @@ const PageRouter = () => {
                     {
                         path: "admin/categories",
                         element: <AdminCategories />,
+                    },
+                    {
+                        path: "admin/products",
+                        element: <AdminProducts />,
                     },
                 ],
             },

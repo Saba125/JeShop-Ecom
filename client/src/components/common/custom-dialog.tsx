@@ -8,8 +8,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Button } from '../ui/button';
 import clsx from 'clsx';
+import { CButton } from './custom-button';
 
 interface CDialogProps {
     open: boolean;
@@ -19,9 +19,10 @@ interface CDialogProps {
     description?: string;
     children?: React.ReactNode;
     onSubmit?: () => void;
+    loading?: boolean;
 }
 
-const CDialog = ({ open, onOpenChange, title, description, children, onSubmit,width }: CDialogProps) => {
+const CDialog = ({ open, onOpenChange, title, description, children, onSubmit,width, loading }: CDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className={clsx("sm:max-w-[500px]", width && `sm:max-w-[${width}]` )}>
@@ -36,9 +37,9 @@ const CDialog = ({ open, onOpenChange, title, description, children, onSubmit,wi
             {children}
             <DialogFooter>
                 <DialogClose asChild>
-                    <Button variant="outline">გაუქმება</Button>
+                    <CButton  variant="outline" text='გაუქმება' />
                 </DialogClose>
-                <Button type="submit" onClick={onSubmit}>შენახვა</Button>
+                <CButton type="submit" onClick={onSubmit} loading={loading} text='შენახვა' />
             </DialogFooter>
         </DialogContent>
     </Dialog>

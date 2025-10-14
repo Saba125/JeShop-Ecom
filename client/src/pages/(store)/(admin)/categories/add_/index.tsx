@@ -1,46 +1,50 @@
 import { useAddCategory } from '@/api/category/post';
+import { useEditCategory } from '@/api/category/put';
 import { CButton } from '@/components/common/custom-button';
 import CDialog from '@/components/common/custom-dialog';
 import {
-  FileUpload,
-  FileUploadDropzone,
-  FileUploadItem,
-  FileUploadItemDelete,
-  FileUploadItemMetadata,
-  FileUploadItemPreview,
-  FileUploadList,
-  FileUploadTrigger,
+    FileUpload,
+    FileUploadDropzone,
+    FileUploadItem,
+    FileUploadItemDelete,
+    FileUploadItemMetadata,
+    FileUploadItemPreview,
+    FileUploadList,
+    FileUploadTrigger,
 } from '@/components/ui/file-upload';
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { API_URL } from '@/constants';
 import formSchema from '@/schemas/category';
+import type { Category } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Upload, X } from 'lucide-react';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import type z from 'zod';
 interface AddCategoryProps {
     isOpen: boolean;
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    data: Category | null;
 }
-const AddCategory = ({ isOpen, setIsOpen }: AddCategoryProps) => {
-    const { mutate: addCategory, isSuccess } = useAddCategory();
+const AddCategory = ({ isOpen, setIsOpen, data }: AddCategoryProps) => {
+    const { mutate: addCategory, isSuccess:isAddSuccess, isPending: isAddPending } = useAddCategory();
+    const { mutate: editCategory, isSuccess: isEditSuccess, isPending: isEditPending } = useEditCategory(data?.uid!);
     const [files, setFiles] = useState<File[]>([]);
-
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: '',
-            description: '',
-            image: '',
+            name: data?.name || '',
+            description: data?.description || '',
+            image: `${API_URL}${data?.image}`,
         },
     });
     const onFileReject = useCallback((file: File, message: string) => {
@@ -48,23 +52,46 @@ const AddCategory = ({ isOpen, setIsOpen }: AddCategoryProps) => {
             description: `"${file.name.length > 20 ? `${file.name.slice(0, 20)}...` : file.name}" has been rejected`,
         });
     }, []);
-    const handleSubmit = (data: z.infer<typeof formSchema>) => {
+    useEffect(() => {
+        if (data?.image) {
+            fetch(`${API_URL}${data.image}`)
+                .then((res) => res.blob())
+                .then((blob) => {
+                    const existingFile = new File(
+                        [blob],
+                        data?.image?.split('/').pop() || 'image.jpg',
+                        {
+                            type: blob.type,
+                        }
+                    );
+                    setFiles([existingFile]);
+                })
+                .catch((err) => console.error('Failed to load existing image:', err));
+        }
+    }, [data]);
+    const handleSubmit = (dataForm: z.infer<typeof formSchema>) => {
         const formData = new FormData();
-        formData.append('name', data.name);
-        formData.append('description', data.description || '');
+       
+        formData.append('name', dataForm.name);
+        formData.append('description', dataForm.description || '');
         files.forEach((file) => {
             formData.append('image', file);
         });
-        addCategory(formData);
+        if (data) {
+            editCategory(formData);
+        } else {
+            addCategory(formData);
+        }
     };
-    if (isSuccess) {
-        setIsOpen(false)
+    if (isAddSuccess || isEditSuccess) {
+        setIsOpen(false);
     }
     return (
         <CDialog
             open={isOpen}
             onOpenChange={setIsOpen}
-            title="დაამატეთ ახალი კატეგორია"
+            title={data ? `რედაქტირება '${data.name}'` : 'დაამატეთ ახალი კატეგორია'}
+            loading={isAddPending || isEditPending}
             children={
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-5">
@@ -73,16 +100,16 @@ const AddCategory = ({ isOpen, setIsOpen }: AddCategoryProps) => {
                             name="image"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>სახელი</FormLabel>
+                                    <FormLabel>ფოტო</FormLabel>
                                     <FormControl>
                                         <FileUpload
-                                            maxFiles={2}
+                                            maxFiles={1}
                                             maxSize={5 * 1024 * 1024}
                                             className="w-full max-w-md"
                                             value={files}
                                             onValueChange={setFiles}
                                             onFileReject={onFileReject}
-                                            multiple
+                                            disabled={files.length > 0}
                                         >
                                             <FileUploadDropzone>
                                                 <div className="flex flex-col items-center gap-1 text-center">

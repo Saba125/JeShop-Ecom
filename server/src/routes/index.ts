@@ -11,6 +11,9 @@ Router.post("/logout", UsersRes.handleLogOut);
 Router.post("/refresh_token", UsersRes.validateRefreshToken);
 Router.get("/checkUser", authMiddleware, UsersRes.checkUserInfo);
 // Category
+Router.put("/category/:uid", authMiddleware, categoryImgUploader.single("image"), CategoryRes.editCategory);
 Router.post("/category", authMiddleware, categoryImgUploader.single("image"), CategoryRes.createCategory);
+Router.get("/category", authMiddleware, CategoryRes.getCategories);
+Router.delete("/category/:uid", authMiddleware, CategoryRes.deleteCategory);
 
 export default Router;

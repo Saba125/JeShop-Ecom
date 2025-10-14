@@ -43,7 +43,7 @@ export const login = async (req: Request, res: Response) => {
     });
     return helpers.sendError(res, "Invalid password");
   }
-  const accessToken = helpers.createToken({ uid: existingUser.uid }, "15m");
+  const accessToken = helpers.createToken({ uid: existingUser.uid }, "3d");
   const refreshToken = helpers.createToken({ uid: existingUser.uid }, "1d");
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { password, ...user } = existingUser;

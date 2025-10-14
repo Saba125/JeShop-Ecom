@@ -10,11 +10,12 @@ const editCategory = async (req: Request, res: Response) => {
   const image = req.file ? `images/category/${req.file.filename}` : null;
   const validate = validateSchema(categorySchema, body);
   const data = validate.data;
+  const uid = parseInt(req.params.uid);
   const existingCategory = await db.selectSingle("SELECT * FROM category WHERE  uid = :uid", {
-    uid: data?.uid,
+    uid
   }) as ICategory;
   if (!existingCategory) {
-    return helpers.sendError(res, `კატეგორია uid-ით '${data?.uid}' ვერ მოიძებნა`);
+    return helpers.sendError(res, `კატეგორია uid-ით '${Number(data?.uid)}' ვერ მოიძებნა`);
   }
 
   if (!validate.success) {
@@ -34,7 +35,7 @@ const editCategory = async (req: Request, res: Response) => {
     deleteImage(`category/${existingCategory.image}`);
   }
   const dbRes = await db.update("category", {
-    uid: data?.uid,
+    uid,
     name: data?.name,
     description: data?.description,
     image

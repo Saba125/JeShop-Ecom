@@ -34,13 +34,13 @@ interface ModernTableProps<T> {
     title?: string;
     description?: string;
     columns: Column<T>[];
-    data: T[];
+    data: T[] | [];
     footer?: ReactNode;
     onRowClick?: (item: T) => void;
     contextMenuActions?: ContextMenuAction<T>[];
 }
 
-export function CTable<T extends { id?: string | number }>({
+export function CTable<T extends { uid?: string | number }>({
     title,
     description,
     columns,
@@ -59,7 +59,7 @@ export function CTable<T extends { id?: string | number }>({
     const renderRow = (item: T, index: number) => {
         const rowContent = (
             <TableRow
-                key={item.id || index}
+                key={item.uid || index}
                 className={`transition-colors hover:bg-muted/50 ${
                     onRowClick ? 'cursor-pointer' : ''
                 }`}
@@ -78,7 +78,7 @@ export function CTable<T extends { id?: string | number }>({
 
         if (contextMenuActions && contextMenuActions.length > 0) {
             return (
-                <ContextMenu key={item.id || index}>
+                <ContextMenu key={item.uid || index}>
                     <ContextMenuTrigger asChild>
                         {rowContent}
                     </ContextMenuTrigger>
