@@ -14,3 +14,7 @@ export type Product = {
     weight: number;
     created_at:string
 }
+export type SelectOptions = {
+    label:string;
+    value:number
+}

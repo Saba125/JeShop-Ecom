@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import loginSchema from '@/schemas/login';
 import Api from '@/api/axios';
 import { setUser } from '@/store/userSlice';
+import { REFRESH_TOKEN, AUTH_TOKEN } from '@/constants';
 export const useLogin = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -15,9 +16,10 @@ export const useLogin = () => {
             return response.data;
         },
         onSuccess: (data) => {
-            const { accessToken, user } = data;
+            const { accessToken, refreshToken, user } = data;
             navigate('/');
-            localStorage.setItem('accessToken', accessToken);
+            localStorage.setItem(AUTH_TOKEN, accessToken);
+            localStorage.setItem(REFRESH_TOKEN, refreshToken);
             dispatch(setUser(user));
             toast.success(`Welcome back, ${user.username}!`);
         },

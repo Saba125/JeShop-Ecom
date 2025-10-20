@@ -3,8 +3,10 @@ const formSchema = z.object({
     image: z.string().optional(),
     name: z.string().min(3, 'სახელი უნდა შეიცავდეს მინიმუმ 3 სიმბოლოს').max(50, 'სახელი უნდა შეიცავდეს მაქსიმუმ 50 სიმბოლოს'),
     description: z.string().optional(),
-    stock: z.number().optional(),
-    category_uid: z.number().nullable().optional(),
-    weight: z.number(),
+    stock: z.string().optional(),
+    category_uid: z.string().nullable().optional(),
+    weight: z.string(),
+    price: z.string(),
+    unit: z.string().min(1, 'აირჩიეთ განზომილება'),
 });
 export default formSchema;

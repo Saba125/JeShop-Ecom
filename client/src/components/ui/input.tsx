@@ -1,9 +1,14 @@
 import * as React from 'react';
 
 import { cn } from '@/lib/utils';
-
-function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
+import type { LucideIcon } from 'lucide-react';
+interface InputProps extends React.ComponentProps<'input'> {
+    icon?: LucideIcon;
+}
+function Input({ className, type,icon: Icon, ...props }: InputProps) {
   return (
+    <>
+    <div className='relative'>
     <input
       type={type}
       data-slot="input"
@@ -13,8 +18,18 @@ function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
         'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
         className
       )}
+      
       {...props}
-    />
+      />
+      {Icon && (
+      
+
+        <div className='absolute transition-all right-[10px] top-[9px]  right-0 top-0'>
+            <Icon className="h-4 w-4" />
+        </div>
+      )}
+    </div>
+    </>
   );
 }
 

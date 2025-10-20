@@ -1,24 +1,58 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import PageRouter from './route';
 import Loading from './components/common/loading';
-import CheckUser from './check_user';
+import Api from './auth/Api';
+import { AUTH_TOKEN } from './constants';
+import { useDispatch } from 'react-redux';
+import { setUser } from './store/userSlice';
+import axios from 'axios';
+
 function App() {
-    const accessToken = localStorage.getItem('accessToken');
-    const [isLoading, setIsLoading] = useState(true);
-    if (accessToken && isLoading) {
-        return (
-            <>
-                <CheckUser isLoading={isLoading} setIsLoading={setIsLoading} />
-                <Loading />
-            </>
-        );
+  const accessToken = localStorage.getItem(AUTH_TOKEN);
+  const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!accessToken) {
+      setIsLoading(false);
+      return;
     }
-    return (
-        <>
-            <PageRouter />
-        </>
-    );
+
+    const controller = new AbortController(); // ✅ optional, for canceling on unmount
+
+    const fetchData = async () => {
+      try {
+        const res: any = await Api.get('checkUser', { signal: controller.signal });
+
+        if (!res.error) {
+          dispatch(setUser(res)); // ✅ only dispatch serializable data
+        }
+      } catch (error: any) {
+        // ✅ If request was canceled, don't dispatch anything
+        if (axios.isCancel(error) || error.name === 'CanceledError') {
+          console.log('Request was canceled:', error.message);
+        } else {
+          console.error('User fetch failed:', error);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+
+    // ✅ Cancel request on unmount
+    return () => {
+      controller.abort();
+    };
+  }, [accessToken, dispatch]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  return <PageRouter />;
 }
 
 export default App;

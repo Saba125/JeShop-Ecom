@@ -43,8 +43,8 @@ export const login = async (req: Request, res: Response) => {
     });
     return helpers.sendError(res, "Invalid password");
   }
-  const accessToken = helpers.createToken({ uid: existingUser.uid }, "3d");
-  const refreshToken = helpers.createToken({ uid: existingUser.uid }, "1d");
+  const accessToken = helpers.createToken({ uid: existingUser.uid }, "1h");
+  const refreshToken = helpers.createToken({ uid: existingUser.uid }, "60d");
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { password, ...user } = existingUser;
 
@@ -70,10 +70,6 @@ export const login = async (req: Request, res: Response) => {
   if (checkEmailNotifications && checkEmailNotifications.login_notification) {
     // Send login notification
   }
-  res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    path: "/refresh_token",
-  });
-  helpers.sendSuccess(res, { accessToken, user });
+
+  helpers.sendSuccess(res, { accessToken, refreshToken, user });
 };

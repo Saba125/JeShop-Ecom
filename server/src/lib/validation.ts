@@ -34,6 +34,15 @@ export const categorySchema = z.object({
   name: z.string().min(3, "სახელი უნდა შეიცავდეს მინიმუმ 3 სიმბოლოს").max(50, "სახელი უნდა შეიცავდეს მაქსიმუმ 50 სიმბოლოს"),
   description: z.string().max(255, "აღწერა უნდა შეიცავდეს მაქსიმუმ 255 სიმბოლოს").optional(),
 });
+export const productSchema = z.object({
+    name: z.string().min(3, "სახელი უნდა შეიცავდეს მინიმუმ 3 სიმბოლოს').max(50, 'სახელი უნდა შეიცავდეს მაქსიმუმ 50 სიმბოლოს"),
+    description: z.string().optional(),
+    stock: z.string().optional(),
+    category_uid: z.string().nullable().optional(),
+    weight: z.string(),
+    price: z.string(),
+    unit: z.string().min(1, "აირჩიეთ განზომილება")
+});
 export const validateSchema = <T>(schema: z.ZodSchema<T>, data: any) => {
   const result = schema.safeParse(data);
 
@@ -44,7 +53,6 @@ export const validateSchema = <T>(schema: z.ZodSchema<T>, data: any) => {
       error: result.error.issues[0].message
     };
   }
-
   return {
     success: true as const,
     data: result.data
