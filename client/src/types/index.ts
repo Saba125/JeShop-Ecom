@@ -1,20 +1,39 @@
 export type Category = {
-  uid: number;
-  name: string;
-  description: string;
-  image?: string;
-};
-export type Product = {
     uid: number;
     name: string;
-    description?:string;
-    image?:string;
-    stock: number;
-    category_uid: number;
-    weight: number;
-    created_at:string
-}
+    description: string;
+    image?: string;
+    created_at?:string
+};
+export type TAddProduct = {
+    name: string;
+    weight: string;
+    price: string;
+    unit: string;
+    image?: string | undefined;
+    description?: string | undefined;
+    stock?: string | undefined;
+    category_uid?: string | null | undefined;
+    category_name?: string;
+};
+export type TGetProducts = {
+    uid: number
+    name: string;
+    weight: string;
+    price: string;
+    unit: string;
+    image?: string | null;
+    description?: string | null
+    stock?: number | undefined;
+    category: {
+        uid: number;
+        name: string;
+        image: string | null;
+        description: string | null
+    }
+    created_at: string;
+};
 export type SelectOptions = {
-    label:string;
-    value:number
-}
+    label: string;
+    value: number;
+};

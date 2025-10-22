@@ -21,23 +21,29 @@ import {
 import { Input } from '@/components/ui/input';
 import { API_URL } from '@/constants';
 import formSchema from '@/schemas/product';
-import { type SelectOptions, type Product } from '@/types';
+import { type SelectOptions, type TAddProduct, type TGetProducts } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { GeorgianLari, GeorgianLariIcon, SearchIcon, Upload, X } from 'lucide-react';
+import { GeorgianLariIcon,  Upload, X } from 'lucide-react';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import type z from 'zod';
 import CSelect from '@/components/common/custom-select';
 import { useGetCategories } from '@/api/category/get';
-import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/components/ui/input-group';
+import {
+    InputGroup,
+    InputGroupAddon,
+    InputGroupInput,
+} from '@/components/ui/input-group';
 import { Textarea } from '@/components/ui/textarea';
+import { useAddProduct} from '@/api/products/post';
 interface AddProductProps {
     isOpen: boolean;
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    data: Product | null;
+    data: TGetProducts | null;
 }
 const AddProduct = ({ isOpen, setIsOpen, data }: AddProductProps) => {
+    const { mutate: addProduct, isPending: isAddProductPending, isSuccess: isAddSuccess } = useAddProduct();
     const [files, setFiles] = useState<File[]>([]);
     const { data: categories } = useGetCategories();
     const [categoryOptions, setCategoryOptions] = useState<SelectOptions[]>([]);
@@ -52,7 +58,6 @@ const AddProduct = ({ isOpen, setIsOpen, data }: AddProductProps) => {
         },
     ]);
     useEffect(() => {
-        console.log(categories);
         if (categories?.length === 0) {
             return;
         }
@@ -80,8 +85,12 @@ const AddProduct = ({ isOpen, setIsOpen, data }: AddProductProps) => {
         });
     }, []);
     const handleSubmit = async (data: z.infer<typeof formSchema>) => {
-        console.log(data);
+        console.log(data)
+        addProduct(data);
     };
+    if (isAddSuccess) {
+        setIsOpen(false)
+    }
     return (
         <CDialog
             open={isOpen}
@@ -224,11 +233,10 @@ const AddProduct = ({ isOpen, setIsOpen, data }: AddProductProps) => {
                                         <FormLabel>ფასი</FormLabel>
                                         <FormControl>
                                             <InputGroup>
-                                                <InputGroupInput placeholder="0.00..." />
+                                                <InputGroupInput {...field} placeholder="0.00..." />
                                                 <InputGroupAddon>
                                                     <GeorgianLariIcon />
                                                 </InputGroupAddon>
-                                              
                                             </InputGroup>
                                         </FormControl>
                                         <FormMessage />
@@ -249,22 +257,23 @@ const AddProduct = ({ isOpen, setIsOpen, data }: AddProductProps) => {
                                 )}
                             />
                         </div>
-                          <FormField
-                                control={form.control}
-                                name="description"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>აღწერა</FormLabel>
-                                        <FormControl>
-                                            <Textarea  placeholder='შეიყვანეთ აღწერა...'/>
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                        <FormField
+                            control={form.control}
+                            name="description"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>აღწერა</FormLabel>
+                                    <FormControl>
+                                        <Textarea {...field} placeholder="შეიყვანეთ აღწერა..." />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
                     </form>
                 </Form>
             }
+            loading={isAddProductPending}
             onSubmit={form.handleSubmit(handleSubmit)}
         />
     );

@@ -4,7 +4,7 @@ import { IDbResponse } from "../interfaces/db";
 import { IUser } from "../interfaces/user";
 import pool from "./db_connection";
 export type TTableNames =
- "product" | "users" | "user_logs" | "email_notifications" | "category"
+ "products" | "users" | "user_logs" | "email_notifications" | "category"
 async function getConnection(): Promise<PoolConnection | undefined> {
   let conn: PoolConnection | undefined;
 

@@ -19,14 +19,15 @@ const addProduct = async (req: Request, res: Response) => {
   if (existingProduct) {
     return helpers.sendError(res, "მსგავსი პროდუქტი უკვე არსებობს!");
   }
-  const dbRes = await db.insert("product", {
+  const dbRes = await db.insert("products", {
     name: data.name,
     description: data.description,
     image,
     stock: parseInt(data.stock!),
     category_uid: parseInt(data.category_uid!),
     weight: parseInt(data.weight),
-    price: parseFloat(data.weight),
+    price: parseInt(data.weight) * 100,
+    unit: parseInt(data.unit)
   });
   if (dbRes.error) {
     return helpers.sendError(res, dbRes.error.message);
