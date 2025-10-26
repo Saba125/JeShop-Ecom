@@ -7,12 +7,12 @@ const addProduct = async (req: Request, res: Response) => {
   const db: IDbTools = req.app.locals.db!;
   const body = req.body;
   const validate = validateSchema(productSchema, body);
-  const image = req.file ? `images/category/${req.file.filename}` : null;
+  const image = req.file ? `images/products/${req.file.filename}` : null;
   if (!validate.success) {
     return helpers.sendError(res, validate.error);
   }
   const data = validate.data;
-  const existingProduct = await db.selectSingle("SELECT * FROM product WHERE name = :name AND category_uid = :category_uid", {
+  const existingProduct = await db.selectSingle("SELECT * FROM products WHERE name = :name AND category_uid = :category_uid", {
     name: data.name,
     category_uid: data.category_uid
   });

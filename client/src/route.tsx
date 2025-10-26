@@ -5,6 +5,7 @@ import type { RootState } from './store/store';
 import AdminProducts from './pages/(store)/(admin)/products';
 import Loading from './components/common/loading';
 import ErrorElement from './error-element';
+import SettingsLayout from './pages/(store)/(settings)/layout';
 
 // Lazy imports
 const AuthLayout = lazy(() => import('./pages/(auth)/layout'));
@@ -73,12 +74,16 @@ const PageRouter = () => {
                         path: 'products',
                         element: <AdminProducts />,
                     },
+                    {
+                        path: "settings",
+                        element: <SettingsLayout />,
+                    }
                 ],
             },
+            
         ];
 
         const routes = user?.user_type === 1 ? [...adminRoutes, ] : userRoutes;
-        console.log(routes);
         return createBrowserRouter(routes);
     }, [user?.user_type]);
 

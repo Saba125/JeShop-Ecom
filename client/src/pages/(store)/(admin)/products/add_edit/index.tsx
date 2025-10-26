@@ -23,27 +23,52 @@ import { API_URL } from '@/constants';
 import formSchema from '@/schemas/product';
 import { type SelectOptions, type TAddProduct, type TGetProducts } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { GeorgianLariIcon,  Upload, X } from 'lucide-react';
+import { GeorgianLariIcon, Upload, X } from 'lucide-react';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import type z from 'zod';
 import CSelect from '@/components/common/custom-select';
 import { useGetCategories } from '@/api/category/get';
-import {
-    InputGroup,
-    InputGroupAddon,
-    InputGroupInput,
-} from '@/components/ui/input-group';
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
 import { Textarea } from '@/components/ui/textarea';
-import { useAddProduct} from '@/api/products/post';
+import { useAddProduct } from '@/api/products/post';
+import { useEditCategory } from '@/api/category/put';
+import { useEditProduct } from '@/api/products/put';
 interface AddProductProps {
     isOpen: boolean;
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
     data: TGetProducts | null;
 }
 const AddProduct = ({ isOpen, setIsOpen, data }: AddProductProps) => {
-    const { mutate: addProduct, isPending: isAddProductPending, isSuccess: isAddSuccess } = useAddProduct();
+    console.log(data);
+    const {
+        mutate: addProduct,
+        isPending: isAddProductPending,
+        isSuccess: isAddSuccess,
+    } = useAddProduct();
+    const {
+        mutate: editProduct,
+        isPending: isEditProductPending,
+        isSuccess: isEditProductSuccess,
+    } = useEditProduct();
+    useEffect(() => {
+        if (data?.image) {
+            fetch(`${API_URL}${data.image}`)
+                .then((res) => res.blob())
+                .then((blob) => {
+                    const existingFile = new File(
+                        [blob],
+                        data?.image?.split('/').pop() || 'image.jpg',
+                        {
+                            type: blob.type,
+                        }
+                    );
+                    setFiles([existingFile]);
+                })
+                .catch((err) => console.error('Failed to load existing image:', err));
+        }
+    }, [data]);
     const [files, setFiles] = useState<File[]>([]);
     const { data: categories } = useGetCategories();
     const [categoryOptions, setCategoryOptions] = useState<SelectOptions[]>([]);
@@ -68,15 +93,18 @@ const AddProduct = ({ isOpen, setIsOpen, data }: AddProductProps) => {
             })) || [];
         setCategoryOptions(selectOptions);
     }, [categories]);
+    console.log(data?.unit);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: data?.name || '',
             description: data?.description || '',
             image: `${API_URL}${data?.image}`,
-            category_uid: null,
-            stock: '',
-            weight: '',
+            category_uid: String(data?.category.uid) || null,
+            stock: String(data?.stock) || '',
+            weight: data?.weight || '',
+            price: String(data?.price) || '',
+            unit: String(data?.unit),
         },
     });
     const onFileReject = useCallback((file: File, message: string) => {
@@ -84,12 +112,28 @@ const AddProduct = ({ isOpen, setIsOpen, data }: AddProductProps) => {
             description: `"${file.name.length > 20 ? `${file.name.slice(0, 20)}...` : file.name}" has been rejected`,
         });
     }, []);
-    const handleSubmit = async (data: z.infer<typeof formSchema>) => {
-        console.log(data)
-        addProduct(data);
+    const handleSubmit = async (values: z.infer<typeof formSchema>) => {
+        const formData = new FormData();
+        formData.append('uid', String(data?.uid || ''));
+        formData.append('name', values.name);
+        formData.append('description', values.description || '');
+        files.forEach((el) => {
+            formData.append('image', el);
+        });
+        formData.append('category_uid', values.category_uid || '');
+        formData.append('stock', values.stock || '');
+        formData.append('weight', values?.weight || '');
+        formData.append('price', values.price);
+        formData.append('unit', values.unit);
+        console.log(formData);
+        if (data?.uid) {
+            editProduct(formData);
+        } else {
+            addProduct(formData);
+        }
     };
-    if (isAddSuccess) {
-        setIsOpen(false)
+    if (isAddSuccess || isEditProductSuccess) {
+        setIsOpen(false);
     }
     return (
         <CDialog

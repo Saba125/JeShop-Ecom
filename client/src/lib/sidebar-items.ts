@@ -18,7 +18,7 @@ import {
 export type SidebarItems = {
     title: string;
     url: string;
-    icon: LucideIcon
+    icon: LucideIcon;
 }[];
 const clientSidebarItems: SidebarItems = [
     {
@@ -71,14 +71,9 @@ const clientSidebarItems: SidebarItems = [
         url: '/contact',
         icon: Mail,
     },
-    {
-        title: 'პარამეტრები',
-        url: '/settings',
-        icon: Settings,
-    },
 ];
 const adminSidebarItems: SidebarItems = [
-   {
+    {
         title: 'მთავარი',
         url: '/admin/dashboard',
         icon: Home,
@@ -103,13 +98,13 @@ const adminSidebarItems: SidebarItems = [
     //     url: '/admin/mousepads',
     //     icon: Square,
     // },
-     {
-        title: "პროდუქტები",
+    {
+        title: 'პროდუქტები',
         url: '/admin/products',
         icon: ShoppingBag,
     },
     {
-        title: "კატეგორიები",
+        title: 'კატეგორიები',
         url: '/admin/categories',
         icon: Box,
     },
@@ -147,5 +142,5 @@ const adminSidebarItems: SidebarItems = [
 
 export default {
     clientSidebarItems,
-    adminSidebarItems
+    adminSidebarItems,
 };

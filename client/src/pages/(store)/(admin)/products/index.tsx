@@ -10,6 +10,7 @@ import dayjs from 'dayjs';
 const AdminProducts = () => {
     const { isPending, data: products } = useGetProducts();
     const [isOpen, setIsOpen] = useState(false);
+    const [selectedData, setSelectedData] = useState<TGetProducts | null>(null);
     const columns: Column<TGetProducts>[] = [
         {
             header: 'სახელი',
@@ -40,13 +41,13 @@ const AdminProducts = () => {
             accessor: (item) => dayjs(item.created_at).format('MM-DD-YYYY'),
         },
     ];
-     const contextMenuActions: ContextMenuAction<TGetProducts>[] = [
+    const contextMenuActions: ContextMenuAction<TGetProducts>[] = [
         {
             label: 'Edit',
             icon: <EditIcon className="w-4 h-4" />,
             onClick: (product) => {
                 setIsOpen(true);
-                // setSelectedData(product);
+                setSelectedData(product);
             },
         },
         {
@@ -71,12 +72,12 @@ const AdminProducts = () => {
             </div>
             <CTable
                 title="პროდუქტები"
-                description="შექმინილი პროდუქტები"
+                description="შექმნილი პროდუქტები"
                 columns={columns}
                 data={products || []}
                 contextMenuActions={contextMenuActions}
             />
-            {isOpen && <AddProduct data={null} isOpen={isOpen} setIsOpen={setIsOpen} />}
+            {isOpen && <AddProduct data={selectedData} isOpen={isOpen} setIsOpen={setIsOpen} />}
         </>
     );
 };
