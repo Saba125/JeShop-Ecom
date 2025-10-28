@@ -7,52 +7,61 @@ import { AUTH_TOKEN } from './constants';
 import { useDispatch } from 'react-redux';
 import { setUser } from './store/userSlice';
 import axios from 'axios';
+import { useDialog } from './hooks/use-dialog';
+import CDialog from './components/common/custom-dialog';
 
 function App() {
-  const accessToken = localStorage.getItem(AUTH_TOKEN);
-  const [isLoading, setIsLoading] = useState(true);
-  const dispatch = useDispatch();
+    const accessToken = localStorage.getItem(AUTH_TOKEN);
+    const { isOpen, closeDialog, onFinish, title } = useDialog();
+    const [isLoading, setIsLoading] = useState(true);
+    const dispatch = useDispatch();
+    console.log(isOpen);
 
-  useEffect(() => {
-    if (!accessToken) {
-      setIsLoading(false);
-      return;
+    useEffect(() => {
+        if (!accessToken) {
+            setIsLoading(false);
+            return;
+        }
+
+        const controller = new AbortController(); // ✅ optional, for canceling on unmount
+
+        const fetchData = async () => {
+            try {
+                const res: any = await Api.get('checkUser', { signal: controller.signal });
+
+                if (!res.error) {
+                    dispatch(setUser(res)); // ✅ only dispatch serializable data
+                }
+            } catch (error: any) {
+                // ✅ If request was canceled, don't dispatch anything
+                if (axios.isCancel(error) || error.name === 'CanceledError') {
+                    console.log('Request was canceled:', error.message);
+                } else {
+                    console.error('User fetch failed:', error);
+                }
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchData();
+
+        // ✅ Cancel request on unmount
+        return () => {
+            controller.abort();
+        };
+    }, [accessToken, dispatch]);
+
+    if (isLoading) {
+        return <Loading />;
     }
 
-    const controller = new AbortController(); // ✅ optional, for canceling on unmount
-
-    const fetchData = async () => {
-      try {
-        const res: any = await Api.get('checkUser', { signal: controller.signal });
-
-        if (!res.error) {
-          dispatch(setUser(res)); // ✅ only dispatch serializable data
-        }
-      } catch (error: any) {
-        // ✅ If request was canceled, don't dispatch anything
-        if (axios.isCancel(error) || error.name === 'CanceledError') {
-          console.log('Request was canceled:', error.message);
-        } else {
-          console.error('User fetch failed:', error);
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-
-    // ✅ Cancel request on unmount
-    return () => {
-      controller.abort();
-    };
-  }, [accessToken, dispatch]);
-
-  if (isLoading) {
-    return <Loading />;
-  }
-
-  return <PageRouter />;
+    return (
+        <>
+            <PageRouter />;
+            <CDialog open={isOpen} onOpenChange={closeDialog} onSubmit={onFinish} title={title} />
+        </>
+    );
 }
 
 export default App;

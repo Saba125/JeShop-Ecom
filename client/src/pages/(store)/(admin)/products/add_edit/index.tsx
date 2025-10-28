@@ -21,7 +21,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { API_URL } from '@/constants';
 import formSchema from '@/schemas/product';
-import { type SelectOptions, type TAddProduct, type TGetProducts } from '@/types';
+import { type SelectOptions, type TGetProducts } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { GeorgianLariIcon, Upload, X } from 'lucide-react';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -33,7 +33,6 @@ import { useGetCategories } from '@/api/category/get';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
 import { Textarea } from '@/components/ui/textarea';
 import { useAddProduct } from '@/api/products/post';
-import { useEditCategory } from '@/api/category/put';
 import { useEditProduct } from '@/api/products/put';
 interface AddProductProps {
     isOpen: boolean;
@@ -41,7 +40,6 @@ interface AddProductProps {
     data: TGetProducts | null;
 }
 const AddProduct = ({ isOpen, setIsOpen, data }: AddProductProps) => {
-    console.log(data);
     const {
         mutate: addProduct,
         isPending: isAddProductPending,
@@ -317,7 +315,7 @@ const AddProduct = ({ isOpen, setIsOpen, data }: AddProductProps) => {
                     </form>
                 </Form>
             }
-            loading={isAddProductPending}
+            loading={isAddProductPending || isEditProductPending}
             onSubmit={form.handleSubmit(handleSubmit)}
         />
     );

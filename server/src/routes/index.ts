@@ -35,5 +35,6 @@ Router.post(
 );
 Router.post("/products/all", authMiddleware, ProductRes.getProducts);
 Router.put("/product", authMiddleware, productImageUploader.single("image"), ProductRes.updateProduct);
+Router.delete("/product/:uid", authMiddleware, ProductRes.deleteProduct);
 
 export default Router;
