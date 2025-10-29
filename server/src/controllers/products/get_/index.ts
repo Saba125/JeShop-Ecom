@@ -12,9 +12,14 @@ const getProducts = async(req:Request,res:Response) => {
      'name', c.name,
      'description', c.description,
      'image', c.image
-     ) as category
+     ) as category,
+    JSON_OBJECT(
+    'uid', u.uid,
+    'name', u.name
+    ) as unit
     FROM products p
     LEFT JOIN category c ON c.uid = p.category_uid
+    LEFT JOIN units u on u.uid = p.unit_uid
   `);
   helpers.sendSuccess(res, dbRes.list);
 };

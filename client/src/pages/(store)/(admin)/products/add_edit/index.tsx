@@ -34,6 +34,7 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/in
 import { Textarea } from '@/components/ui/textarea';
 import { useAddProduct } from '@/api/products/post';
 import { useEditProduct } from '@/api/products/put';
+import { useGetUnits } from '@/api/units/get_';
 interface AddProductProps {
     isOpen: boolean;
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -50,6 +51,8 @@ const AddProduct = ({ isOpen, setIsOpen, data }: AddProductProps) => {
         isPending: isEditProductPending,
         isSuccess: isEditProductSuccess,
     } = useEditProduct();
+    const { data: categories } = useGetCategories();
+    const { data: units } = useGetUnits();
     useEffect(() => {
         if (data?.image) {
             fetch(`${API_URL}${data.image}`)
@@ -68,18 +71,9 @@ const AddProduct = ({ isOpen, setIsOpen, data }: AddProductProps) => {
         }
     }, [data]);
     const [files, setFiles] = useState<File[]>([]);
-    const { data: categories } = useGetCategories();
+
     const [categoryOptions, setCategoryOptions] = useState<SelectOptions[]>([]);
-    const [unitOptions, setUnitOptions] = useState<SelectOptions[]>([
-        {
-            label: 'კილოგრამი',
-            value: 1,
-        },
-        {
-            label: 'გრამი',
-            value: 2,
-        },
-    ]);
+    const [unitOptions, setUnitOptions] = useState<SelectOptions[]>([]);
     useEffect(() => {
         if (categories?.length === 0) {
             return;
@@ -91,7 +85,17 @@ const AddProduct = ({ isOpen, setIsOpen, data }: AddProductProps) => {
             })) || [];
         setCategoryOptions(selectOptions);
     }, [categories]);
-    console.log(data?.unit);
+    useEffect(() => {
+        if (units?.length === 0) {
+            return;
+        }
+        const selectOptions: SelectOptions[] =
+            units?.map((item) => ({
+                value: item.uid,
+                label: item.name,
+            })) || [];
+        setUnitOptions(selectOptions);
+    }, [units]);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -102,7 +106,7 @@ const AddProduct = ({ isOpen, setIsOpen, data }: AddProductProps) => {
             stock: String(data?.stock) || '',
             weight: data?.weight || '',
             price: String(data?.price) || '',
-            unit: String(data?.unit),
+            unit_uid: String(data?.unit.uid) || '',
         },
     });
     const onFileReject = useCallback((file: File, message: string) => {
@@ -122,8 +126,7 @@ const AddProduct = ({ isOpen, setIsOpen, data }: AddProductProps) => {
         formData.append('stock', values.stock || '');
         formData.append('weight', values?.weight || '');
         formData.append('price', values.price);
-        formData.append('unit', values.unit);
-        console.log(formData);
+        formData.append('unit_uid', values.unit_uid);
         if (data?.uid) {
             editProduct(formData);
         } else {
@@ -248,13 +251,13 @@ const AddProduct = ({ isOpen, setIsOpen, data }: AddProductProps) => {
                             />
                             <FormField
                                 control={form.control}
-                                name="unit"
+                                name="unit_uid"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>წონის ერთეული</FormLabel>
                                         <FormControl>
                                             <CSelect
-                                                value={field.value}
+                                                value={String(field.value)}
                                                 onChange={field.onChange}
                                                 data={unitOptions}
                                                 label="წონის ერთეულები"

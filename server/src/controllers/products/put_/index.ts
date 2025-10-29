@@ -8,6 +8,7 @@ import { deleteImage } from "../../../config/multer";
 const updateProduct = async(req:Request, res:Response) => {
   const db:IDbTools = req.app.locals.db!;
   const body = req.body;
+  console.log(body)
   const validate = validateSchema(productSchema, body);
   const image = req.file ? `images/products/${req.file.filename}` : null;
   if (!validate.success) {
@@ -34,7 +35,7 @@ const updateProduct = async(req:Request, res:Response) => {
     stock:data.stock,
     category_uid: data.category_uid,
     weight: data.weight,
-    unit: data.unit,
+    unit_uid: data.unit_uid,
     price: data.price,
     image
   });

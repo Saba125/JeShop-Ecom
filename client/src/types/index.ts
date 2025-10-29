@@ -22,7 +22,6 @@ export type TGetProducts = {
     name: string;
     weight: string;
     price: string;
-    unit: string;
     image?: string | null;
     description?: string | null
     stock?: number | undefined;
@@ -32,12 +31,18 @@ export type TGetProducts = {
         image: string | null;
         description: string | null
     }
+    unit: {
+        uid: number;
+        name: string;
+        description: string | null
+    }
     created_at: string;
 };
 export type TGetUnit = {
     uid: number;
     name: string;
-    description?: string
+    description?: string;
+    created_at:string;
 }
 
 

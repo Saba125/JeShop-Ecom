@@ -7,7 +7,9 @@ import AddProduct from './add_edit';
 import { useGetProducts } from '@/api/products/get';
 import Loading from '@/components/common/loading';
 import dayjs from 'dayjs';
+import { useDialog } from '@/hooks/use-dialog';
 const AdminProducts = () => {
+    const { openDialog } = useDialog();
     const { isPending, data: products } = useGetProducts();
     const [isOpen, setIsOpen] = useState(false);
     const [selectedData, setSelectedData] = useState<TGetProducts | null>(null);
@@ -30,7 +32,7 @@ const AdminProducts = () => {
         },
         {
             header: 'წონის ერთეული',
-            accessor: 'unit',
+            accessor: (item) => item.unit.name
         },
         {
             header: 'ფასი',
@@ -53,7 +55,9 @@ const AdminProducts = () => {
         {
             label: 'Delete',
             icon: <Trash2 className="w-4 h-4" />,
-            onClick: () => {},
+            onClick: () => {
+                openDialog()
+            },
             variant: 'destructive',
             separator: true,
         },

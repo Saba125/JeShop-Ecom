@@ -1,5 +1,6 @@
 import { z } from 'zod';
 const formSchema = z.object({
+    uid: z.number().optional(),
     name: z
         .string()
         .min(1, 'სახელი უნდა შეიცავდეს მინიმუმ 1 სიმბოლოს')

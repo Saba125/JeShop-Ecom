@@ -1,11 +1,14 @@
 import { useNavigate } from 'react-router-dom';
 import { useSidebar } from '../ui/sidebar';
 import { useTheme } from '@/providers/theme-provider';
+import { useSelector } from 'react-redux';
+import type { RootState } from '@/store/store';
 
 const Logo = () => {
     const navigate = useNavigate();
     const {theme} = useTheme()
-    console.log(theme)
+    const user = useSelector((state: RootState) => state.user);
+    console.log(user)
     return (
         <div
             onClick={() => {

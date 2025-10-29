@@ -1,3 +1,5 @@
+import { useAddUnit } from '@/api/units/post_';
+import { useEditUnit } from '@/api/units/put_';
 import CDialog from '@/components/common/custom-dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -14,6 +16,8 @@ interface AddEditUnitProps {
     data: TGetUnit | null;
 }
 const AddEditUnit = ({ data, isOpen, setIsOpen }: AddEditUnitProps) => {
+    const { isPending: isAddPending, mutate: addUnit } = useAddUnit();
+    const { isPending: isEditPending, mutate: editUnit } = useEditUnit();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -21,7 +25,12 @@ const AddEditUnit = ({ data, isOpen, setIsOpen }: AddEditUnitProps) => {
             description: data?.description || '',
         },
     });
-    const handleSubmit = async (values: z.infer<typeof formSchema>) => {};
+    const handleSubmit = async (values: z.infer<typeof formSchema>) => {
+        if (data) {
+        } else {
+            addUnit({ name: values.name, description: values.description });
+        }
+    };
     return (
         <CDialog
             open={isOpen}
@@ -50,7 +59,10 @@ const AddEditUnit = ({ data, isOpen, setIsOpen }: AddEditUnitProps) => {
                                     <FormItem>
                                         <FormLabel>აღწერა</FormLabel>
                                         <FormControl>
-                                            <Textarea placeholder="შეიყვანეთ აღწერა..."  {...field} />
+                                            <Textarea
+                                                placeholder="შეიყვანეთ აღწერა..."
+                                                {...field}
+                                            />
                                         </FormControl>
                                     </FormItem>
                                 )}
@@ -59,6 +71,8 @@ const AddEditUnit = ({ data, isOpen, setIsOpen }: AddEditUnitProps) => {
                     </Form>
                 </>
             }
+            loading={isAddPending || isEditPending}
+            onSubmit={form.handleSubmit(handleSubmit)}
         />
     );
 };

@@ -12,10 +12,9 @@ import CDialog from './components/common/custom-dialog';
 
 function App() {
     const accessToken = localStorage.getItem(AUTH_TOKEN);
-    const { isOpen, closeDialog, onFinish, title } = useDialog();
+    const { isOpen, closeDialog, onFinish, title, description } = useDialog();
     const [isLoading, setIsLoading] = useState(true);
     const dispatch = useDispatch();
-    console.log(isOpen);
 
     useEffect(() => {
         if (!accessToken) {
@@ -23,17 +22,16 @@ function App() {
             return;
         }
 
-        const controller = new AbortController(); // ✅ optional, for canceling on unmount
+        const controller = new AbortController();
 
         const fetchData = async () => {
             try {
                 const res: any = await Api.get('checkUser', { signal: controller.signal });
 
                 if (!res.error) {
-                    dispatch(setUser(res)); // ✅ only dispatch serializable data
+                    dispatch(setUser(res));
                 }
             } catch (error: any) {
-                // ✅ If request was canceled, don't dispatch anything
                 if (axios.isCancel(error) || error.name === 'CanceledError') {
                     console.log('Request was canceled:', error.message);
                 } else {
@@ -46,7 +44,6 @@ function App() {
 
         fetchData();
 
-        // ✅ Cancel request on unmount
         return () => {
             controller.abort();
         };
@@ -59,7 +56,13 @@ function App() {
     return (
         <>
             <PageRouter />;
-            <CDialog open={isOpen} onOpenChange={closeDialog} onSubmit={onFinish} title={title} />
+            <CDialog
+                open={isOpen}
+                onOpenChange={closeDialog}
+                onSubmit={onFinish}
+                title={title ? title : "წაშლა"}
+                description={description}
+            />
         </>
     );
 }

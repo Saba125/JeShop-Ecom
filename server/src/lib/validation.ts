@@ -42,7 +42,7 @@ export const productSchema = z.object({
     category_uid: z.string().nullable().optional(),
     weight: z.string(),
     price: z.string(),
-    unit: z.string().min(1, "აირჩიეთ განზომილება")
+    unit_uid: z.string().min(1, "აირჩიეთ განზომილება")
 });
 export const unitSchema = z.object({
     uid: z.string().optional(),
