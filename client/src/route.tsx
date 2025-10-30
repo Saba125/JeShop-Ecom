@@ -17,8 +17,6 @@ const AdminLayout = lazy(() => import('./pages/(store)/(admin)/layout'));
 const AdminDashboard = lazy(() => import('./pages/(store)/(admin)/dashboard'));
 const AdminCategories = lazy(() => import('./pages/(store)/(admin)/categories'));
 
-// Simple error fallback component
-
 const PageRouter = () => {
     const user = useSelector((state: RootState) => state.user);
 
@@ -60,10 +58,14 @@ const PageRouter = () => {
             {
                 path: '/admin',
                 element: <AdminLayout />,
-                errorElement:<ErrorElement />,
+                errorElement: <ErrorElement />,
                 children: [
                     {
                         index: true,
+                        element: <Navigate to="/admin/dashboard" replace />,
+                    },
+                    {
+                        path: 'dashboard',
                         element: <AdminDashboard />,
                     },
                     {
@@ -75,20 +77,19 @@ const PageRouter = () => {
                         element: <AdminProducts />,
                     },
                     {
-                        path: "settings",
+                        path: 'settings',
                         element: <SettingsLayout />,
-                    }
+                    },
                 ],
             },
-            
         ];
 
-        const routes = user?.user_type === 1 ? [...adminRoutes, ] : userRoutes;
+        const routes = user?.user_type === 1 ? [...adminRoutes] : userRoutes;
         return createBrowserRouter(routes);
     }, [user?.user_type]);
 
     return (
-        <Suspense fallback={<Loading />}>
+        <Suspense>
             <RouterProvider key={user?.user_type ?? 0} router={router} />
         </Suspense>
     );

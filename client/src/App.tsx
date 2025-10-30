@@ -1,21 +1,23 @@
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import './App.css';
-import PageRouter from './route';
 import Loading from './components/common/loading';
 import Api from './auth/Api';
 import { AUTH_TOKEN } from './constants';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from './store/userSlice';
 import axios from 'axios';
 import { useDialog } from './hooks/use-dialog';
 import CDialog from './components/common/custom-dialog';
-
+import AdminRoutes from './routes/admin_routes';
+import UserRoutes from './routes/user_routes';
+import type { RootState } from './store/store';
+import { RouterProvider } from 'react-router-dom';
 function App() {
     const accessToken = localStorage.getItem(AUTH_TOKEN);
     const { isOpen, closeDialog, onFinish, title, description } = useDialog();
     const [isLoading, setIsLoading] = useState(true);
     const dispatch = useDispatch();
-
+    const user = useSelector((state: RootState) => state.user);
     useEffect(() => {
         if (!accessToken) {
             setIsLoading(false);
@@ -49,18 +51,23 @@ function App() {
         };
     }, [accessToken, dispatch]);
 
-    if (isLoading) {
+    if (isLoading || (accessToken && !user.uid)) {
         return <Loading />;
     }
-
     return (
         <>
-            <PageRouter />;
+            <Suspense fallback={<Loading />}>
+                {user && user.user_type === 1 ? (
+                    <RouterProvider key={user.user_type ?? 0} router={AdminRoutes()} />
+                ) : (
+                    <RouterProvider router={UserRoutes()} />
+                )}
+            </Suspense>
             <CDialog
                 open={isOpen}
                 onOpenChange={closeDialog}
                 onSubmit={onFinish}
-                title={title ? title : "წაშლა"}
+                title={title ? title : 'წაშლა'}
                 description={description}
             />
         </>

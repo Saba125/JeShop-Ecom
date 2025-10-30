@@ -224,7 +224,6 @@ export default function Footer() {
               ))}
             </div>
           </div>
-
           {/* Legal Links */}
           <div className="flex gap-4 text-sm">
             <a href="/privacy" className="text-muted-foreground hover:text-primary transition-colors">

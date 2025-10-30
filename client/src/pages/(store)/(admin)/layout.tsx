@@ -17,7 +17,7 @@ const AdminLayout = () => {
                     </div>
                 </main>
             </SidebarProvider>
-            <div className="ml-[256px]">
+            <div className="md:ml-[256px]">
                 <Footer />
             </div>
         </div>

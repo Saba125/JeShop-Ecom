@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type JSXElementConstructor, type ReactElement } from 'react';
 import {
     Dialog,
     DialogClose,
@@ -14,9 +14,9 @@ import { CButton } from './custom-button';
 interface CDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    title?: string;
+    title?: string | ReactElement<unknown, string | JSXElementConstructor<any>>;
     width?: string;
-    description?: string;
+    description?: string | ReactElement<unknown, string | JSXElementConstructor<any>> | null;
     children?: React.ReactNode;
     onSubmit?: () => void;
     loading?: boolean;
