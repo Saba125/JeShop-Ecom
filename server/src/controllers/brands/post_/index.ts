@@ -22,6 +22,7 @@ const addBrand = async(req:Request,res:Response) => {
   });
   if (dbRes.error) {
     return helpers.sendError(res, dbRes.error.message);
-  }
+  } 
+  helpers.sendSuccess(res, "ბრენდი წარმატებით დაემატა!");
 };
 export default addBrand;

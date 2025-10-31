@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { User, Bell, Shield, Palette, Globe, CreditCard, Archive, Weight } from 'lucide-react';
+import { User, Bell, Shield, Palette, Globe, CreditCard, Archive, Weight, BookX } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import UnitSettings from './unit';
+import BrandSettings from './brands';
 
 interface SettingsSection {
     id: string;
@@ -13,6 +14,8 @@ const settingsSections: SettingsSection[] = [
     { id: 'profile', label: 'პროფილი', icon: User },
     { id: 'notifications', label: 'შეტყობინებები', icon: Bell },
     { id: 'unit', label: 'წონის ერთეულები', icon: Weight },
+    { id: 'brands', label: 'ბრენდები', icon: BookX },
+
 
     
 ];
@@ -64,6 +67,8 @@ const SettingsLayout = () => {
                         {activeSection === 'profile' && <ProfileSettings />}
                         {activeSection === 'notifications' && <NotificationSettings />}
                         {activeSection === "unit" && <UnitSettings />}
+                        {activeSection === "brands" && <BrandSettings />}
+
                     </div>
                 </div>
             </main>

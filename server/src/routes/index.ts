@@ -1,10 +1,11 @@
 import express from "express";
 import UsersRes from "../controllers/users/export";
 import { authMiddleware } from "../middlewares/auth";
-import { categoryImgUploader, productImageUploader } from "../config/multer";
+import { brandImgUploader, categoryImgUploader, productImageUploader } from "../config/multer";
 import CategoryRes from "../controllers/categories/export";
 import ProductRes from "../controllers/products/export";
 import UnitRes from "../controllers/units/export";
+import BrandRes from "../controllers/brands/export";
 const Router = express.Router();
 // Auth & Users
 Router.post("/register", UsersRes.registerUser);
@@ -35,7 +36,12 @@ Router.post(
   ProductRes.addProduct,
 );
 Router.post("/products/all", authMiddleware, ProductRes.getProducts);
-Router.put("/product", authMiddleware, productImageUploader.single("image"), ProductRes.updateProduct);
+Router.put(
+  "/product",
+  authMiddleware,
+  productImageUploader.single("image"),
+  ProductRes.updateProduct,
+);
 Router.delete("/product/:uid", authMiddleware, ProductRes.deleteProduct);
 // Units
 Router.post("/units/all", authMiddleware, UnitRes.getUnits);
@@ -43,6 +49,10 @@ Router.post("/unit", authMiddleware, UnitRes.addUnit);
 Router.put("/unit", authMiddleware, UnitRes.updateUnit);
 Router.delete("/unit/:uid", authMiddleware, UnitRes.deleteUnit);
 
-
+// Brand
+Router.post("/brand", authMiddleware, brandImgUploader.single("image"), BrandRes.addBrand);
+Router.put("/brand", authMiddleware, brandImgUploader.single("image"), BrandRes.updateBrand);
+Router.post("/brands/all", authMiddleware, BrandRes.getBrands);
+Router.delete("/brand/:uid", authMiddleware, BrandRes.deleteBrand);
 
 export default Router;

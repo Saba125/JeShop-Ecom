@@ -16,7 +16,7 @@ const updateBrand = async(req:Request,res:Response) => {
   if (!checkExistingBrand) {
     return helpers.sendError(res, "მსგავსი ბრენდი ვერ მოიძებნა");
   }
-  const checkName = await db.selectSingle("SELECT * FROM brand WHERE name = :name AND uid = :uid", {
+  const checkName = await db.selectSingle("SELECT * FROM brands WHERE name = :name AND uid = :uid", {
     uid: data?.uid,
     name:data?.name
   });
@@ -36,5 +36,6 @@ const updateBrand = async(req:Request,res:Response) => {
   if (dbRes.error) {
     return helpers.sendError(res, dbRes.error.message);
   }
+  helpers.sendSuccess(res, "ბრენდი წარმატებით რედაქტირდა");
 };
 export default updateBrand;

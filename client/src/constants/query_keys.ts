@@ -15,6 +15,10 @@ export const queryKeys = {
   units: {
     all: ["units"] as const,
     details: (uid: number | string) => ["units", uid] as const
+  },
+  brands: {
+    all: ["brands"] as const,
+    details: (uid: number | string) => ["brands", uid] as const
   }
   // add more as needed
 };

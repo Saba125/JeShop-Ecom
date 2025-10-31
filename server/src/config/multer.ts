@@ -1,5 +1,5 @@
 import multer from "multer";
-import { categoryStorage, productStorage, userStorage } from "./image_storage";
+import { brandStorage, categoryStorage, productStorage, userStorage } from "./image_storage";
 import path from "path";
 import fs from "fs";
 const fileFilter: multer.Options["fileFilter"] = (req, file, cb) => {
@@ -29,6 +29,13 @@ const categoryImgUploader = multer({
   },
   fileFilter,
 });
+const brandImgUploader = multer({
+  storage: brandStorage,
+  limits: {
+    fileSize: 100 * 1024 * 1024, // Max file size 100MB
+  },
+  fileFilter,
+});
 function deleteImage(file_name: string | undefined) {
   if (!file_name) return;
   const filePath = path.join("public/", file_name);
@@ -46,4 +53,4 @@ const productImageUploader = multer({
   fileFilter,
 });
 
-export { userImgUploader, categoryImgUploader, deleteImage,productImageUploader };
+export { userImgUploader, categoryImgUploader, deleteImage,productImageUploader, brandImgUploader };

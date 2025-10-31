@@ -3,7 +3,6 @@ import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { useSelector } from 'react-redux';
 import type { RootState } from './store/store';
 import AdminProducts from './pages/(store)/(admin)/products';
-import Loading from './components/common/loading';
 import ErrorElement from './error-element';
 import SettingsLayout from './pages/(store)/(settings)/layout';
 

@@ -27,6 +27,7 @@ const AddEditUnit = ({ data, isOpen, setIsOpen }: AddEditUnitProps) => {
     });
     const handleSubmit = async (values: z.infer<typeof formSchema>) => {
         if (data) {
+            editUnit({name:values.name, description: values.description, uid: data.uid})
         } else {
             addUnit({ name: values.name, description: values.description });
         }

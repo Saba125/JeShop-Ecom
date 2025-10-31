@@ -45,6 +45,14 @@ export type TGetUnit = {
     created_at:string;
 }
 
+export type TGetBrand = {
+    uid: number;
+    name: string;
+    description?: string;
+    created_at:string;
+    image?:string
+}
+
 
 export type SelectOptions = {
     label: string;

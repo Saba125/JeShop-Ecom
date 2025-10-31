@@ -1,4 +1,5 @@
 import ErrorElement from '@/error-element';
+import BrandSettings from '@/pages/(store)/(settings)/brands';
 import SettingsLayout from '@/pages/(store)/(settings)/layout';
 import { lazy } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
@@ -32,6 +33,10 @@ const AdminRoutes = () => {
                 {
                     path: 'products',
                     element: <AdminProducts />,
+                },
+                {
+                    path: 'brands',
+                    element: <BrandSettings />,
                 },
                 {
                     path: 'settings',
