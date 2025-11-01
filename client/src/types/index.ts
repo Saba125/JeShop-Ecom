@@ -59,7 +59,16 @@ export type TGetBrand = {
     created_at:string;
     image?:string
 }
-
+export type TGetSales = {
+    uid: number;
+    user_uid: number;
+    product_uid: number;
+    type: number;
+    description:string;
+    code:string;
+    is_active: number;
+    created_at:string;
+}
 
 export type SelectOptions = {
     label: string;

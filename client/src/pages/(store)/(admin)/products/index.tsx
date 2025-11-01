@@ -18,14 +18,14 @@ const AdminProducts = () => {
         {
             header: 'სახელი',
             accessor: (item) => (
-                <div className='flex items-center gap-x-3'>
-                    <img width={40} height={40} src={`${API_URL}${item.image}`} />
+                <div className="flex items-center gap-x-3">
+                    {item.image && <img width={40} height={40} src={`${API_URL}${item.image}`} />}
                     {item.name}
                 </div>
-            )
+            ),
         },
         {
-            header: 'რაოდენოობა',
+            header: 'რაოდენობა',
             accessor: 'stock',
         },
         {
@@ -38,9 +38,9 @@ const AdminProducts = () => {
         },
         {
             header: 'წონა',
-            accessor: (item) => `${item.weight} ${item.unit.name}`
+            accessor: (item) => `${item.weight} ${item.unit.name}`,
         },
-        
+
         {
             header: 'ფასი',
             accessor: (item) => `${parseFloat(item.price).toFixed(2)}₾`,

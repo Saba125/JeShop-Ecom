@@ -1,4 +1,5 @@
 import ErrorElement from '@/error-element';
+import Sales from '@/pages/(store)/(admin)/sales';
 import BrandSettings from '@/pages/(store)/(settings)/brands';
 import SettingsLayout from '@/pages/(store)/(settings)/layout';
 import { lazy } from 'react';
@@ -37,6 +38,10 @@ const AdminRoutes = () => {
                 {
                     path: 'brands',
                     element: <BrandSettings />,
+                },
+                {
+                    path: 'deals',
+                    element: <Sales />,
                 },
                 {
                     path: 'settings',

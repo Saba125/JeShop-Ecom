@@ -120,7 +120,7 @@ const AddProduct = ({ isOpen, setIsOpen, data }: AddProductProps) => {
             brand_uid: String(data?.brand.uid) || null,
             stock: String(data?.stock) || '',
             weight: data?.weight || '',
-            price: String(data?.price) || '',
+            price: parseFloat(data!.price).toFixed(2) || '',
             unit_uid: String(data?.unit.uid) || '',
         },
     });
