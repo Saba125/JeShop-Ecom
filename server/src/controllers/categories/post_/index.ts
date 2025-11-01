@@ -21,6 +21,7 @@ const createCategory = async (req: Request, res: Response) => {
   }
   const dbRes = await db.insert("category", {
     name: data.name,
+    url: data.url,
     description: data.description || "",
     image: image
   });

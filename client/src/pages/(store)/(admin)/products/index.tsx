@@ -8,6 +8,7 @@ import { useGetProducts } from '@/api/products/get';
 import Loading from '@/components/common/loading';
 import dayjs from 'dayjs';
 import { useDialog } from '@/hooks/use-dialog';
+import { API_URL } from '@/constants';
 const AdminProducts = () => {
     const { openDialog } = useDialog();
     const { isPending, data: products } = useGetProducts();
@@ -16,11 +17,20 @@ const AdminProducts = () => {
     const columns: Column<TGetProducts>[] = [
         {
             header: 'სახელი',
-            accessor: 'name',
+            accessor: (item) => (
+                <div className='flex items-center gap-x-3'>
+                    <img width={40} height={40} src={`${API_URL}${item.image}`} />
+                    {item.name}
+                </div>
+            )
         },
         {
             header: 'რაოდენოობა',
             accessor: 'stock',
+        },
+        {
+            header: 'ბრენდი',
+            accessor: (item) => item?.brand?.name,
         },
         {
             header: 'კატეგორია',
@@ -28,15 +38,12 @@ const AdminProducts = () => {
         },
         {
             header: 'წონა',
-            accessor: 'weight',
+            accessor: (item) => `${item.weight} ${item.unit.name}`
         },
-        {
-            header: 'წონის ერთეული',
-            accessor: (item) => item.unit.name
-        },
+        
         {
             header: 'ფასი',
-            accessor: 'price',
+            accessor: (item) => `${parseFloat(item.price).toFixed(2)}₾`,
         },
         {
             header: 'შექმნის თარიღი',
@@ -56,7 +63,7 @@ const AdminProducts = () => {
             label: 'Delete',
             icon: <Trash2 className="w-4 h-4" />,
             onClick: () => {
-                openDialog()
+                openDialog();
             },
             variant: 'destructive',
             separator: true,

@@ -7,6 +7,7 @@ const getProducts = async(req:Request,res:Response) => {
   const dbRes = await db.select(`
     SELECT
      p.*,
+     p.price / 100 as price,
      JSON_OBJECT(
      'uid', c.uid,
      'name', c.name,

@@ -11,9 +11,9 @@ const editCategory = async (req: Request, res: Response) => {
   const validate = validateSchema(categorySchema, body);
   const data = validate.data;
   const uid = parseInt(req.params.uid);
-  const existingCategory = await db.selectSingle("SELECT * FROM category WHERE  uid = :uid", {
-    uid
-  }) as ICategory;
+  const existingCategory = (await db.selectSingle("SELECT * FROM category WHERE  uid = :uid", {
+    uid,
+  })) as ICategory;
   if (!existingCategory) {
     return helpers.sendError(res, `კატეგორია uid-ით '${Number(data?.uid)}' ვერ მოიძებნა`);
   }
@@ -37,8 +37,9 @@ const editCategory = async (req: Request, res: Response) => {
   const dbRes = await db.update("category", {
     uid,
     name: data?.name,
+    url: data?.url,
     description: data?.description,
-    image
+    image,
   });
   if (dbRes.error) {
     return helpers.sendError(res, dbRes.error.message);

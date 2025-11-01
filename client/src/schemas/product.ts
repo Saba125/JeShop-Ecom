@@ -9,5 +9,7 @@ const formSchema = z.object({
     weight: z.string(),
     price: z.string(),
     unit_uid: z.string().min(1, 'აირჩიეთ განზომილება'),
+    brand_uid: z.string().min(1, 'აირჩიეთ ბრენდი').nullable()
+
 });
 export default formSchema;

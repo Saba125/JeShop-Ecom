@@ -35,6 +35,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useAddProduct } from '@/api/products/post';
 import { useEditProduct } from '@/api/products/put';
 import { useGetUnits } from '@/api/units/get_';
+import { useGetBrands } from '@/api/brands/get_';
 interface AddProductProps {
     isOpen: boolean;
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -53,6 +54,10 @@ const AddProduct = ({ isOpen, setIsOpen, data }: AddProductProps) => {
     } = useEditProduct();
     const { data: categories } = useGetCategories();
     const { data: units } = useGetUnits();
+    const { data: brands } = useGetBrands();
+    const [categoryOptions, setCategoryOptions] = useState<SelectOptions[]>([]);
+    const [unitOptions, setUnitOptions] = useState<SelectOptions[]>([]);
+    const [brandOptions, setBrandOptions] = useState<SelectOptions[]>([]);
     useEffect(() => {
         if (data?.image) {
             fetch(`${API_URL}${data.image}`)
@@ -72,8 +77,6 @@ const AddProduct = ({ isOpen, setIsOpen, data }: AddProductProps) => {
     }, [data]);
     const [files, setFiles] = useState<File[]>([]);
 
-    const [categoryOptions, setCategoryOptions] = useState<SelectOptions[]>([]);
-    const [unitOptions, setUnitOptions] = useState<SelectOptions[]>([]);
     useEffect(() => {
         if (categories?.length === 0) {
             return;
@@ -96,6 +99,17 @@ const AddProduct = ({ isOpen, setIsOpen, data }: AddProductProps) => {
             })) || [];
         setUnitOptions(selectOptions);
     }, [units]);
+    useEffect(() => {
+        if (brands?.length === 0) {
+            return;
+        }
+        const brandOptions: SelectOptions[] =
+            brands?.map((item) => ({
+                label: item.name,
+                value: item.uid,
+            })) || [];
+        setBrandOptions(brandOptions);
+    }, [brands]);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -103,6 +117,7 @@ const AddProduct = ({ isOpen, setIsOpen, data }: AddProductProps) => {
             description: data?.description || '',
             image: `${API_URL}${data?.image}`,
             category_uid: String(data?.category.uid) || null,
+            brand_uid: String(data?.brand.uid) || null,
             stock: String(data?.stock) || '',
             weight: data?.weight || '',
             price: String(data?.price) || '',
@@ -127,6 +142,7 @@ const AddProduct = ({ isOpen, setIsOpen, data }: AddProductProps) => {
         formData.append('weight', values?.weight || '');
         formData.append('price', values.price);
         formData.append('unit_uid', values.unit_uid);
+        formData.append('brand_uid', values.unit_uid);
         if (data?.uid) {
             editProduct(formData);
         } else {
@@ -216,25 +232,46 @@ const AddProduct = ({ isOpen, setIsOpen, data }: AddProductProps) => {
                                 </FormItem>
                             )}
                         />
-                        <FormField
-                            control={form.control}
-                            name="category_uid"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>კატეგორია</FormLabel>
-                                    <FormControl>
-                                        <CSelect
-                                            value={String(field.value)}
-                                            onChange={field.onChange}
-                                            data={categoryOptions}
-                                            label="კატეგორია..."
-                                            placeholder="აირჩიეთ კატეგორია..."
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        <div className="grid grid-cols-1 gap-x-3 md:grid-cols-2">
+                            <FormField
+                                control={form.control}
+                                name="category_uid"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>კატეგორია</FormLabel>
+                                        <FormControl>
+                                            <CSelect
+                                                value={String(field.value)}
+                                                onChange={field.onChange}
+                                                data={categoryOptions}
+                                                label="კატეგორია..."
+                                                placeholder="აირჩიეთ კატეგორია..."
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="brand_uid"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>ბრენდი</FormLabel>
+                                        <FormControl>
+                                            <CSelect
+                                                value={String(field.value)}
+                                                onChange={field.onChange}
+                                                data={brandOptions}
+                                                label="ბრენდი..."
+                                                placeholder="აირჩიეთ ბრენდი..."
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
                         <div className="grid grid-cols-1 gap-x-3 md:grid-cols-2">
                             <FormField
                                 control={form.control}

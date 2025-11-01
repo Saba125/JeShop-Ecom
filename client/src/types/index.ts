@@ -3,7 +3,8 @@ export type Category = {
     name: string;
     description: string;
     image?: string;
-    created_at?:string
+    created_at?:string;
+    url:string
 };
 export type TAddProduct = {
     uid?: number;
@@ -34,6 +35,12 @@ export type TGetProducts = {
     unit: {
         uid: number;
         name: string;
+        description: string | null
+    }
+    brand: {
+        uid: number;
+        name: string;
+        image: string;
         description: string | null
     }
     created_at: string;

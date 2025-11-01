@@ -43,6 +43,7 @@ const AddCategory = ({ isOpen, setIsOpen, data }: AddCategoryProps) => {
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: data?.name || '',
+            url: data?.url || "",
             description: data?.description || '',
             image: `${API_URL}${data?.image}`,
         },
@@ -70,10 +71,11 @@ const AddCategory = ({ isOpen, setIsOpen, data }: AddCategoryProps) => {
         }
     }, [data]);
     const handleSubmit = (dataForm: z.infer<typeof formSchema>) => {
+        console.log(`i clicked`)
         const formData = new FormData();
-       
         formData.append('name', dataForm.name);
         formData.append('description', dataForm.description || '');
+        formData.append('url', dataForm.url || '');
         files.forEach((file) => {
             formData.append('image', file);
         });
@@ -83,15 +85,13 @@ const AddCategory = ({ isOpen, setIsOpen, data }: AddCategoryProps) => {
             addCategory(formData);
         }
     };
-    if (isAddSuccess || isEditSuccess) {
-        setIsOpen(false);
-    }
     return (
         <CDialog
             open={isOpen}
             onOpenChange={setIsOpen}
             title={data ? `რედაქტირება '${data.name}'` : 'დაამატეთ ახალი კატეგორია'}
             loading={isAddPending || isEditPending}
+            onSubmit={form.handleSubmit(handleSubmit)}
             children={
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-5">
@@ -170,6 +170,19 @@ const AddCategory = ({ isOpen, setIsOpen, data }: AddCategoryProps) => {
                         />
                         <FormField
                             control={form.control}
+                            name="url"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>მისამართი</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
                             name="description"
                             render={({ field }) => (
                                 <FormItem>
@@ -184,7 +197,7 @@ const AddCategory = ({ isOpen, setIsOpen, data }: AddCategoryProps) => {
                     </form>
                 </Form>
             }
-            onSubmit={form.handleSubmit(handleSubmit)}
+            
         />
     );
 };

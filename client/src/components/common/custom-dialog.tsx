@@ -32,6 +32,7 @@ const CDialog = ({
     width,
     loading,
 }: CDialogProps) => {
+    console.log(onSubmit)
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className={clsx('sm:max-w-[500px]', width && `sm:max-w-[${width}]`)}>
@@ -47,6 +48,7 @@ const CDialog = ({
                     <CButton
                         type="submit"
                         onClick={() => {
+                            console.log(`i am called`)
                             onOpenChange(false)
                             onSubmit?.();
                         }}

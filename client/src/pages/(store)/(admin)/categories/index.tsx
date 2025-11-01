@@ -18,6 +18,10 @@ const AdminCategories = () => {
             accessor: 'name',
         },
         {
+            header: 'მისამართი',
+            accessor: 'url',
+        },
+        {
             header: 'აღწერა',
             accessor: 'description',
         },

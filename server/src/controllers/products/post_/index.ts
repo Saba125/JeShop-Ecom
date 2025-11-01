@@ -25,10 +25,11 @@ const addProduct = async (req: Request, res: Response) => {
     description: data.description,
     image,
     stock: parseInt(data.stock!),
-    category_uid: parseInt(data.category_uid!),
+    category_uid: data.category_uid,
     weight: parseInt(data.weight),
-    price: parseInt(data.weight) * 100,
-    unit_uid: parseInt(data.unit_uid)
+    price: parseInt(data.price) * 100,
+    unit_uid: data.unit_uid,
+    brand_uid: data.brand_uid
   });
   if (dbRes.error) {
     return helpers.sendError(res, dbRes.error.message);

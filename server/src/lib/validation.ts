@@ -32,6 +32,7 @@ export const loginSchema = z.object({
 export const categorySchema = z.object({
   uid: z.number().optional(),
   name: z.string().min(3, "სახელი უნდა შეიცავდეს მინიმუმ 3 სიმბოლოს").max(50, "სახელი უნდა შეიცავდეს მაქსიმუმ 50 სიმბოლოს"),
+  url: z.string().min(3, "მისამართი უნდა შეიცავდეს მინიმუმ 3 სიმბოლოს").max(50, "მისამართი უნდა შეიცავდეს მაქსიმუმ 50 სიმბოლოს"),
   description: z.string().max(255, "აღწერა უნდა შეიცავდეს მაქსიმუმ 255 სიმბოლოს").optional(),
 });
 export const productSchema = z.object({
@@ -42,7 +43,9 @@ export const productSchema = z.object({
     category_uid: z.string().nullable().optional(),
     weight: z.string(),
     price: z.string(),
-    unit_uid: z.string().min(1, "აირჩიეთ განზომილება")
+    unit_uid: z.string().min(1, "აირჩიეთ განზომილება"),
+    brand_uid: z.string().min(1, "აირჩიეთ ბრენდი")
+
 });
 export const unitSchema = z.object({
     uid: z.string().optional(),
