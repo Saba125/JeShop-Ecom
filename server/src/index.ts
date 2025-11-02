@@ -46,7 +46,7 @@ httpServer.listen(port, async() => {
   try {
     const dbTools = await getDbTools();
     logger.info(`SERVER RUNNING ON ${port}`);
-    const res = dbTools.select("select * from test");
+    const res = await dbTools.select("select * from test");
     console.log(res);
     app.locals.db = dbTools;
   } catch (error) {
