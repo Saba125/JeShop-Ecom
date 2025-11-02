@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 interface Config {
+  APP_PORT:number;
   DB_PORT: number;
   DB_HOST: string;
   DB_USER: string;
@@ -18,6 +19,7 @@ interface Config {
 }
 
 const config: Config = {
+  APP_PORT: Number(process.env.APP_PORT) || 5000,
   DB_PORT: Number(process.env.DB_PORT) || 3306,
   DB_HOST: process.env.DB_HOST || "127.0.0.1",
   DB_USER: process.env.DB_USER || "root",

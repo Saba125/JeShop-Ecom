@@ -7,5 +7,6 @@ const pool: mysql2.Pool = mysql2.createPool({
   password: config.DB_PASSWORD,
   waitForConnections: true,
   connectionLimit: 10,
+  connectTimeout: 10000, // 10s timeout
 });
 export default pool;

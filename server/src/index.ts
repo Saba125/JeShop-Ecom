@@ -12,7 +12,7 @@ import { getDbTools } from "./db/db_tools";
 dotenv.config();
 const app = express();
 const httpServer = http.createServer(app);
-const port = config.DB_PORT;
+const port = config.APP_PORT;
 const logger = createLogger("server");
 // Middlewares
 app.use(express.json({ limit: "200mb" }));

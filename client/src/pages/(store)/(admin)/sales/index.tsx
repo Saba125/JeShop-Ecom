@@ -1,6 +1,7 @@
 import { CButton } from '@/components/common/custom-button';
 import { PlusCircle } from 'lucide-react';
 import { useState } from 'react';
+import AddEditSale from './add_edit';
 
 const Sales = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -13,7 +14,7 @@ const Sales = () => {
                     text="ფასდაკლების დამატება"
                 />
             </div>
-            {is}
+            {isOpen && <AddEditSale data={null} isOpen={isOpen} setIsOpen={setIsOpen} />}
         </>
     );
 };

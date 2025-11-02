@@ -27,6 +27,11 @@ const AddEditSale = ({ data, isOpen, setIsOpen }: AddEditSaleProps) => {
             open={isOpen}
             onOpenChange={setIsOpen}
             title={data ? `რედაქტირება '${data.code}'` : 'დაამატეთ ახალი ფასდაკლება'}
+            children={
+                <div>
+                    Hello world
+                </div>
+            }
         />
     );
 };
