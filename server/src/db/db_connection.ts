@@ -1,5 +1,6 @@
 import mysql2 from "mysql2/promise";
 import config from "../lib/config";
+console.log(config);
 const pool: mysql2.Pool = mysql2.createPool({
   host: config.DB_HOST,
   database: config.DB_DATABASE,
