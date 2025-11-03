@@ -2,18 +2,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '@/store/store';
-interface UserState {
-    uid: number | null;
-    username: string;
-    email: string;
-    phone: string;
-    user_type: number;
-    is_active: number;
-    email_verified_date: string;
-    create_date: string;
-}
+import type { User } from '@/types';
 
-const initialState: UserState = {
+
+const initialState: User = {
     uid: null,
     username: '',
     email: '',
@@ -28,7 +20,7 @@ export const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
-       setUser: (state: UserState, action: PayloadAction<UserState>) => {
+       setUser: (state: User, action: PayloadAction<User>) => {
             state.uid = action.payload.uid;
             state.username = action.payload.username;
             state.email = action.payload.email;
@@ -38,7 +30,7 @@ export const userSlice = createSlice({
             state.email_verified_date = action.payload.email_verified_date;
             state.create_date = action.payload.create_date;
        },
-       clearUser: (state: UserState) => {
+       clearUser: (state: User) => {
             state.uid = null;
             state.username = '';
             state.email = '';

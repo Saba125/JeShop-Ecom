@@ -1,3 +1,4 @@
+import { useGetUsers } from '@/api/users/get_all';
 import CDialog from '@/components/common/custom-dialog';
 import formSchema from '@/schemas/sales';
 import type { TGetSales } from '@/types';
@@ -11,6 +12,8 @@ interface AddEditSaleProps {
     data: TGetSales | null;
 }
 const AddEditSale = ({ data, isOpen, setIsOpen }: AddEditSaleProps) => {
+    const {data: users} = useGetUsers()
+    console.log(users)
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {

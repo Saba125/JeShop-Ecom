@@ -1,4 +1,5 @@
 import { validateRefreshToken } from "../tokens/refresh_token";
+import getUsers from "./get_all";
 import { checkUserInfo } from "./info";
 import handleLogOut from "./log_out";
 import { login } from "./login";
@@ -10,5 +11,6 @@ const UsersRes = {
   validateRefreshToken,
   checkUserInfo,
   handleLogOut,
+  getUsers
 };
 export default UsersRes;

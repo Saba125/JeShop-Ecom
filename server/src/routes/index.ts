@@ -13,6 +13,7 @@ Router.post("/login", UsersRes.login);
 Router.post("/logout", UsersRes.handleLogOut);
 Router.post("/refresh_token", UsersRes.validateRefreshToken);
 Router.get("/checkUser", authMiddleware, UsersRes.checkUserInfo);
+Router.get("/users", authMiddleware, UsersRes.getUsers);
 // Category
 Router.put(
   "/category/:uid",
