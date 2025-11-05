@@ -8,6 +8,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import getAvatarUrl from '@/lib/get_avatar_url';
 import type { RootState } from '@/store/store';
 import { User, Settings, Heart, ShoppingBag, LogOut } from 'lucide-react';
 import { useSelector } from 'react-redux';
@@ -36,11 +37,7 @@ export const CAvatar = ({ onLogout }: CAvatarProps) => {
         return username.slice(0, 2).toUpperCase();
     };
 
-    const getAvatarUrl = () => {
-        // if (user?.avatar) return user.avatar;
-        const seed = user?.username || user?.email || 'default';
-        return `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`;
-    };
+ 
 
     const handleLogOut = () => {
         logout();
@@ -50,7 +47,7 @@ export const CAvatar = ({ onLogout }: CAvatarProps) => {
         <DropdownMenu>
             <DropdownMenuTrigger className="cursor-pointer outline-none" asChild>
                 <Avatar className="w-10 h-10 border-2 border-primary/20 hover:border-primary/40 transition-colors">
-                    <AvatarImage src={getAvatarUrl()} alt={user?.username || 'User'} />
+                    <AvatarImage src={getAvatarUrl(user)} alt={user?.username || 'User'} />
                     <AvatarFallback className="bg-primary/10 text-primary font-semibold">
                         {getInitials(user?.username || user?.email || 'User')}
                     </AvatarFallback>

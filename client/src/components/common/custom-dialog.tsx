@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dialog';
 import clsx from 'clsx';
 import { CButton } from './custom-button';
-
+import { icons, type LucideIcon } from 'lucide-react';
 interface CDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
@@ -20,6 +20,13 @@ interface CDialogProps {
     children?: React.ReactNode;
     onSubmit?: () => void;
     loading?: boolean;
+    extraButton?: {
+        render: boolean;
+        text: string;
+        onClick: () => void;
+        variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost';
+        icon: LucideIcon
+    };
 }
 
 const CDialog = ({
@@ -31,8 +38,8 @@ const CDialog = ({
     onSubmit,
     width,
     loading,
+    extraButton
 }: CDialogProps) => {
-    console.log(onSubmit)
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className={clsx('sm:max-w-[500px]', width && `sm:max-w-[${width}]`)}>
@@ -45,11 +52,20 @@ const CDialog = ({
                     <DialogClose asChild>
                         <CButton variant="outline" text="გაუქმება" />
                     </DialogClose>
+                    {extraButton?.render && (
+                        <CButton
+                            type="button"
+                            onClick={extraButton.onClick}
+                            text={extraButton.text}
+                            variant={extraButton.variant}
+                            icon={extraButton.icon}
+                        />
+                    )}
                     <CButton
                         type="submit"
                         onClick={() => {
-                            console.log(`i am called`)
-                            onOpenChange(false)
+                            console.log(`i am called`);
+                            onOpenChange(false);
                             onSubmit?.();
                         }}
                         loading={loading}

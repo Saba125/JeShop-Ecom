@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 export type Category = {
     uid: number;
     name: string;
@@ -81,6 +83,6 @@ export type User = {
 };
 
 export type SelectOptions = {
-    label: string;
-    value: number;
+    label: string | JSX.Element;
+    value: number | null;
 };

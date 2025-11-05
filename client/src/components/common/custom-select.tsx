@@ -7,9 +7,10 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import type { JSX } from 'react';
 interface Data {
-    label: string;
-    value: number;
+    label: string | JSX.Element;
+    value: number | null;
 }
 interface CSelectProps {
     placeholder?: string;

@@ -7,7 +7,7 @@ export const useGetUsers = () => {
     return useQuery<User[]>({
         queryKey: queryKeys.users.all,
         queryFn: async () => {
-            const { data } = await Api.get('users');
+            const { data } = await Api.post('/users');
             return data as User[];
         },
     });

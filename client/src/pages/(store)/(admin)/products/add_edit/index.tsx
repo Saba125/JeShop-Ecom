@@ -120,7 +120,7 @@ const AddProduct = ({ isOpen, setIsOpen, data }: AddProductProps) => {
             brand_uid: String(data?.brand.uid) || null,
             stock: String(data?.stock) || '',
             weight: data?.weight || '',
-            price: parseFloat(data!.price).toFixed(2) || '',
+            price: data?.price || '',
             unit_uid: String(data?.unit.uid) || '',
         },
     });
@@ -142,7 +142,7 @@ const AddProduct = ({ isOpen, setIsOpen, data }: AddProductProps) => {
         formData.append('weight', values?.weight || '');
         formData.append('price', values.price);
         formData.append('unit_uid', values.unit_uid);
-        formData.append('brand_uid', values.unit_uid);
+        formData.append('brand_uid', values.brand_uid!);
         if (data?.uid) {
             editProduct(formData);
         } else {
