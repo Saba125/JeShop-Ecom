@@ -7,7 +7,7 @@ const Sales = () => {
     const [isOpen, setIsOpen] = useState(false);
     return (
         <>
-            <div className="flex justify-end">
+            <div className="flex justify-end mb-3">
                 <CButton
                     onClick={() => setIsOpen(true)}
                     icon={PlusCircle}

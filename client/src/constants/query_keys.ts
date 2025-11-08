@@ -19,6 +19,10 @@ export const queryKeys = {
   brands: {
     all: ["brands"] as const,
     details: (uid: number | string) => ["brands", uid] as const
+  },
+  sales: {
+    all: ["sales"] as const,
+    details: (uid: number | string) => ["sales", uid] as const
   }
   // add more as needed
 };

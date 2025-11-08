@@ -58,7 +58,7 @@ const BrandSettings = () => {
     }
     return (
         <>
-            <div className="flex justify-end">
+            <div className="flex justify-end mb-3">
                 <CButton
                     icon={PlusCircle}
                     text="ბრენდის დამატება"

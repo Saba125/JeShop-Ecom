@@ -1,4 +1,4 @@
-import type { JSX } from "react";
+import type { JSX } from 'react';
 
 export type Category = {
     uid: number;
@@ -80,6 +80,20 @@ export type User = {
     is_active: number;
     email_verified_date: string;
     create_date: string;
+};
+
+export type SaleItems = {
+    amount: string;
+    product_uid: number;
+    product_image: string | null;
+    product_name: string;
+    user_uid: number | null;
+    type: number;
+    old_price: number;
+    new_price: number;
+    description: string;
+    code: string;
+    is_active: number;
 };
 
 export type SelectOptions = {

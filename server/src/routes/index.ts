@@ -6,6 +6,7 @@ import CategoryRes from "../controllers/categories/export";
 import ProductRes from "../controllers/products/export";
 import UnitRes from "../controllers/units/export";
 import BrandRes from "../controllers/brands/export";
+import SalesRes from "../controllers/sales/export";
 const Router = express.Router();
 // Auth & Users
 Router.post("/register", UsersRes.registerUser);
@@ -55,5 +56,6 @@ Router.post("/brand", authMiddleware, brandImgUploader.single("image"), BrandRes
 Router.put("/brand", authMiddleware, brandImgUploader.single("image"), BrandRes.updateBrand);
 Router.post("/brands/all", authMiddleware, BrandRes.getBrands);
 Router.delete("/brand/:uid", authMiddleware, BrandRes.deleteBrand);
-
+// Sales
+Router.post("/sale", authMiddleware, SalesRes.addSale);
 export default Router;

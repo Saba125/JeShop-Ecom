@@ -1,7 +1,7 @@
 import { useGetUsers } from '@/api/users/get_all';
 import CDialog from '@/components/common/custom-dialog';
 import formSchema from '@/schemas/sales';
-import type { TGetSales } from '@/types';
+import type { SaleItems, TGetSales } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import type z from 'zod';
@@ -31,6 +31,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { FULL_SCREEN_MODAL } from '@/constants/sizes';
 import { CButton } from '@/components/common/custom-button';
+import { useAddSale } from '@/api/sales/post_';
 
 interface AddEditSaleProps {
     isOpen: boolean;
@@ -38,22 +39,13 @@ interface AddEditSaleProps {
     data: TGetSales | null;
 }
 
-interface AddedItems {
-    product_uid: number;
-    product_image: string | null;
-    product_name: string;
-    user_uid: number | null;
-    sale_type: number;
-    old_price: number;
-    new_price: number;
-}
-
 const AddEditSale = ({ data, isOpen, setIsOpen }: AddEditSaleProps) => {
     const { data: users } = useGetUsers();
     const { data: products } = useGetProducts();
+    const { mutate: addSale, isPending: isAddPending, isSuccess: isAddSuccess } = useAddSale();
     const [userOptions, setUserOptions] = useState<SelectOptions[]>([]);
     const [productOptions, setProductOptions] = useState<SelectOptions[]>([]);
-    const [addedItems, setAddedItems] = useState<AddedItems[]>([]);
+    const [addedItems, setAddedItems] = useState<SaleItems[]>([]);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -103,7 +95,9 @@ const AddEditSale = ({ data, isOpen, setIsOpen }: AddEditSaleProps) => {
         setProductOptions(selectOptions);
     }, [products]);
 
-    const handleSubmit = (values: z.infer<typeof formSchema>) => {};
+    const handleSubmit = async () => {
+        addSale(addedItems);
+    };
 
     const selectedType = form.watch('type');
 
@@ -143,22 +137,27 @@ const AddEditSale = ({ data, isOpen, setIsOpen }: AddEditSaleProps) => {
             new_price = parseInt(addedProduct!.price)! - parseInt(values.amount);
         }
 
-        const newItem: AddedItems = {
+        const newItem: SaleItems = {
+            amount: values.amount,
             product_name: addedProduct?.name!,
             new_price,
             old_price: parseInt(addedProduct?.price || ''),
             product_image: addedProduct?.image || null,
             product_uid: addedProduct!.uid,
-            sale_type: parseInt(selectedType),
+            type: parseInt(selectedType),
             user_uid: addedUser.uid || null,
+            description: values.description || '',
+            code: values.code,
+            is_active: values.is_active,
         };
 
         setAddedItems((prev) => [...prev, newItem]);
-        form.reset()
+        form.reset();
+        form.setValue('code', values.code);
     };
-
-    console.log(addedItems);
-
+    if (isAddSuccess) {
+        setIsOpen(false);
+    }
     return (
         <CDialog
             width={FULL_SCREEN_MODAL}
@@ -172,6 +171,7 @@ const AddEditSale = ({ data, isOpen, setIsOpen }: AddEditSaleProps) => {
                 icon: PlusCircle,
                 onClick: handleAddItem,
             }}
+            onSubmit={handleSubmit}
             children={
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(handleSubmit)}>
@@ -317,7 +317,7 @@ const AddEditSale = ({ data, isOpen, setIsOpen }: AddEditSaleProps) => {
                                             <div className="flex flex-col items-center justify-center h-full text-center">
                                                 <Tag className="w-16 h-16 text-slate-300 dark:text-slate-700 mb-4" />
                                                 <p className="text-slate-500 dark:text-slate-400 text-sm">
-                                                    ჯერ არ დაამატებულა ფასდაკლება
+                                                    ჯერ არ დამატებულა ფასდაკლება
                                                 </p>
                                                 <p className="text-slate-400 dark:text-slate-500 text-xs mt-1">
                                                     შეავსეთ ფორმა და დააჭირეთ "დამატება" ღილაკს
@@ -395,7 +395,7 @@ const AddEditSale = ({ data, isOpen, setIsOpen }: AddEditSaleProps) => {
                                                                         variant="outline"
                                                                         className="text-xs px-1.5 py-0 h-5"
                                                                     >
-                                                                        {item.sale_type === 1
+                                                                        {item.type === 1
                                                                             ? 'პროცენტული'
                                                                             : 'ფიქსირებული'}
                                                                     </Badge>

@@ -25,7 +25,7 @@ interface CDialogProps {
         text: string;
         onClick: () => void;
         variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost';
-        icon: LucideIcon
+        icon: LucideIcon;
     };
 }
 
@@ -38,7 +38,7 @@ const CDialog = ({
     onSubmit,
     width,
     loading,
-    extraButton
+    extraButton,
 }: CDialogProps) => {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -64,9 +64,7 @@ const CDialog = ({
                     <CButton
                         type="submit"
                         onClick={() => {
-                            console.log(`i am called`);
-                            onOpenChange(false);
-                            onSubmit?.();
+                            if (onSubmit) onSubmit(); 
                         }}
                         loading={loading}
                         text="შენახვა"
