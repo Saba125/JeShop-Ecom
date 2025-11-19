@@ -27,7 +27,9 @@ export type TGetProducts = {
     price: string;
     image?: string | null;
     description?: string | null;
-    stock?: number | undefined;
+    stock: number;
+    sale?: number;
+    sale_type?: number
     category: {
         uid: number;
         name: string;
@@ -53,7 +55,11 @@ export type TGetUnit = {
     description?: string;
     created_at: string;
 };
-
+export type AddSales = {
+    code: string;
+    description: string | null;
+    items: SaleItems[];
+};
 export type TGetBrand = {
     uid: number;
     name: string;
@@ -63,13 +69,11 @@ export type TGetBrand = {
 };
 export type TGetSales = {
     uid: number;
-    user_uid: number;
-    product_uid: number;
-    type: number;
-    description: string;
     code: string;
-    is_active: number;
+    description?: string;
     created_at: string;
+    users: User[];
+    products: TGetProducts[];
 };
 export type User = {
     uid: number | null;

@@ -19,7 +19,7 @@ interface CAvatarProps {
 }
 
 export const CAvatar = ({ onLogout }: CAvatarProps) => {
-    const {mutate: logout} = useLogOut();
+    const { mutate: logout } = useLogOut();
     const navigate = useNavigate();
     const user = useSelector((state: RootState) => state.user);
     const getInitials = (username: string) => {
@@ -37,59 +37,59 @@ export const CAvatar = ({ onLogout }: CAvatarProps) => {
         return username.slice(0, 2).toUpperCase();
     };
 
- 
-
     const handleLogOut = () => {
         logout();
-    }
+    };
 
     return (
-        <DropdownMenu>
-            <DropdownMenuTrigger className="cursor-pointer outline-none" asChild>
-                <Avatar className="w-10 h-10 border-2 border-primary/20 hover:border-primary/40 transition-colors">
-                    <AvatarImage src={getAvatarUrl(user)} alt={user?.username || 'User'} />
-                    <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                        {getInitials(user?.username || user?.email || 'User')}
-                    </AvatarFallback>
-                </Avatar>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56" align="end">
-                <DropdownMenuLabel>
-                    <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium leading-none">
-                            {user?.username || 'მომხმარებელი'}
-                        </p>
-                        <p className="text-xs leading-none text-muted-foreground">
-                            {user?.email || ''}
-                        </p>
-                    </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => navigate('/profile')}>
-                    <User className="mr-2 h-4 w-4" />
-                    <span>პროფილი</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate('/orders')}>
-                    <ShoppingBag className="mr-2 h-4 w-4" />
-                    <span>ჩემი შეკვეთები</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate('/wishlist')}>
-                    <Heart className="mr-2 h-4 w-4" />
-                    <span>სურვილების სია</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate('/settings')}>
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>პარამეტრები</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                    onClick={handleLogOut}
-                    className="text-red-600 focus:text-red-600 focus:bg-red-50"
-                >
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>გასვლა</span>
-                </DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
+        <div>
+            <DropdownMenu modal={false}>
+                <DropdownMenuTrigger className="cursor-pointer outline-none" asChild>
+                    <Avatar className="w-10 h-10 border-2 border-primary/20 hover:border-primary/40 transition-colors">
+                        <AvatarImage src={getAvatarUrl(user)} alt={user?.username || 'User'} />
+                        <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                            {getInitials(user?.username || user?.email || 'User')}
+                        </AvatarFallback>
+                    </Avatar>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end">
+                    <DropdownMenuLabel>
+                        <div className="flex flex-col space-y-1">
+                            <p className="text-sm font-medium leading-none">
+                                {user?.username || 'მომხმარებელი'}
+                            </p>
+                            <p className="text-xs leading-none text-muted-foreground">
+                                {user?.email || ''}
+                            </p>
+                        </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => navigate('/profile')}>
+                        <User className="mr-2 h-4 w-4" />
+                        <span>პროფილი</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/orders')}>
+                        <ShoppingBag className="mr-2 h-4 w-4" />
+                        <span>ჩემი შეკვეთები</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/wishlist')}>
+                        <Heart className="mr-2 h-4 w-4" />
+                        <span>სურვილების სია</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/settings')}>
+                        <Settings className="mr-2 h-4 w-4" />
+                        <span>პარამეტრები</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                        onClick={handleLogOut}
+                        className="text-red-600 focus:text-red-600 focus:bg-red-50"
+                    >
+                        <LogOut className="mr-2 h-4 w-4" />
+                        <span>გასვლა</span>
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+        </div>
     );
 };

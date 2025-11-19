@@ -37,7 +37,7 @@ const AdminCategories = () => {
 
     const contextMenuActions: ContextMenuAction<Category>[] = [
         {
-            label: 'Edit',
+            label: 'რედაქტირება',
             icon: <EditIcon className="w-4 h-4" />,
             onClick: (category) => {
                 setIsOpen(true);
@@ -45,7 +45,7 @@ const AdminCategories = () => {
             },
         },
         {
-            label: 'Delete',
+            label: 'წაშლა',
             icon: <Trash2 className="w-4 h-4" />,
             onClick: (category) => deleteCategory(category.uid) ,
             variant: 'destructive',

@@ -6,23 +6,29 @@ const addSale = async (req: Request, res: Response) => {
   const db: IDbTools = req.app.locals.db;
   const body = req.body;
   const checkCode = await db.selectSingle("SELECT * FROM sales WHERE code = :code", {
-    code: body[0]?.code,
+    code: body.code,
   });
   if (checkCode) {
     return helpers.sendError(res, "ფასდაკლება მსგავსი კოდით უკვე არსებობს");
   }
-  for (const item of body) {
-    const dbRes = await db.insert("sales", {
+  const dbRes = await db.insert("sales", {
+    code: body.code,
+    description: body.description
+  });
+  if (dbRes.error) {
+    return helpers.sendError(res, dbRes.error.message);
+  }
+  for (const item of body.items) {
+    const dbRes1 = await db.insert("sales_items", {
+      sale_uid: dbRes.uid,
       user_uid: item.user_uid,
       product_uid: item.product_uid,
       amount: item.amount,
       type: item.type,
-      description: item.description || "",
-      code: item.code,
       is_active: 1,
     });
-    if (dbRes.error) {
-      return helpers.sendError(res, dbRes.error.message);
+    if (dbRes1.error) {
+      return helpers.sendError(res, dbRes1.error.message);
     }
   }
   helpers.sendSuccess(res, "ფასდაკლება წარმატებით დაემატა");

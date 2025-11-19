@@ -7,7 +7,6 @@ const Api = axios.create({
   withCredentials: true,
 });
 
-console.log(`${API_URL}api`)
 // Add token before every request
 Api.interceptors.request.use((config) => {
   const token = localStorage.getItem('accessToken');

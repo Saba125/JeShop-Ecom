@@ -58,4 +58,6 @@ Router.post("/brands/all", authMiddleware, BrandRes.getBrands);
 Router.delete("/brand/:uid", authMiddleware, BrandRes.deleteBrand);
 // Sales
 Router.post("/sale", authMiddleware, SalesRes.addSale);
+Router.post("/sales/all", authMiddleware, SalesRes.getSales);
+
 export default Router;

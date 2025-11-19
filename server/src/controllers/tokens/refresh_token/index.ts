@@ -5,14 +5,13 @@ import config from "../../../lib/config";
 
 export const validateRefreshToken = (req: Request, res: Response) => {
   const token = req.cookies.refreshToken;
-
   if (!token) {
     return res.status(401).json({
       success: false,
       error: "Refresh token not found"
     });
   }
-
+  console.log(`i am here`);
   try {
     const payload: any = jwt.verify(token, config.JWT_SECRET);
 
@@ -30,9 +29,10 @@ export const validateRefreshToken = (req: Request, res: Response) => {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    return res.status(200).json({
-      success: true,
-      accessToken
+    helpers.sendSuccess(res, {
+      data: {
+        accessToken
+      }
     });
   } catch (error: any) {
     // Clear invalid refresh token

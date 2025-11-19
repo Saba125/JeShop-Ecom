@@ -1,7 +1,7 @@
 import { useGetUsers } from '@/api/users/get_all';
 import CDialog from '@/components/common/custom-dialog';
 import formSchema from '@/schemas/sales';
-import type { SaleItems, TGetSales } from '@/types';
+import type { AddSales, SaleItems, TGetSales } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import type z from 'zod';
@@ -50,12 +50,12 @@ const AddEditSale = ({ data, isOpen, setIsOpen }: AddEditSaleProps) => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            description: data?.description || '',
+            description:'',
             code: data?.code || '',
-            is_active: data?.is_active || 1,
-            product_uid: String(data?.product_uid) || '0',
-            user_uid: String(data?.user_uid) || '0',
-            type: String(data?.type) || '1',
+            is_active:  1,
+            product_uid:  '0',
+            user_uid: '0',
+            type:  '1',
             amount: '',
         },
     });
@@ -85,7 +85,7 @@ const AddEditSale = ({ data, isOpen, setIsOpen }: AddEditSaleProps) => {
                         <span>
                             {item.name} -{' '}
                             <span className="text-green-500">
-                                {parseFloat(item.price).toFixed(2)}₾
+                                {parseFloat(item.price)?.toFixed(2)}₾
                             </span>
                         </span>
                     </div>
@@ -96,7 +96,17 @@ const AddEditSale = ({ data, isOpen, setIsOpen }: AddEditSaleProps) => {
     }, [products]);
 
     const handleSubmit = async () => {
-        addSale(addedItems);
+        const values: z.infer<typeof formSchema> = form.getValues();
+        if (addedItems.length === 0) {
+            toast.error('დაამატეთ ფასდაკლება!');
+            return;
+        }
+        const data: AddSales = {
+            code: values!.code,
+            description: values?.description || null,
+            items: addedItems,
+        };
+        addSale(data);
     };
 
     const selectedType = form.watch('type');

@@ -26,7 +26,13 @@ const AdminProducts = () => {
         },
         {
             header: 'რაოდენობა',
-            accessor: 'stock',
+            accessor: (item) => {
+                let color;
+                if (item.stock < 0 || item.stock === 0) {
+                    color = 'red';
+                }
+                return <span style={{color}}>{item.stock}</span>;
+            },
         },
         {
             header: 'ბრენდი',
@@ -43,7 +49,7 @@ const AdminProducts = () => {
 
         {
             header: 'ფასი',
-            accessor: (item) => `${parseFloat(item.price).toFixed(2)}₾`,
+            accessor: (item) => `${item.price}₾`,
         },
         {
             header: 'შექმნის თარიღი',
@@ -52,7 +58,7 @@ const AdminProducts = () => {
     ];
     const contextMenuActions: ContextMenuAction<TGetProducts>[] = [
         {
-            label: 'Edit',
+            label: 'რედაქტირება',
             icon: <EditIcon className="w-4 h-4" />,
             onClick: (product) => {
                 setIsOpen(true);
@@ -60,7 +66,7 @@ const AdminProducts = () => {
             },
         },
         {
-            label: 'Delete',
+            label: 'წაშლა',
             icon: <Trash2 className="w-4 h-4" />,
             onClick: () => {
                 openDialog();

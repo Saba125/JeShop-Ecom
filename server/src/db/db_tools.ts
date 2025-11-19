@@ -3,7 +3,16 @@ import { PoolConnection } from "mysql2/promise";
 import { IDbResponse } from "../interfaces/db";
 import { IUser } from "../interfaces/user";
 import pool from "./db_connection";
-export type TTableNames = "sales"  | "brands" | "units" |"products" | "users" | "user_logs" | "email_notifications" | "category"
+export type TTableNames =
+  | "sales"
+  | "sales_items"
+  | "brands"
+  | "units"
+  | "products"
+  | "users"
+  | "user_logs"
+  | "email_notifications"
+  | "category";
 async function getConnection(): Promise<PoolConnection | undefined> {
   let conn: PoolConnection | undefined;
 
@@ -40,40 +49,29 @@ function parseSqlQuery(query: string) {
 }
 
 export interface IDbTools {
-  connection: PoolConnection | undefined
-  release: () => void
+  connection: PoolConnection | undefined;
+  release: () => void;
 
-  beginTransaction: () => void
-  commit: () => void
-  rollback: () => void
+  beginTransaction: () => void;
+  commit: () => void;
+  rollback: () => void;
 
-  select: (query: string, params?: any) => Promise<IDbResponse>
-  selectSingle: (query: string, params?: any) => Promise<unknown | null>
+  select: (query: string, params?: any) => Promise<IDbResponse>;
+  selectSingle: (query: string, params?: any) => Promise<unknown | null>;
 
-  insert: (table_name: TTableNames, params: any) => Promise<IDbResponse>
-  insert_or_update: (
-    table_name: TTableNames,
-    params: any
-  ) => Promise<IDbResponse>
-  getUserByEmail: (email: string) => Promise<IUser | null>
-  getUserByUid: (uid: number) => Promise<IUser | null>
+  insert: (table_name: TTableNames, params: any) => Promise<IDbResponse>;
+  insert_or_update: (table_name: TTableNames, params: any) => Promise<IDbResponse>;
+  getUserByEmail: (email: string) => Promise<IUser | null>;
+  getUserByUid: (uid: number) => Promise<IUser | null>;
 
-  insert_with_query: (
-    query: string,
-    params?: any,
-    table_name?: string
-  ) => Promise<IDbResponse>
+  insert_with_query: (query: string, params?: any, table_name?: string) => Promise<IDbResponse>;
 
-  update: (
-    table_name: TTableNames,
-    params: any,
-    where?: string
-  ) => Promise<IDbResponse>
-  update_with_query: (query: string, params?: any) => Promise<IDbResponse>
+  update: (table_name: TTableNames, params: any, where?: string) => Promise<IDbResponse>;
+  update_with_query: (query: string, params?: any) => Promise<IDbResponse>;
 
-  delete: (query: string, params?: any) => Promise<IDbResponse>
+  delete: (query: string, params?: any) => Promise<IDbResponse>;
 
-  queryNonResponse: (query: string, params?: any) => Promise<IDbResponse>
+  queryNonResponse: (query: string, params?: any) => Promise<IDbResponse>;
 }
 
 export async function getDbTools(): Promise<IDbTools> {
@@ -122,10 +120,7 @@ export async function getDbTools(): Promise<IDbTools> {
     }
   }
 
-  async function selectSingle(
-    query: string,
-    params?: any
-  ): Promise<unknown | null> {
+  async function selectSingle(query: string, params?: any): Promise<unknown | null> {
     const dbRes: IDbResponse | null = await select(query, params);
     if (dbRes.list && dbRes.list?.length > 0) return dbRes.list[0];
     else return null;
@@ -134,7 +129,7 @@ export async function getDbTools(): Promise<IDbTools> {
   async function insert_with_query(
     query: string,
     params?: any,
-    table_name?: string
+    table_name?: string,
   ): Promise<IDbResponse> {
     const parsedQuery = parseSqlQuery(query);
     const listParams: any[] = [];
@@ -156,29 +151,21 @@ export async function getDbTools(): Promise<IDbTools> {
     }
   }
 
-  async function insert(
-    table_name: TTableNames,
-    params: any
-  ): Promise<IDbResponse> {
+  async function insert(table_name: TTableNames, params: any): Promise<IDbResponse> {
     const keys: string[] = Object.keys(params);
     const keysForValues: string[] = keys.map((k) => `:${k}`);
     const query = `insert into ${table_name} (${keys.join(
-      ","
+      ",",
     )}) values (${keysForValues.join(",")})`;
     return await insert_with_query(query, params, table_name);
   }
 
-  async function insert_or_update(
-    table_name: TTableNames,
-    params: any
-  ): Promise<IDbResponse> {
+  async function insert_or_update(table_name: TTableNames, params: any): Promise<IDbResponse> {
     const keys: string[] = Object.keys(params);
     const keysForValues: string[] = keys.map((k) => `:${k}`);
     const keysForUpdate: string[] = keys.map((k) => `${k}=:${k}`);
-    const query = `insert into ${table_name} (${keys.join(
-      ","
-    )}) values (${keysForValues.join(
-      ","
+    const query = `insert into ${table_name} (${keys.join(",")}) values (${keysForValues.join(
+      ",",
     )}) on duplicate key update ${keysForUpdate.join(",")}`;
     return await insert_with_query(query, params, table_name);
   }
@@ -186,27 +173,19 @@ export async function getDbTools(): Promise<IDbTools> {
   async function update(
     table_name: TTableNames,
     params: any,
-    where: string = "uid=:uid"
+    where: string = "uid=:uid",
   ): Promise<IDbResponse> {
     const keys: string[] = Object.keys(params);
     const keysForUpdate: string[] = keys.map((k) => `${k}=:${k}`);
-    const query = `update ${table_name} set ${keysForUpdate.join(
-      ","
-    )} where ${where}`;
+    const query = `update ${table_name} set ${keysForUpdate.join(",")} where ${where}`;
     return await queryNonResponse(query, params);
   }
 
-  async function update_with_query(
-    query: string,
-    params?: any
-  ): Promise<IDbResponse> {
+  async function update_with_query(query: string, params?: any): Promise<IDbResponse> {
     return await queryNonResponse(query, params);
   }
 
-  async function queryNonResponse(
-    query: string,
-    params?: any
-  ): Promise<IDbResponse> {
+  async function queryNonResponse(query: string, params?: any): Promise<IDbResponse> {
     const parsedQuery = parseSqlQuery(query);
     const listParams: any[] = [];
     if (params) {
@@ -245,17 +224,15 @@ export async function getDbTools(): Promise<IDbTools> {
   }
 
   async function getUserByEmail(email: string): Promise<IUser | null> {
-    const user: IUser | null = (await selectSingle(
-      "select * from users where email = :email",
-      { email }
-    )) as IUser | null;
+    const user: IUser | null = (await selectSingle("select * from users where email = :email", {
+      email,
+    })) as IUser | null;
     return user;
   }
   async function getUserByUid(uid: number): Promise<IUser | null> {
-    const user: IUser | null = (await selectSingle(
-      "select * from users where uid = :uid",
-      { uid }
-    )) as IUser | null;
+    const user: IUser | null = (await selectSingle("select * from users where uid = :uid", {
+      uid,
+    })) as IUser | null;
     return user;
   }
   return {

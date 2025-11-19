@@ -42,7 +42,12 @@ const CDialog = ({
 }: CDialogProps) => {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className={clsx('sm:max-w-[500px]', width && `sm:max-w-[${width}]`)}>
+            <DialogContent
+                className="sm:max-w-none"
+                style={{
+                    maxWidth: width ?? '500px', // default width when none is passed
+                }}
+            >
                 <DialogHeader>
                     <DialogTitle>{title}</DialogTitle>
                     <DialogDescription>{description}</DialogDescription>
@@ -64,7 +69,7 @@ const CDialog = ({
                     <CButton
                         type="submit"
                         onClick={() => {
-                            if (onSubmit) onSubmit(); 
+                            if (onSubmit) onSubmit();
                         }}
                         loading={loading}
                         text="შენახვა"

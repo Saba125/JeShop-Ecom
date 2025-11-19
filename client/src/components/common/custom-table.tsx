@@ -78,7 +78,7 @@ export function CTable<T extends { uid?: string | number }>({
 
         if (contextMenuActions && contextMenuActions.length > 0) {
             return (
-                <ContextMenu key={item.uid || index}>
+                <ContextMenu modal={false} key={item.uid || index}>
                     <ContextMenuTrigger asChild>
                         {rowContent}
                     </ContextMenuTrigger>

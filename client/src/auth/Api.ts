@@ -1,6 +1,5 @@
 import axios from "axios";
 import fetch from "./FetchInterceptor";
-import { API_URL } from "@/constants";
 
 const Api = {
   async get(endPoint: string, params = {}) {
