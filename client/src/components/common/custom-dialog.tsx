@@ -54,9 +54,11 @@ const CDialog = ({
                 </DialogHeader>
                 {children}
                 <DialogFooter>
-                    <DialogClose asChild>
-                        <CButton variant="outline" text="გაუქმება" />
-                    </DialogClose>
+                    <CButton
+                        variant="outline"
+                        text="გაუქმება"
+                        onClick={() => onOpenChange(false)} // Or directly closeDialog()
+                    />
                     {extraButton?.render && (
                         <CButton
                             type="button"

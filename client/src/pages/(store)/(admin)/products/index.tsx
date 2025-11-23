@@ -1,7 +1,7 @@
 import { CButton } from '@/components/common/custom-button';
 import { CTable, type Column, type ContextMenuAction } from '@/components/common/custom-table';
 import { EditIcon, PlusCircle, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { TGetProducts } from '@/types';
 import AddProduct from './add_edit';
 import { useGetProducts } from '@/api/products/get';
@@ -9,9 +9,12 @@ import Loading from '@/components/common/loading';
 import dayjs from 'dayjs';
 import { useDialog } from '@/hooks/use-dialog';
 import { API_URL } from '@/constants';
+import DefaultDeleteDesc from '@/lib/default-delete-text';
+import { useDeleteProduct } from '@/api/products/delete';
 const AdminProducts = () => {
-    const { openDialog } = useDialog();
+    const { openDialog, setOnFinish, closeDialog } = useDialog();
     const { isPending, data: products } = useGetProducts();
+    const { mutate: deleteProduct, isSuccess } = useDeleteProduct();
     const [isOpen, setIsOpen] = useState(false);
     const [selectedData, setSelectedData] = useState<TGetProducts | null>(null);
     const columns: Column<TGetProducts>[] = [
@@ -31,7 +34,7 @@ const AdminProducts = () => {
                 if (item.stock < 0 || item.stock === 0) {
                     color = 'red';
                 }
-                return <span style={{color}}>{item.stock}</span>;
+                return <span style={{ color }}>{item.stock}</span>;
             },
         },
         {
@@ -68,13 +71,19 @@ const AdminProducts = () => {
         {
             label: 'წაშლა',
             icon: <Trash2 className="w-4 h-4" />,
-            onClick: () => {
-                openDialog();
+            onClick: (product) => {
+                openDialog(null, DefaultDeleteDesc(product.name));
+                setOnFinish(() => deleteProduct(product.uid));
             },
             variant: 'destructive',
             separator: true,
         },
     ];
+    useEffect(() => {
+        if (isSuccess) {
+            closeDialog();
+        }
+    }, [isSuccess]);
     if (isPending) {
         return <Loading />;
     }

@@ -1,6 +1,6 @@
 import { CButton } from '@/components/common/custom-button';
 import { EditIcon, EyeIcon, PlusCircle, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AddEditSale from './add_edit';
 import { useGetSales } from '@/api/sales/get_';
 import { CTable, type Column, type ContextMenuAction } from '@/components/common/custom-table';
@@ -8,11 +8,14 @@ import type { TGetSales } from '@/types';
 import { useDialog } from '@/hooks/use-dialog';
 import dayjs from 'dayjs';
 import SaleDetails from './details';
+import DefaultDeleteDesc from '@/lib/default-delete-text';
+import { useDeleteSale } from '@/api/sales/delete_';
 const Sales = () => {
-    const { openDialog } = useDialog();
+    const { openDialog, setOnFinish, setDescription, closeDialog } = useDialog();
+    const { data } = useGetSales();
+    const { mutate: deleteSale, isSuccess: isDeleteSaleSuccess } = useDeleteSale();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-    const { data } = useGetSales();
     const [selectedData, setSelectedData] = useState<TGetSales | null>(null);
     const columns: Column<TGetSales>[] = [
         {
@@ -44,13 +47,23 @@ const Sales = () => {
         {
             label: 'წაშლა',
             icon: <Trash2 className="w-4 h-4" />,
-            onClick: () => {
+            onClick: (sale) => {
                 openDialog();
+                setDescription(DefaultDeleteDesc(sale.code));
+                setOnFinish(() => {
+                    deleteSale(sale.uid);
+                });
             },
             variant: 'destructive',
             separator: true,
         },
     ];
+    useEffect(() => {
+        if (isDeleteSaleSuccess) {
+            closeDialog();
+        }
+    }, [isDeleteSaleSuccess]);
+
     return (
         <>
             <div className="flex justify-end mb-3">

@@ -11,7 +11,6 @@ export const validateRefreshToken = (req: Request, res: Response) => {
       error: "Refresh token not found"
     });
   }
-  console.log(`i am here`);
   try {
     const payload: any = jwt.verify(token, config.JWT_SECRET);
 

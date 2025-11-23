@@ -50,7 +50,6 @@ function App() {
             controller.abort();
         };
     }, [accessToken, dispatch]);
-
     if (isLoading || (accessToken && !user.uid)) {
         return <Loading />;
     }

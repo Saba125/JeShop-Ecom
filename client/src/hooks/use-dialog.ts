@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 interface IStateDialog {
     isOpen: boolean;
-    openDialog: () => void;
+    openDialog: (title?:React.ReactElement | null, description?: React.ReactElement) => void;
     closeDialog: () => void;
     onFinish?: () => void;
     setOnFinish: (fn: () => void) => void;
@@ -14,7 +14,7 @@ export const useDialog = create<IStateDialog>()((set) => ({
     title: null,
     description: null,
     isOpen: false,
-    openDialog: () => set((state) => ({ isOpen: true })),
+    openDialog: (title?:React.ReactElement | null, description?: React.ReactElement) => set((state) => ({ isOpen: true, title, description })),
     closeDialog: () => set((state) => ({ isOpen: false })),
     onFinish: () => {},
     setOnFinish: (fn) => set((state) => ({ onFinish: fn })),

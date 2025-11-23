@@ -11,9 +11,9 @@ import { useDialog } from '@/hooks/use-dialog';
 import { useDeleteBrand } from '@/api/brands/delete_';
 import DefaultDeleteDesc from '@/lib/default-delete-text';
 const BrandSettings = () => {
-    const { openDialog, setOnFinish, setDescription } = useDialog();
+    const { openDialog, setOnFinish, setDescription, closeDialog } = useDialog();
     const { data: brands, isLoading } = useGetBrands();
-    const { mutate: deleteBrand } = useDeleteBrand();
+    const { mutate: deleteBrand, isSuccess: isDeleteSuccess } = useDeleteBrand();
     const [selectedData, setSelectedData] = useState<TGetBrand | null>(null);
     const [isOpen, setIsOpen] = useState(false);
     const columns: Column<TGetBrand>[] = [
@@ -31,6 +31,9 @@ const BrandSettings = () => {
             accessor: (item) => dayjs(item.created_at).format('MM-DD-YYYY'),
         },
     ];
+    const deleteBrandFn = (uid: number) => {
+        deleteBrand(uid);
+    };
     const contextMenuActions: ContextMenuAction<TGetBrand>[] = [
         {
             label: 'Edit',
@@ -44,9 +47,8 @@ const BrandSettings = () => {
             label: 'Delete',
             icon: <Trash2 className="w-4 h-4" />,
             onClick: (brand) => {
-                openDialog();
-                setDescription(DefaultDeleteDesc(brand.name));
-                setOnFinish(() => deleteBrand(brand.uid));
+                openDialog(null, DefaultDeleteDesc(brand.name));
+                setOnFinish(() => deleteBrandFn(brand.uid));
             },
             variant: 'destructive',
             separator: true,

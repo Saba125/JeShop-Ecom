@@ -4,9 +4,9 @@ import { type TGetSales } from "@/types";
 import Api from "@/auth/Api";
 export const useGetSales = () => {
   return useQuery({
-    queryKey: queryKeys.brands.all,
+    queryKey: queryKeys.sales.all,
     queryFn: async () => {
-      const data = await Api.post("/sales/all");
+      const data = await Api.get("/sales/all");
       return data as TGetSales[]
     },
   });
