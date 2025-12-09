@@ -2,7 +2,6 @@ import { CButton } from '@/components/common/custom-button';
 import { EditIcon, EyeIcon, PlusCircle, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import AddEditSale from './add_edit';
-import { useGetSales } from '@/api/sales/get_';
 import { CTable, type Column, type ContextMenuAction } from '@/components/common/custom-table';
 import type { TGetSales } from '@/types';
 import { useDialog } from '@/hooks/use-dialog';
@@ -10,9 +9,13 @@ import dayjs from 'dayjs';
 import SaleDetails from './details';
 import DefaultDeleteDesc from '@/lib/default-delete-text';
 import { useDeleteSale } from '@/api/sales/delete_';
+import { useGetSalesPaginated } from '@/api/sales/get_paginated';
+import CPagination from '@/components/common/custom-pagination';
 const Sales = () => {
     const { openDialog, setOnFinish, setDescription, closeDialog } = useDialog();
-    const { data } = useGetSales();
+    const [page, setPage] = useState(1);
+    const pageSize = 10;
+    const { data } = useGetSalesPaginated(page, pageSize);
     const { mutate: deleteSale, isSuccess: isDeleteSaleSuccess } = useDeleteSale();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
@@ -77,7 +80,7 @@ const Sales = () => {
                 title="ფასდაკლებები"
                 description="დამატებული ფასდაკლებები"
                 columns={columns}
-                data={data || []}
+                data={data?.data || []}
                 contextMenuActions={contextMenuActions}
             />
             {isModalOpen && (
@@ -90,6 +93,7 @@ const Sales = () => {
                     setIsOpen={setIsDetailsModalOpen}
                 />
             )}
+            <CPagination page={page} setPage={setPage} totalPages={data?.pagination.totalPages!} />
         </>
     );
 };

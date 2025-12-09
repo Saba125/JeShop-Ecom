@@ -14,6 +14,7 @@ import {
     Heart,
     Settings,
     type LucideIcon,
+    User2Icon,
 } from 'lucide-react';
 export type SidebarItems = {
     title: string;
@@ -77,6 +78,11 @@ const adminSidebarItems: SidebarItems = [
         title: 'მთავარი',
         url: '/admin/dashboard',
         icon: Home,
+    },
+    {
+        title: 'კლიენტები',
+        url: '/admin/clients',
+        icon: User2Icon,
     },
     // {
     //     title: 'კლავიატურები',

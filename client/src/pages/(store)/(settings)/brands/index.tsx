@@ -10,9 +10,13 @@ import dayjs from 'dayjs';
 import { useDialog } from '@/hooks/use-dialog';
 import { useDeleteBrand } from '@/api/brands/delete_';
 import DefaultDeleteDesc from '@/lib/default-delete-text';
+import { useGetBrandsPaginated } from '@/api/brands/get_/paginated';
+import CPagination from '@/components/common/custom-pagination';
 const BrandSettings = () => {
     const { openDialog, setOnFinish, setDescription, closeDialog } = useDialog();
-    const { data: brands, isLoading } = useGetBrands();
+    const [page, setPage] = useState(1);
+    const pageSize = 10;
+    const { data: brands, isLoading } = useGetBrandsPaginated(page, pageSize);
     const { mutate: deleteBrand, isSuccess: isDeleteSuccess } = useDeleteBrand();
     const [selectedData, setSelectedData] = useState<TGetBrand | null>(null);
     const [isOpen, setIsOpen] = useState(false);
@@ -71,9 +75,11 @@ const BrandSettings = () => {
                 title="ბრენდები"
                 description="შექმნილი ბრენდები"
                 columns={columns}
-                data={brands || []}
+                data={brands?.data || []}
                 contextMenuActions={contextMenuActions}
             />
+            <CPagination page={page} setPage={setPage} totalPages={brands?.pagination.totalPages!} />
+
             {isOpen && <AddEditBrand data={selectedData} isOpen={isOpen} setIsOpen={setIsOpen} />}
         </>
     );

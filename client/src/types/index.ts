@@ -29,7 +29,7 @@ export type TGetProducts = {
     description?: string | null;
     stock: number;
     sale?: number;
-    sale_type?: number
+    sale_type?: number;
     category: {
         uid: number;
         name: string;
@@ -48,6 +48,22 @@ export type TGetProducts = {
         description: string | null;
     };
     created_at: string;
+};
+export type TGetProductsPaginated = {
+    data: TGetProducts[];
+    pagination: Pagination;
+};
+export type TGetCategoriesPaginated = {
+    data: Category[];
+    pagination: Pagination;
+};
+export type TGetBrandsPaginated = {
+    data: TGetBrand[];
+    pagination: Pagination;
+};
+export type TGetSalesPaginated = {
+    data: TGetSales[];
+    pagination: Pagination;
 };
 export type TGetUnit = {
     uid: number;
@@ -75,8 +91,12 @@ export type TGetSales = {
     users: User[];
     products: TGetProducts[];
 };
+export type TGetPaginatedUsers = {
+    data: User[];
+    pagination: Pagination;
+};
 export type User = {
-    uid: number | null;
+    uid: number;
     username: string;
     email: string;
     phone: string;
@@ -98,6 +118,12 @@ export type SaleItems = {
     description: string;
     code: string;
     is_active: number;
+};
+export type Pagination = {
+    page: number;
+    pageSize: number;
+    total: number;
+    totalPages: number;
 };
 
 export type SelectOptions = {

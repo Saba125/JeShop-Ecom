@@ -4,16 +4,19 @@ import { EditIcon, PlusCircle, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { TGetProducts } from '@/types';
 import AddProduct from './add_edit';
-import { useGetProducts } from '@/api/products/get';
 import Loading from '@/components/common/loading';
 import dayjs from 'dayjs';
 import { useDialog } from '@/hooks/use-dialog';
 import { API_URL } from '@/constants';
 import DefaultDeleteDesc from '@/lib/default-delete-text';
 import { useDeleteProduct } from '@/api/products/delete';
+import { useGetProductsPaginated } from '@/api/products/get_paginated';
+import CPagination from '@/components/common/custom-pagination';
 const AdminProducts = () => {
     const { openDialog, setOnFinish, closeDialog } = useDialog();
-    const { isPending, data: products } = useGetProducts();
+    const [page, setPage] = useState(1);
+    const pageSize = 10;
+    const { isPending, data: products } = useGetProductsPaginated(page, pageSize);
     const { mutate: deleteProduct, isSuccess } = useDeleteProduct();
     const [isOpen, setIsOpen] = useState(false);
     const [selectedData, setSelectedData] = useState<TGetProducts | null>(null);
@@ -100,9 +103,15 @@ const AdminProducts = () => {
                 title="პროდუქტები"
                 description="შექმნილი პროდუქტები"
                 columns={columns}
-                data={products || []}
+                data={products?.data || []}
                 contextMenuActions={contextMenuActions}
             />
+            <CPagination
+            page={page}
+            setPage={setPage}
+            totalPages={products?.pagination.totalPages!}
+            />
+
             {isOpen && <AddProduct data={selectedData} isOpen={isOpen} setIsOpen={setIsOpen} />}
         </>
     );

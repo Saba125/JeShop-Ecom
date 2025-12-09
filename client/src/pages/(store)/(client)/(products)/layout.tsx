@@ -6,29 +6,22 @@ import { Separator } from '@/components/ui/separator';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
+import { useGetBrands } from '@/api/brands/get_';
 
 const ProductsFiltersSidebar = () => {
+    const { data: brands } = useGetBrands();
     const [priceRange, setPriceRange] = useState([0, 1000]);
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
     const [inStock, setInStock] = useState(false);
     const [onSale, setOnSale] = useState(false);
 
-    // Demo data
     const categories = [
         { id: '1', name: 'ელექტრონიკა', count: 45 },
         { id: '2', name: 'ტანსაცმელი', count: 123 },
         { id: '3', name: 'საკვები პროდუქტები', count: 89 },
         { id: '4', name: 'სახლის ნივთები', count: 67 },
         { id: '5', name: 'სპორტი', count: 34 },
-    ];
-
-    const brands = [
-        { id: '1', name: 'Samsung', count: 23 },
-        { id: '2', name: 'Apple', count: 18 },
-        { id: '3', name: 'Nike', count: 34 },
-        { id: '4', name: 'Adidas', count: 28 },
-        { id: '5', name: 'Sony', count: 15 },
     ];
 
     const handleCategoryToggle = (categoryId: string) => {
@@ -62,7 +55,7 @@ const ProductsFiltersSidebar = () => {
 
     return (
         <div className="max-w-[300px]">
-            <Card className='border-l-0 border-t-0'>
+            <Card className="border-l-0 border-t-0">
                 <CardContent className="p-6">
                     {/* Header */}
                     <div className="flex items-center justify-between mb-6">
@@ -118,7 +111,7 @@ const ProductsFiltersSidebar = () => {
                                 ბრენდები
                             </h3>
                             <div className="space-y-3">
-                                {brands.map((brand) => (
+                                {brands?.map((brand) => (
                                     <div key={brand.id} className="flex items-center space-x-2">
                                         <Checkbox
                                             id={`brand-${brand.id}`}

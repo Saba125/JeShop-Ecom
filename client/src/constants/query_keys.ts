@@ -8,6 +8,10 @@ export const queryKeys = {
     all: ["users"] as const,
     details: (uid: number | string) => ["users", uid] as const,
   },
+  usersPaginated: {
+    all: ["usersPaginated"] as const,
+    details: (uid: number | string) => ["usersPaginated", uid] as const,
+  },
   products: {
     all: ["products"] as const,
     details: (uid: number | string) => ["products", uid] as const

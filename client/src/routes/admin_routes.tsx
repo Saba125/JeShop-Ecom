@@ -8,6 +8,7 @@ const AdminLayout = lazy(() => import('../pages/(store)/(admin)/layout'));
 const AdminDashboard = lazy(() => import('../pages/(store)/(admin)/dashboard'));
 const AdminCategories = lazy(() => import('../pages/(store)/(admin)/categories'));
 const AdminProducts = lazy(() => import('../pages/(store)/(admin)/products'))
+const ClientsPage = lazy(() => import("../pages/(store)/(admin)/users"))
 const AdminRoutes = () => {
     const adminRoutes = [
         {
@@ -26,6 +27,10 @@ const AdminRoutes = () => {
                 {
                     path: 'dashboard',
                     element: <AdminDashboard />,
+                },
+                {
+                    path: 'clients',
+                    element: <ClientsPage />,
                 },
                 {
                     path: 'categories',
