@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import HeroSection from '@/components/common/hero-section';
 import CategoriesSection from '@/components/common/categories-section';
 import FeaturedProductsSection from '@/components/common/featured-products-section';
@@ -9,11 +10,51 @@ export default function MainPage() {
     return (
         <div className="min-h-screen bg-background">
             <HeroSection />
-            <CategoriesSection />
-            <FeaturedProductsSection />
-            <FeaturesSection />
-            <BrandsSection />
-            <NewsLetterSection />
+            
+            <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.6 }}
+            >
+                <CategoriesSection />
+            </motion.div>
+
+            <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+            >
+                <FeaturedProductsSection />
+            </motion.div>
+
+            <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+            >
+                <FeaturesSection />
+            </motion.div>
+
+            <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+            >
+                <BrandsSection />
+            </motion.div>
+
+            <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+            >
+                <NewsLetterSection />
+            </motion.div>
         </div>
     );
 }
