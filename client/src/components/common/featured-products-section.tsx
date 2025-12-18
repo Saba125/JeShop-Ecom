@@ -3,7 +3,8 @@ import { TrendingUp, ShoppingCart, Heart, Eye, Star, Zap, Sparkles } from 'lucid
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-
+import { addItemToCart } from '@/store/cartSlice';
+import { useDispatch } from 'react-redux';
 const featuredProducts = [
     {
         id: 1,
@@ -48,8 +49,8 @@ const FeaturedProductsSection = () => {
     const [favorites, setFavorites] = useState<number[]>([]);
 
     const toggleFavorite = (id: number) => {
-        setFavorites(prev => 
-            prev.includes(id) ? prev.filter(fav => fav !== id) : [...prev, id]
+        setFavorites((prev) =>
+            prev.includes(id) ? prev.filter((fav) => fav !== id) : [...prev, id]
         );
     };
 
@@ -70,6 +71,7 @@ const FeaturedProductsSection = () => {
                 return 'bg-slate-500 text-white';
         }
     };
+    const dispatch = useDispatch();
 
     return (
         <section className="container mx-auto px-4 py-16">
@@ -79,7 +81,9 @@ const FeaturedProductsSection = () => {
                 </div>
                 <div>
                     <h2 className="text-3xl font-bold">რჩეული პროდუქტები</h2>
-                    <p className="text-sm text-muted-foreground">აღმოაჩინეთ ჩვენი საუკეთესო შეთავაზებები</p>
+                    <p className="text-sm text-muted-foreground">
+                        აღმოაჩინეთ ჩვენი საუკეთესო შეთავაზებები
+                    </p>
                 </div>
             </div>
 
@@ -101,9 +105,15 @@ const FeaturedProductsSection = () => {
                                 {/* Badges */}
                                 <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
                                     {product.badge && (
-                                        <Badge className={`${getBadgeStyle(product.badgeType)} shadow-lg`}>
-                                            {product.badgeType === 'new' && <Sparkles className="w-3 h-3 mr-1" />}
-                                            {product.badgeType === 'bestseller' && <Zap className="w-3 h-3 mr-1" />}
+                                        <Badge
+                                            className={`${getBadgeStyle(product.badgeType)} shadow-lg`}
+                                        >
+                                            {product.badgeType === 'new' && (
+                                                <Sparkles className="w-3 h-3 mr-1" />
+                                            )}
+                                            {product.badgeType === 'bestseller' && (
+                                                <Zap className="w-3 h-3 mr-1" />
+                                            )}
                                             {product.badge}
                                         </Badge>
                                     )}
@@ -115,7 +125,9 @@ const FeaturedProductsSection = () => {
                                 </div>
 
                                 {/* Action Buttons */}
-                                <div className={`absolute top-3 right-3 z-10 flex flex-col gap-2 transition-all duration-300 ${isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'}`}>
+                                <div
+                                    className={`absolute top-3 right-3 z-10 flex flex-col gap-2 transition-all duration-300 ${isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'}`}
+                                >
                                     <Button
                                         size="icon"
                                         variant="secondary"
@@ -125,7 +137,9 @@ const FeaturedProductsSection = () => {
                                             toggleFavorite(product.id);
                                         }}
                                     >
-                                        <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
+                                        <Heart
+                                            className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`}
+                                        />
                                     </Button>
                                     <Button
                                         size="icon"
@@ -160,7 +174,9 @@ const FeaturedProductsSection = () => {
                                 <div className="flex items-center gap-2 mb-2">
                                     <div className="flex items-center gap-1">
                                         <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                                        <span className="text-sm font-semibold">{product.rating}</span>
+                                        <span className="text-sm font-semibold">
+                                            {product.rating}
+                                        </span>
                                     </div>
                                     <span className="text-xs text-muted-foreground">
                                         ({product.reviews} მიმოხილვა)
@@ -185,20 +201,42 @@ const FeaturedProductsSection = () => {
                                 </div>
 
                                 {/* Add to Cart Button */}
-                                <Button 
+                                <Button
                                     className="w-full group/btn relative overflow-hidden"
                                     size="lg"
                                     disabled={!product.inStock}
                                 >
                                     <span className="relative z-10 flex items-center justify-center gap-2">
                                         <ShoppingCart className="w-4 h-4" />
-                                        {product.inStock ? 'კალათაში დამატება' : 'არ არის მარაგში'}
+                                        {product.inStock ? (
+                                            <span
+                                                onClick={() => {
+                                                    dispatch(
+                                                        addItemToCart({
+                                                            product_uid: product.id,
+                                                            product_image: product.image,
+                                                            has_sale: true,
+                                                            new_price: product.price,
+                                                            old_price: 123,
+                                                            product_name: product.name,
+                                                            quantity: 1,
+                                                        })
+                                                    );
+                                                }}
+                                            >
+                                                კალათაში დამატება
+                                            </span>
+                                        ) : (
+                                            <span>არ არის მარაგში</span>
+                                        )}
                                     </span>
                                     <div className="absolute inset-0 bg-primary-foreground/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
                                 </Button>
 
                                 {/* Quick Info on Hover */}
-                                <div className={`mt-3 pt-3 border-t transition-all duration-300 overflow-hidden ${isHovered ? 'max-h-20 opacity-100' : 'max-h-0 opacity-0'}`}>
+                                <div
+                                    className={`mt-3 pt-3 border-t transition-all duration-300 overflow-hidden ${isHovered ? 'max-h-20 opacity-100' : 'max-h-0 opacity-0'}`}
+                                >
                                     <p className="text-xs text-muted-foreground">
                                         ✓ უფასო მიწოდება 100₾-ზე მეტი შეძენისას
                                     </p>

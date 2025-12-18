@@ -105,6 +105,18 @@ export type User = {
     email_verified_date: string;
     create_date: string;
 };
+export type Cart = {
+    products: CartItems[];
+};
+export type CartItems = {
+    product_uid: number;
+    product_name: string;
+    product_image: string | null;
+    quantity: number;
+    old_price: number;
+    new_price: number;
+    has_sale: boolean;
+};
 
 export type SaleItems = {
     amount: string;

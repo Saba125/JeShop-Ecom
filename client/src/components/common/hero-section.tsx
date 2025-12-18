@@ -1,7 +1,5 @@
-import React from 'react';
 import { Badge } from '../ui/badge';
 import CFlex from '../ui/flex';
-import { CButton } from './custom-button';
 import { Button } from '../ui/button';
 import { ArrowRight } from 'lucide-react';
 
