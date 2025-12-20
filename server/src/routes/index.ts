@@ -54,6 +54,7 @@ Router.put(
   productImageUploader.single("image"),
   ProductRes.updateProduct,
 );
+Router.get("/product/:uid", authMiddleware, ProductRes.getSingleProduct);
 Router.delete("/product/:uid", authMiddleware, ProductRes.deleteProduct);
 // Units
 Router.post("/units/all", authMiddleware, UnitRes.getUnits);

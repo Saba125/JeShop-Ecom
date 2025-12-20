@@ -8,13 +8,14 @@ import { useDispatch } from 'react-redux';
 import { useGetProducts } from '@/api/products/get';
 import { API_URL } from '@/constants';
 import type { TGetProducts } from '@/types';
+import { useNavigate } from 'react-router-dom';
 
 const FeaturedProductsSection = () => {
     const { data: products, isPending } = useGetProducts();
     const [hoveredId, setHoveredId] = useState<number | null>(null);
     const [favorites, setFavorites] = useState<number[]>([]);
     const dispatch = useDispatch();
-
+    const navigate = useNavigate();
     const toggleFavorite = (id: number) => {
         setFavorites((prev) =>
             prev.includes(id) ? prev.filter((fav) => fav !== id) : [...prev, id]
@@ -105,7 +106,15 @@ const FeaturedProductsSection = () => {
                     return (
                         <Card
                             key={product.uid}
-                            className="group relative overflow-hidden border-2 hover:border-primary/50 transition-all duration-300 hover:shadow-2xl"
+                            onClick={() => {
+                                const pLink = product.name
+                                    .toLowerCase()
+                                    .trim()
+                                    .replace(/\s+/g, '-');
+
+                                navigate(`/product/${pLink}/${product.uid}`);
+                            }}
+                            className="group cursor-pointer relative overflow-hidden border-2 hover:border-primary/50 transition-all duration-300 hover:shadow-2xl"
                             onMouseEnter={() => setHoveredId(product.uid)}
                             onMouseLeave={() => setHoveredId(null)}
                         >

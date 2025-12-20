@@ -3,6 +3,7 @@ import ProductsLayout from '@/pages/(store)/(client)/(products)/layout';
 import KeyboardsPage from '@/pages/(store)/(client)/(products)/keyboards';
 import { lazy } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
+import ProductDetails from '@/pages/(store)/(client)/(products)/product_details';
 const AuthLayout = lazy(() => import('../pages/(auth)/layout'));
 const SignIn = lazy(() => import('../pages/(auth)/sign-in'));
 const SignUp = lazy(() => import('../pages/(auth)/sign-up'));
@@ -26,9 +27,14 @@ const UserRoutes = () => {
                         {
                             path: 'keyboards',
                             element: <KeyboardsPage />,
-                        },
+                        }, 
                     ],
                 },
+                {
+                    path: 'product/:name/:uid',
+                    element: <ProductDetails />,
+                },
+                // For single product page
             ],
         },
         {

@@ -17,6 +17,8 @@ import type { RootState } from '@/store/store';
 import { useSelector, useDispatch } from 'react-redux';
 import { API_URL } from '@/constants';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import type { CartItems } from '@/types';
+import { removeItemFromCart, updateItemQuantity } from '@/store/cartSlice';
 
 const Cart = () => {
     const cart = useSelector((state: RootState) => state.cart);
@@ -31,14 +33,12 @@ const Cart = () => {
         return total;
     }, 0);
 
-    const handleQuantityChange = (productUid: number, newQuantity: number) => {
-        if (newQuantity > 0) {
-            // dispatch(updateItemQuantity({ product_uid: productUid, quantity: newQuantity }));
-        }
+    const handleQuantityChange = (productUid: number, method: "minus" | "plus") => {
+            dispatch(updateItemQuantity({method, product_uid: productUid}))
     };
 
     const handleRemoveItem = (productUid: number) => {
-        // dispatch(removeItemFromCart(productUid));
+        dispatch(removeItemFromCart(productUid));
     };
 
     return (
@@ -155,7 +155,7 @@ const Cart = () => {
                                                 variant="outline"
                                                 size="icon"
                                                 className="h-7 w-7"
-                                                onClick={() => handleQuantityChange(item.product_uid, item.quantity - 1)}
+                                                onClick={() => handleQuantityChange(item.product_uid, "minus")}
                                                 disabled={item.quantity <= 1}
                                             >
                                                 <Minus className="h-3 w-3" />
@@ -167,7 +167,7 @@ const Cart = () => {
                                                 variant="outline"
                                                 size="icon"
                                                 className="h-7 w-7"
-                                                onClick={() => handleQuantityChange(item.product_uid, item.quantity + 1)}
+                                                onClick={() => handleQuantityChange(item.product_uid, "plus")}
                                                 disabled={item.quantity >= item.stock}
                                             >
                                                 <Plus className="h-3 w-3" />
@@ -195,7 +195,6 @@ const Cart = () => {
                     <>
                         <Separator />
                         <div className="px-6 py-4 space-y-4">
-                            {/* Subtotal Breakdown */}
                             <div className="space-y-2">
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-600">შუალედური ჯამი:</span>
