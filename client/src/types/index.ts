@@ -20,6 +20,17 @@ export type TAddProduct = {
     category_uid?: string | null | undefined;
     category_name?: string;
 };
+export type TSaleItem = {
+    uid: number;
+    type: 1 | 2; // 1 = percentage, 2 = GEL
+    amount: number;
+    sale_uid: number;
+    user_uid: number;
+    is_active: 0 | 1;
+    created_at: string;
+    product_uid: number;
+};
+
 export type TGetProducts = {
     uid: number;
     name: string;
@@ -30,6 +41,7 @@ export type TGetProducts = {
     stock: number;
     sale?: number;
     sale_type?: number;
+    sales_items?: TSaleItem[];
     category: {
         uid: number;
         name: string;
@@ -113,9 +125,10 @@ export type CartItems = {
     product_name: string;
     product_image: string | null;
     quantity: number;
-    old_price: number;
+    old_price: number | null;
     new_price: number;
     has_sale: boolean;
+    stock: number;
 };
 
 export type SaleItems = {

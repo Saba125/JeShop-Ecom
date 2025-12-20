@@ -5,48 +5,15 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { addItemToCart } from '@/store/cartSlice';
 import { useDispatch } from 'react-redux';
-const featuredProducts = [
-    {
-        id: 1,
-        name: 'Logitech G Pro X Wireless',
-        price: 299,
-        originalPrice: 349,
-        image: null,
-        badge: 'ბესტსელერი',
-        badgeType: 'bestseller',
-        rating: 4.8,
-        reviews: 234,
-        inStock: true,
-    },
-    {
-        id: 2,
-        name: 'Razer BlackWidow V4 Pro',
-        price: 259,
-        originalPrice: null,
-        image: null,
-        badge: 'ახალი',
-        badgeType: 'new',
-        rating: 4.9,
-        reviews: 89,
-        inStock: true,
-    },
-    {
-        id: 3,
-        name: 'SteelSeries Arctis Nova 7',
-        price: 179,
-        originalPrice: 229,
-        image: null,
-        badge: 'ფასდაკლება',
-        badgeType: 'sale',
-        rating: 4.7,
-        reviews: 156,
-        inStock: false,
-    },
-];
+import { useGetProducts } from '@/api/products/get';
+import { API_URL } from '@/constants';
+import type { TGetProducts } from '@/types';
 
 const FeaturedProductsSection = () => {
+    const { data: products, isPending } = useGetProducts();
     const [hoveredId, setHoveredId] = useState<number | null>(null);
     const [favorites, setFavorites] = useState<number[]>([]);
+    const dispatch = useDispatch();
 
     const toggleFavorite = (id: number) => {
         setFavorites((prev) =>
@@ -54,9 +21,38 @@ const FeaturedProductsSection = () => {
         );
     };
 
-    const calculateDiscount = (price: number, originalPrice: number | null) => {
-        if (!originalPrice) return null;
-        return Math.round(((originalPrice - price) / originalPrice) * 100);
+    // Get active sale for a product
+    const getActiveSale = (product: TGetProducts) => {
+        return product.sales_items?.find((sale) => sale.is_active === 1);
+    };
+
+    // Calculate discounted price based on sale type
+    const calculateDiscountedPrice = (product: TGetProducts) => {
+        const activeSale = getActiveSale(product);
+        if (!activeSale) return null;
+
+        const price = parseFloat(product.price);
+        if (activeSale.type === 1) {
+            // Percentage discount
+            return price - (price * activeSale.amount) / 100;
+        } else if (activeSale.type === 2) {
+            // Fixed amount discount in GEL
+            return price - activeSale.amount;
+        }
+        return null;
+    };
+
+    // Get discount percentage or amount
+    const getDiscountDisplay = (product: TGetProducts) => {
+        const activeSale = getActiveSale(product);
+        if (!activeSale) return null;
+
+        if (activeSale.type === 1) {
+            return `${activeSale.amount}%`;
+        } else if (activeSale.type === 2) {
+            return `${activeSale.amount}₾`;
+        }
+        return null;
     };
 
     const getBadgeStyle = (type: string) => {
@@ -71,7 +67,16 @@ const FeaturedProductsSection = () => {
                 return 'bg-slate-500 text-white';
         }
     };
-    const dispatch = useDispatch();
+
+    if (isPending) {
+        return (
+            <section className="container mx-auto px-4 py-16">
+                <div className="flex items-center justify-center h-64">
+                    <div className="text-muted-foreground">იტვირთება...</div>
+                </div>
+            </section>
+        );
+    }
 
     return (
         <section className="container mx-auto px-4 py-16">
@@ -88,42 +93,37 @@ const FeaturedProductsSection = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {featuredProducts.map((product) => {
-                    const discount = calculateDiscount(product.price, product.originalPrice);
-                    const isHovered = hoveredId === product.id;
-                    const isFavorite = favorites.includes(product.id);
+                {products?.map((product) => {
+                    const activeSale = getActiveSale(product);
+                    const discountedPrice = calculateDiscountedPrice(product);
+                    const discountDisplay = getDiscountDisplay(product);
+                    const isHovered = hoveredId === product.uid;
+                    const isFavorite = favorites.includes(product.uid);
+                    const inStock = product.stock > 0;
+                    const originalPrice = parseFloat(product.price);
 
                     return (
                         <Card
-                            key={product.id}
+                            key={product.uid}
                             className="group relative overflow-hidden border-2 hover:border-primary/50 transition-all duration-300 hover:shadow-2xl"
-                            onMouseEnter={() => setHoveredId(product.id)}
+                            onMouseEnter={() => setHoveredId(product.uid)}
                             onMouseLeave={() => setHoveredId(null)}
                         >
                             {/* Image Section */}
                             <div className="relative h-72 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 overflow-hidden">
                                 {/* Badges */}
                                 <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
-                                    {product.badge && (
-                                        <Badge
-                                            className={`${getBadgeStyle(product.badgeType)} shadow-lg`}
-                                        >
-                                            {product.badgeType === 'new' && (
-                                                <Sparkles className="w-3 h-3 mr-1" />
-                                            )}
-                                            {product.badgeType === 'bestseller' && (
-                                                <Zap className="w-3 h-3 mr-1" />
-                                            )}
-                                            {product.badge}
+                                    {activeSale && discountDisplay && (
+                                        <Badge className="bg-red-500 text-white shadow-lg">
+                                            <Sparkles className="w-3 h-3 mr-1" />-{discountDisplay}
                                         </Badge>
                                     )}
-                                    {discount && (
-                                        <Badge className="bg-green-500 text-white shadow-lg">
-                                            -{discount}%
+                                    {!inStock && (
+                                        <Badge className="bg-slate-500 text-white shadow-lg">
+                                            ამოიწურა
                                         </Badge>
                                     )}
                                 </div>
-
                                 {/* Action Buttons */}
                                 <div
                                     className={`absolute top-3 right-3 z-10 flex flex-col gap-2 transition-all duration-300 ${isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'}`}
@@ -134,7 +134,7 @@ const FeaturedProductsSection = () => {
                                         className={`rounded-full shadow-lg ${isFavorite ? 'bg-red-500 text-white hover:bg-red-600' : ''}`}
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            toggleFavorite(product.id);
+                                            toggleFavorite(product.uid);
                                         }}
                                     >
                                         <Heart
@@ -149,17 +149,22 @@ const FeaturedProductsSection = () => {
                                         <Eye className="w-4 h-4" />
                                     </Button>
                                 </div>
-
-                                {/* Product Image Placeholder */}
+                                {/* Product Image */}
                                 <div className="absolute inset-0 flex items-center justify-center">
-                                    <ShoppingCart className="w-20 h-20 text-slate-300 dark:text-slate-700" />
+                                    {product.image ? (
+                                        <img
+                                            src={`${API_URL}${product.image}`}
+                                            alt={product.name}
+                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                                        />
+                                    ) : (
+                                        <ShoppingCart className="w-20 h-20 text-slate-300 dark:text-slate-700" />
+                                    )}
                                 </div>
-
                                 {/* Gradient Overlay */}
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-                                {/* Stock Status */}
-                                {!product.inStock && (
+                                {!inStock && (
                                     <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
                                         <Badge variant="secondary" className="text-lg px-4 py-2">
                                             არ არის მარაგში
@@ -168,19 +173,17 @@ const FeaturedProductsSection = () => {
                                 )}
                             </div>
 
-                            {/* Content Section */}
                             <CardContent className="p-5">
-                                {/* Rating */}
+                                {/* Category and Brand */}
                                 <div className="flex items-center gap-2 mb-2">
-                                    <div className="flex items-center gap-1">
-                                        <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                                        <span className="text-sm font-semibold">
-                                            {product.rating}
-                                        </span>
-                                    </div>
-                                    <span className="text-xs text-muted-foreground">
-                                        ({product.reviews} მიმოხილვა)
-                                    </span>
+                                    <Badge variant="outline" className="text-xs">
+                                        {product.category.name}
+                                    </Badge>
+                                    {product.brand && (
+                                        <Badge variant="outline" className="text-xs">
+                                            {product.brand.name}
+                                        </Badge>
+                                    )}
                                 </div>
 
                                 {/* Product Name */}
@@ -188,14 +191,25 @@ const FeaturedProductsSection = () => {
                                     {product.name}
                                 </h3>
 
+                                {/* Weight/Unit */}
+                                <p className="text-xs text-muted-foreground mb-3">
+                                    {product.weight} {product.unit.name}
+                                </p>
+
                                 {/* Price Section */}
                                 <div className="flex items-end gap-2 mb-4">
-                                    <span className="text-3xl font-bold text-primary">
-                                        {product.price}₾
-                                    </span>
-                                    {product.originalPrice && (
-                                        <span className="text-sm text-muted-foreground line-through mb-1">
-                                            {product.originalPrice}₾
+                                    {discountedPrice ? (
+                                        <>
+                                            <span className="text-3xl font-bold text-primary">
+                                                {discountedPrice.toFixed(2)}₾
+                                            </span>
+                                            <span className="text-sm text-muted-foreground line-through mb-1">
+                                                {originalPrice.toFixed(2)}₾
+                                            </span>
+                                        </>
+                                    ) : (
+                                        <span className="text-3xl font-bold text-primary">
+                                            {originalPrice.toFixed(2)}₾
                                         </span>
                                     )}
                                 </div>
@@ -204,28 +218,30 @@ const FeaturedProductsSection = () => {
                                 <Button
                                     className="w-full group/btn relative overflow-hidden"
                                     size="lg"
-                                    disabled={!product.inStock}
+                                    disabled={!inStock}
+                                    onClick={() => {
+                                        if (inStock) {
+                                            dispatch(
+                                                addItemToCart({
+                                                    product_uid: product.uid,
+                                                    product_image: product.image || '',
+                                                    has_sale: !!activeSale,
+                                                    new_price: discountedPrice || originalPrice,
+                                                    old_price: discountedPrice
+                                                        ? originalPrice
+                                                        : null,
+                                                    product_name: product.name,
+                                                    quantity: 1,
+                                                    stock: product.stock,
+                                                })
+                                            );
+                                        }
+                                    }}
                                 >
                                     <span className="relative z-10 flex items-center justify-center gap-2">
                                         <ShoppingCart className="w-4 h-4" />
-                                        {product.inStock ? (
-                                            <span
-                                                onClick={() => {
-                                                    dispatch(
-                                                        addItemToCart({
-                                                            product_uid: product.id,
-                                                            product_image: product.image,
-                                                            has_sale: true,
-                                                            new_price: product.price,
-                                                            old_price: 123,
-                                                            product_name: product.name,
-                                                            quantity: 1,
-                                                        })
-                                                    );
-                                                }}
-                                            >
-                                                კალათაში დამატება
-                                            </span>
+                                        {inStock ? (
+                                            <span>კალათაში დამატება</span>
                                         ) : (
                                             <span>არ არის მარაგში</span>
                                         )}

@@ -12,6 +12,7 @@ import DefaultDeleteDesc from '@/lib/default-delete-text';
 import { useDeleteProduct } from '@/api/products/delete';
 import { useGetProductsPaginated } from '@/api/products/get_paginated';
 import CPagination from '@/components/common/custom-pagination';
+
 const AdminProducts = () => {
     const { openDialog, setOnFinish, closeDialog } = useDialog();
     const [page, setPage] = useState(1);
@@ -20,6 +21,28 @@ const AdminProducts = () => {
     const { mutate: deleteProduct, isSuccess } = useDeleteProduct();
     const [isOpen, setIsOpen] = useState(false);
     const [selectedData, setSelectedData] = useState<TGetProducts | null>(null);
+
+    // Helper function to get active sale
+    const getActiveSale = (item: TGetProducts) => {
+        return item.sales_items?.find(sale => sale.is_active === 1);
+    };
+
+    // Helper function to calculate discounted price
+    const calculateDiscountedPrice = (item: TGetProducts) => {
+        const activeSale = getActiveSale(item);
+        if (!activeSale) return null;
+
+        const price = parseFloat(item.price);
+        if (activeSale.type === 1) {
+            // Percentage discount
+            return price - (price * activeSale.amount / 100);
+        } else if (activeSale.type === 2) {
+            // Fixed amount discount in GEL
+            return price - activeSale.amount;
+        }
+        return null;
+    };
+
     const columns: Column<TGetProducts>[] = [
         {
             header: 'სახელი',
@@ -52,16 +75,42 @@ const AdminProducts = () => {
             header: 'წონა',
             accessor: (item) => `${item.weight} ${item.unit.name}`,
         },
-
         {
             header: 'ფასი',
-            accessor: (item) => `${item.price}₾`,
+            accessor: (item) => {
+                const activeSale = getActiveSale(item);
+                const discountedPrice = calculateDiscountedPrice(item);
+
+                if (activeSale && discountedPrice !== null) {
+                    return (
+                        <div className="flex flex-col gap-1">
+                            <div className="flex items-center gap-2">
+                                <span className="line-through text-gray-400 text-sm">
+                                    {item.price}₾
+                                </span>
+                                <span className="font-semibold text-green-600">
+                                    {discountedPrice.toFixed(2)}₾
+                                </span>
+                            </div>
+                            <span className="text-xs text-red-500">
+                                {activeSale.type === 1 
+                                    ? `-${activeSale.amount}%` 
+                                    : `-${activeSale.amount}₾`
+                                }
+                            </span>
+                        </div>
+                    );
+                }
+
+                return <span>{item.price}₾</span>;
+            },
         },
         {
             header: 'შექმნის თარიღი',
             accessor: (item) => dayjs(item.created_at).format('MM-DD-YYYY'),
         },
     ];
+
     const contextMenuActions: ContextMenuAction<TGetProducts>[] = [
         {
             label: 'რედაქტირება',
@@ -82,14 +131,17 @@ const AdminProducts = () => {
             separator: true,
         },
     ];
+
     useEffect(() => {
         if (isSuccess) {
             closeDialog();
         }
     }, [isSuccess]);
+
     if (isPending) {
         return <Loading />;
     }
+
     return (
         <>
             <div className="flex mb-3 justify-end">
@@ -107,9 +159,9 @@ const AdminProducts = () => {
                 contextMenuActions={contextMenuActions}
             />
             <CPagination
-            page={page}
-            setPage={setPage}
-            totalPages={products?.pagination.totalPages!}
+                page={page}
+                setPage={setPage}
+                totalPages={products?.pagination.totalPages!}
             />
 
             {isOpen && <AddProduct data={selectedData} isOpen={isOpen} setIsOpen={setIsOpen} />}
