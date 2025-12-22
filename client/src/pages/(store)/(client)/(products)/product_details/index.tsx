@@ -78,17 +78,17 @@ const ProductDetails = () => {
             const discountedPrice = calculateDiscountedPrice(product);
             const originalPrice = parseFloat(product.price);
 
-            // dispatch(
-            //     addItemToCart({
-            //         product_uid: product.uid,
-            //         product_image: product.image || '',
-            //         has_sale: !!activeSale,
-            //         new_price: discountedPrice || originalPrice,
-            //         old_price: discountedPrice ? originalPrice : null,
-            //         product_name: product.name,
-            //         quantity: quantity,
-            //     })
-            // );
+            dispatch(
+                addItemToCart({
+                    product_uid: product.uid,
+                    product_image: product.image || '',
+                    has_sale: !!activeSale,
+                    new_price: discountedPrice || originalPrice,
+                    old_price: discountedPrice ? originalPrice : null,
+                    product_name: product.name,
+                    quantity: quantity,
+                })
+            );
         }
     };
 
@@ -113,7 +113,7 @@ const ProductDetails = () => {
                 </div>
             </div>
         );
-    }
+    };
 
     const activeSale = getActiveSale(product);
     const discountedPrice = calculateDiscountedPrice(product);
@@ -128,19 +128,17 @@ const ProductDetails = () => {
     const thumbnails = [product.image, product.image, product.image, product.image];
 
     return (
-        <div className="bg-gray-50 dark:bg-slate-950 min-h-screen py-6">
+        <div className=" min-h-screen py-6">
             <div className="container mx-auto ">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                    {/* Left - Image Gallery */}
-                    <div className="lg:col-span-7">
+                    <div className="lg:col-span-5">
                         <div className="bg-white dark:bg-slate-900 rounded-lg overflow-hidden">
-                            {/* Main Image */}
                             <div className="relative bg-white dark:bg-slate-900 p-8">
                                 {/* Badges */}
                                 {(isNew || activeSale) && (
                                     <div className="absolute top-4 left-4 z-10 flex gap-2">
                                         {discountPercent > 0 && (
-                                            <Badge className="bg-pink-500 text-white text-sm px-3 py-1">
+                                            <Badge className="bg-red-500 text-white text-sm px-3 py-1">
                                                 -{discountPercent}%
                                             </Badge>
                                         )}
@@ -179,7 +177,7 @@ const ProductDetails = () => {
                                         onClick={() => setSelectedImage(idx)}
                                         className={`w-20 h-20 border-2 rounded-lg overflow-hidden flex-shrink-0 ${
                                             selectedImage === idx
-                                                ? 'border-pink-500'
+                                                ? 'border-[#006FEAFF]'
                                                 : 'border-gray-200 dark:border-gray-700'
                                         }`}
                                     >
@@ -201,7 +199,7 @@ const ProductDetails = () => {
 
                         {/* Specifications Table */}
                         <div className="bg-white dark:bg-slate-900 rounded-lg overflow-hidden mt-6">
-                            <div className="bg-pink-500 text-white px-6 py-4">
+                            <div className="bg-[#006FEAFF] text-white px-6 py-4">
                                 <h2 className="text-xl font-semibold">პროდუქტის დეტალები</h2>
                             </div>
                             <div className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -252,7 +250,7 @@ const ProductDetails = () => {
                     </div>
 
                     {/* Right - Product Info */}
-                    <div className="lg:col-span-5">
+                    <div className="lg:col-span-7">
                         <div className="bg-white dark:bg-slate-900 rounded-lg p-6 sticky top-6">
                             {/* Title */}
                             <h1 className="text-2xl font-bold mb-3">{product.name}</h1>
@@ -281,11 +279,11 @@ const ProductDetails = () => {
                             <div className="h-px bg-gray-200 dark:bg-gray-700 mb-6" />
 
                             {/* Availability Notice */}
-                            <div className="bg-pink-50 dark:bg-pink-950 border-l-4 border-pink-500 p-4 mb-4">
+                            <div className="bg-blue-50 dark:bg-blue-950 border-l-4 border-[#006FEAFF] p-4 mb-4">
                                 <div className="flex items-start gap-2">
-                                    <Zap className="w-5 h-5 text-pink-500 flex-shrink-0 mt-0.5" />
+                                    <Zap className="w-5 h-5 text-[#006FEAFF] flex-shrink-0 mt-0.5" />
                                     <div className="text-sm">
-                                        <p className="font-semibold text-pink-700 dark:text-pink-300 mb-1">
+                                        <p className="font-semibold text-blue-700 dark:text-blue-300 mb-1">
                                             სწრაფი მიწოდება ყველა კომპონენტის შეძენა.
                                         </p>
                                     </div>
@@ -295,7 +293,7 @@ const ProductDetails = () => {
                             {/* Delivery Info */}
                             <div className="space-y-3 mb-6">
                                 <div className="flex items-start gap-3">
-                                    <MapPin className="w-5 h-5 text-pink-500 flex-shrink-0 mt-0.5" />
+                                    <MapPin className="w-5 h-5 text-[#006FEAFF] flex-shrink-0 mt-0.5" />
                                     <div className="text-sm">
                                         <p className="font-semibold">მისამართი:</p>
                                         <p className="text-gray-600 dark:text-gray-400">
@@ -333,7 +331,7 @@ const ProductDetails = () => {
                             {/* Price */}
                             <div className="mb-6">
                                 <div className="flex items-baseline gap-3 mb-2">
-                                    <span className="text-4xl font-bold text-pink-600">
+                                    <span className="text-4xl font-bold text-[#006FEAFF]">
                                         {finalPrice.toFixed(2)}₾
                                     </span>
                                     {discountedPrice && (
@@ -377,14 +375,14 @@ const ProductDetails = () => {
                             {/* Action Buttons */}
                             <div className="flex gap-3 mb-4">
                                 <Button
-                                    className="flex-1 h-14 bg-pink-500 hover:bg-pink-600 text-white text-base font-semibold"
+                                    className="flex-1 h-14 bg-[#006FEAFF] hover:bg-[#0056cc] text-white text-base font-semibold"
                                     disabled={!inStock}
                                     onClick={handleAddToCart}
                                 >
                                     კალათაში დამატება
                                 </Button>
                                 <Button
-                                    className="flex-1 h-14 bg-pink-600 hover:bg-pink-700 text-white text-base font-semibold"
+                                    className="flex-1 h-14 bg-[#0056cc] hover:bg-[#004099] text-white text-base font-semibold"
                                     disabled={!inStock}
                                 >
                                     ყიდვა
@@ -395,7 +393,7 @@ const ProductDetails = () => {
                             <div className="flex gap-2">
                                 <Button
                                     variant="outline"
-                                    className={`flex-1 h-12 ${isFavorite ? 'border-pink-500 text-pink-500' : ''}`}
+                                    className={`flex-1 h-12 ${isFavorite ? 'border-[#006FEAFF] text-[#006FEAFF]' : ''}`}
                                     onClick={() => setIsFavorite(!isFavorite)}
                                 >
                                     <Heart className={`w-4 h-4 mr-2 ${isFavorite ? 'fill-current' : ''}`} />
@@ -405,6 +403,184 @@ const ProductDetails = () => {
                                     <Share2 className="w-4 h-4 mr-2" />
                                     გაზიარება
                                 </Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Reviews Section */}
+                <div className="mt-8">
+                    <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
+                        {/* Reviews Header */}
+                        <div className="flex items-center justify-between mb-6 pb-4 border-b">
+                            <div className="flex items-center gap-4">
+                                <h2 className="text-2xl font-semibold">0 მიმოხილვა</h2>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-2xl font-semibold">5.0</span>
+                                    <div className="flex">
+                                        {[1, 2, 3, 4, 5].map((star) => (
+                                            <Star key={star} className="w-5 h-5 fill-black text-black dark:fill-white dark:text-white" />
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-2 bg-green-50 dark:bg-green-950 px-4 py-2 rounded-lg">
+                                <Shield className="w-5 h-5 text-green-600" />
+                                <span className="text-sm text-green-600 font-medium">ყველა მიმოხილვა დადასტურებული შესყიდვებიდან</span>
+                            </div>
+                        </div>
+
+                        {/* Filter Tags */}
+                        <div className="flex gap-2 mb-6">
+                            <Badge variant="outline" className="rounded-full px-4 py-1">
+                                შესანიშნავი ხარისხი(1)
+                            </Badge>
+                            <Badge variant="outline" className="rounded-full px-4 py-1">
+                                სწრაფი მიწოდება(1)
+                            </Badge>
+                            <Badge variant="outline" className="rounded-full px-4 py-1">
+                                საჩუქრად შესაფერისი(1)
+                            </Badge>
+                        </div>
+
+                        {/* Reviews List */}
+                        <div className="space-y-6">
+                            {/* Empty State - Remove this when you have reviews */}
+                            <div className="text-center py-12">
+                                <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                                <p className="text-gray-500">ჯერ არ არის შეფასებები</p>
+                                <p className="text-sm text-gray-400 mt-2">იყავი პირველი, ვინც შეაფასებს ამ პროდუქტს</p>
+                            </div>
+
+                            {/* Example Review 1 - Remove 'hidden' class when showing real reviews */}
+                            <div className="border-b pb-6 last:border-b-0 hidden">
+                                <div className="flex gap-4">
+                                    {/* Avatar */}
+                                    <div className="w-10 h-10 rounded-full bg-teal-600 text-white flex items-center justify-center font-semibold flex-shrink-0">
+                                        M
+                                    </div>
+                                    
+                                    <div className="flex-1">
+                                        {/* User Info */}
+                                        <div className="mb-2">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <h4 className="font-semibold">MoCharani</h4>
+                                                <span className="text-sm">in</span>
+                                                <span className="text-sm">🇬🇧</span>
+                                                <span className="text-sm text-gray-500">on Dec 18, 2025</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <div className="flex">
+                                                    {[1, 2, 3, 4, 5].map((star) => (
+                                                        <Star key={star} className="w-4 h-4 fill-black text-black dark:fill-white dark:text-white" />
+                                                    ))}
+                                                </div>
+                                                <span className="text-lg">😍</span>
+                                            </div>
+                                        </div>
+                                        
+                                        {/* Review Text */}
+                                        <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                                            Real good heavy product looks really good for the money not light so it's looking A1* hopefully it's like that on Christmas Day🤞
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Example Review 2 */}
+                            <div className="border-b pb-6 last:border-b-0 hidden">
+                                <div className="flex gap-4">
+                                    <div className="w-10 h-10 rounded-full bg-gray-400 text-white flex items-center justify-center font-semibold flex-shrink-0">
+                                        M
+                                    </div>
+                                    
+                                    <div className="flex-1">
+                                        <div className="mb-2">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <h4 className="font-semibold">ma***82</h4>
+                                                <span className="text-sm">in</span>
+                                                <span className="text-sm">🇵🇱</span>
+                                                <span className="text-sm text-gray-500">on Dec 12, 2025</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <div className="flex">
+                                                    {[1, 2, 3, 4, 5].map((star) => (
+                                                        <Star key={star} className="w-4 h-4 fill-black text-black dark:fill-white dark:text-white" />
+                                                    ))}
+                                                </div>
+                                                <span className="text-lg">😍</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                                            Everything is fine. The mouse is nice-looking. I haven't tested it yet because it's one of the gifts for my son, but it seems sturdy
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Example Review 3 */}
+                            <div className="border-b pb-6 last:border-b-0 hidden">
+                                <div className="flex gap-4">
+                                    <div className="w-10 h-10 rounded-full bg-teal-700 text-white flex items-center justify-center font-semibold flex-shrink-0">
+                                        O
+                                    </div>
+                                    
+                                    <div className="flex-1">
+                                        <div className="mb-2">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <h4 className="font-semibold">Olexand</h4>
+                                                <span className="text-sm">in</span>
+                                                <span className="text-sm">🇺🇦</span>
+                                                <span className="text-sm text-gray-500">on Dec 17, 2025</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <div className="flex">
+                                                    {[1, 2, 3, 4, 5].map((star) => (
+                                                        <Star key={star} className="w-4 h-4 fill-black text-black dark:fill-white dark:text-white" />
+                                                    ))}
+                                                </div>
+                                                <span className="text-lg">😍</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                                            Great packaging from the seller. It's packed in an additional branded box. Excellent protection and a great first impression
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Example Review 4 */}
+                            <div className="border-b pb-6 last:border-b-0 hidden">
+                                <div className="flex gap-4">
+                                    <div className="w-10 h-10 rounded-full bg-gray-400 text-white flex items-center justify-center font-semibold flex-shrink-0">
+                                        I
+                                    </div>
+                                    
+                                    <div className="flex-1">
+                                        <div className="mb-2">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <h4 className="font-semibold">Ir***st</h4>
+                                                <span className="text-sm">in</span>
+                                                <span className="text-sm">🇦🇪</span>
+                                                <span className="text-sm text-gray-500">on Dec 17, 2025</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <div className="flex">
+                                                    {[1, 2, 3, 4, 5].map((star) => (
+                                                        <Star key={star} className="w-4 h-4 fill-black text-black dark:fill-white dark:text-white" />
+                                                    ))}
+                                                </div>
+                                                <span className="text-lg">😍</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                                            attack shark mice are good overall, this color is just as good for putting it at that price
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

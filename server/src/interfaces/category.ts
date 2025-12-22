@@ -10,6 +10,7 @@ export interface IProduct {
   description?: string;       // optional
   stock?: number;             // optional
   category_uid?: number | null; // nullable and optional
+  brand_uid: number
   weight: number;             // required
   price: number;              // required
   unit: number;               // required, must be at least 1 char
