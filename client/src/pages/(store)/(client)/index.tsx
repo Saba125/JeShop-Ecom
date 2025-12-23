@@ -5,6 +5,7 @@ import FeaturedProductsSection from '@/components/common/featured-products-secti
 import FeaturesSection from '@/components/common/features-section';
 import BrandsSection from '@/components/common/brands-section';
 import NewsLetterSection from '@/components/common/newsletter-section';
+import SaleProductsSection from '@/components/common/sale-products-section';
 
 export default function MainPage() {
     return (
@@ -29,6 +30,14 @@ export default function MainPage() {
                 <FeaturedProductsSection />
             </motion.div>
 
+            <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+            >
+                <SaleProductsSection />
+            </motion.div>
             <motion.div
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}

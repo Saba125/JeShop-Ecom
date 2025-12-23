@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { TrendingUp, ShoppingCart, Heart, Eye, Star, Zap, Sparkles } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -27,23 +27,19 @@ const FeaturedProductsSection = () => {
         return product.sales_items?.find((sale) => sale.is_active === 1);
     };
 
-    // Calculate discounted price based on sale type
     const calculateDiscountedPrice = (product: TGetProducts) => {
         const activeSale = getActiveSale(product);
         if (!activeSale) return null;
 
         const price = parseFloat(product.price);
         if (activeSale.type === 1) {
-            // Percentage discount
             return price - (price * activeSale.amount) / 100;
         } else if (activeSale.type === 2) {
-            // Fixed amount discount in GEL
             return price - activeSale.amount;
         }
         return null;
     };
 
-    // Get discount percentage or amount
     const getDiscountDisplay = (product: TGetProducts) => {
         const activeSale = getActiveSale(product);
         if (!activeSale) return null;
@@ -56,18 +52,6 @@ const FeaturedProductsSection = () => {
         return null;
     };
 
-    const getBadgeStyle = (type: string) => {
-        switch (type) {
-            case 'bestseller':
-                return 'bg-amber-500 text-white hover:bg-amber-600';
-            case 'new':
-                return 'bg-blue-500 text-white hover:bg-blue-600';
-            case 'sale':
-                return 'bg-red-500 text-white hover:bg-red-600';
-            default:
-                return 'bg-slate-500 text-white';
-        }
-    };
 
     if (isPending) {
         return (
@@ -186,7 +170,7 @@ const FeaturedProductsSection = () => {
                                 {/* Category and Brand */}
                                 <div className="flex items-center gap-2 mb-2">
                                     <Badge variant="outline" className="text-xs">
-                                        {product.category.name}
+                                        {product?.category.name}
                                     </Badge>
                                     {product.brand && (
                                         <Badge variant="outline" className="text-xs">

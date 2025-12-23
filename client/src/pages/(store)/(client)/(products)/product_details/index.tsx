@@ -10,7 +10,6 @@ import {
     Plus,
     Minus,
     Package,
-    Truck,
     Shield,
     MapPin,
     Clock,
@@ -21,23 +20,25 @@ import {
 } from 'lucide-react';
 import { API_URL } from '@/constants';
 import { useDispatch } from 'react-redux';
-import { addItemToCart } from '@/store/cartSlice';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import type { TGetProducts } from '@/types';
+import { useGetSimilarProducts } from '@/api/products/get_similar';
 
 const ProductDetails = () => {
     const params = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { data: product, isLoading } = useGetSingleProduct(Number(params.uid));
-    
+    const { data: similarProducts, isLoading: isSimilarLoading } = useGetSimilarProducts(
+        Number(params.uid)
+    );
     const [quantity, setQuantity] = useState(1);
     const [isFavorite, setIsFavorite] = useState(false);
     const [selectedImage, setSelectedImage] = useState(0);
 
     const getActiveSale = (product: TGetProducts) => {
-        return product.sales_items?.find(sale => sale.is_active === 1);
+        return product.sales_items?.find((sale) => sale.is_active === 1);
     };
 
     const calculateDiscountedPrice = (product: TGetProducts) => {
@@ -46,7 +47,7 @@ const ProductDetails = () => {
 
         const price = parseFloat(product.price);
         if (activeSale.type === 1) {
-            return price - (price * activeSale.amount / 100);
+            return price - (price * activeSale.amount) / 100;
         } else if (activeSale.type === 2) {
             return price - activeSale.amount;
         }
@@ -78,17 +79,17 @@ const ProductDetails = () => {
             const discountedPrice = calculateDiscountedPrice(product);
             const originalPrice = parseFloat(product.price);
 
-            dispatch(
-                addItemToCart({
-                    product_uid: product.uid,
-                    product_image: product.image || '',
-                    has_sale: !!activeSale,
-                    new_price: discountedPrice || originalPrice,
-                    old_price: discountedPrice ? originalPrice : null,
-                    product_name: product.name,
-                    quantity: quantity,
-                })
-            );
+            // dispatch(
+            //     addItemToCart({
+            //         product_uid: product.uid,
+            //         product_image: product.image || '',
+            //         has_sale: !!activeSale,
+            //         new_price: discountedPrice || originalPrice,
+            //         old_price: discountedPrice ? originalPrice : null,
+            //         product_name: product.name,
+            //         quantity: quantity,
+            //     })
+            // );
         }
     };
 
@@ -107,14 +108,13 @@ const ProductDetails = () => {
             <div className="container mx-auto px-4 py-8">
                 <div className="flex flex-col items-center justify-center h-64">
                     <p className="text-xl font-semibold mb-3">პროდუქტი არ მოიძებნა</p>
-                    <Button onClick={() => navigate('/')}>
-                        მთავარ გვერდზე დაბრუნება
-                    </Button>
+                    <Button onClick={() => navigate('/')}>მთავარ გვერდზე დაბრუნება</Button>
                 </div>
             </div>
         );
-    };
+    }
 
+    // Move ALL these calculations AFTER the checks above:
     const activeSale = getActiveSale(product);
     const discountedPrice = calculateDiscountedPrice(product);
     const discountDisplay = getDiscountDisplay(product);
@@ -122,11 +122,12 @@ const ProductDetails = () => {
     const inStock = product.stock > 0;
     const isNew = isNewProduct(product);
     const finalPrice = discountedPrice || originalPrice;
-    const discountPercent = discountedPrice ? Math.round(((originalPrice - finalPrice) / originalPrice) * 100) : 0;
+    const discountPercent = discountedPrice
+        ? Math.round(((originalPrice - finalPrice) / originalPrice) * 100)
+        : 0;
 
-    // Mock thumbnails (in real app, you'd have multiple images)
+    // NOW it's safe to create thumbnails array
     const thumbnails = [product.image, product.image, product.image, product.image];
-
     return (
         <div className=" min-h-screen py-6">
             <div className="container mx-auto ">
@@ -168,7 +169,6 @@ const ProductDetails = () => {
                                     )}
                                 </div>
                             </div>
-
                             {/* Thumbnails */}
                             <div className="flex gap-2 p-4 bg-gray-50 dark:bg-slate-800">
                                 {thumbnails.map((thumb, idx) => (
@@ -208,7 +208,7 @@ const ProductDetails = () => {
                                         კატეგორია
                                     </div>
                                     <div className="col-span-2 text-gray-900 dark:text-white">
-                                        {product.category.name}
+                                        {product?.category?.name}
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-3 px-6 py-4 bg-gray-50 dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700">
@@ -224,7 +224,7 @@ const ProductDetails = () => {
                                         წონა
                                     </div>
                                     <div className="col-span-2 text-gray-900 dark:text-white">
-                                        {product.weight} {product.unit.name}
+                                        {product.weight} {product?.unit?.name}
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-3 px-6 py-4 bg-gray-50 dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700">
@@ -232,8 +232,12 @@ const ProductDetails = () => {
                                         მარაგი
                                     </div>
                                     <div className="col-span-2">
-                                        <span className={`font-semibold ${inStock ? 'text-green-600' : 'text-red-600'}`}>
-                                            {inStock ? `${product.stock} ცალი მარაგშია` : 'ამოიწურა'}
+                                        <span
+                                            className={`font-semibold ${inStock ? 'text-green-600' : 'text-red-600'}`}
+                                        >
+                                            {inStock
+                                                ? `${product.stock} ცალი მარაგშია`
+                                                : 'ამოიწურა'}
                                         </span>
                                     </div>
                                 </div>
@@ -257,7 +261,9 @@ const ProductDetails = () => {
 
                             {/* Brand */}
                             <div className="flex items-center gap-2 mb-4">
-                                <span className="text-sm text-gray-600 dark:text-gray-400">ბრენდი:</span>
+                                <span className="text-sm text-gray-600 dark:text-gray-400">
+                                    ბრენდი:
+                                </span>
                                 <span className="text-sm font-semibold text-[#006FEAFF]">
                                     {product.brand?.name || 'N/A'}
                                 </span>
@@ -265,9 +271,11 @@ const ProductDetails = () => {
 
                             {/* Category & Tags */}
                             <div className="flex items-center gap-2 mb-4">
-                                <span className="text-sm text-gray-600 dark:text-gray-400">კატეგორია:</span>
+                                <span className="text-sm text-gray-600 dark:text-gray-400">
+                                    კატეგორია:
+                                </span>
                                 <Badge variant="outline" className="text-sm">
-                                    {product.category.name}
+                                    {product.category?.name}
                                 </Badge>
                             </div>
 
@@ -308,22 +316,29 @@ const ProductDetails = () => {
                                 <div className="flex items-center gap-3">
                                     <div className="flex items-center gap-2 text-sm">
                                         <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                                        <span className="font-semibold text-green-600">გარანტია: 1 წელი</span>
+                                        <span className="font-semibold text-green-600">
+                                            გარანტია: 1 წელი
+                                        </span>
                                     </div>
                                 </div>
 
                                 <div className="flex items-start gap-3">
                                     <Clock className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" />
                                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                                        სამუშაო საათები: ყოველდღე (კვირის გარდა) 11:00-დან 20:00 საათამდე
+                                        სამუშაო საათები: ყოველდღე (კვირის გარდა) 11:00-დან 20:00
+                                        საათამდე
                                     </p>
                                 </div>
                             </div>
 
                             {/* Delivery Tags */}
                             <div className="flex gap-2 mb-6">
-                                <Badge variant="outline" className="text-xs">საქართველო</Badge>
-                                <Badge variant="outline" className="text-xs">ტექნოლოგია</Badge>
+                                <Badge variant="outline" className="text-xs">
+                                    საქართველო
+                                </Badge>
+                                <Badge variant="outline" className="text-xs">
+                                    ტექნოლოგია
+                                </Badge>
                             </div>
 
                             <div className="h-px bg-gray-200 dark:bg-gray-700 mb-6" />
@@ -363,7 +378,9 @@ const ProductDetails = () => {
                                         <Button
                                             variant="ghost"
                                             className="h-12 px-4 rounded-none hover:bg-gray-100 dark:hover:bg-slate-800"
-                                            onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
+                                            onClick={() =>
+                                                setQuantity(Math.min(product.stock, quantity + 1))
+                                            }
                                             disabled={quantity >= product.stock}
                                         >
                                             <Plus className="w-4 h-4" />
@@ -396,7 +413,9 @@ const ProductDetails = () => {
                                     className={`flex-1 h-12 ${isFavorite ? 'border-[#006FEAFF] text-[#006FEAFF]' : ''}`}
                                     onClick={() => setIsFavorite(!isFavorite)}
                                 >
-                                    <Heart className={`w-4 h-4 mr-2 ${isFavorite ? 'fill-current' : ''}`} />
+                                    <Heart
+                                        className={`w-4 h-4 mr-2 ${isFavorite ? 'fill-current' : ''}`}
+                                    />
                                     რჩეულებში
                                 </Button>
                                 <Button variant="outline" className="flex-1 h-12">
@@ -419,14 +438,19 @@ const ProductDetails = () => {
                                     <span className="text-2xl font-semibold">5.0</span>
                                     <div className="flex">
                                         {[1, 2, 3, 4, 5].map((star) => (
-                                            <Star key={star} className="w-5 h-5 fill-black text-black dark:fill-white dark:text-white" />
+                                            <Star
+                                                key={star}
+                                                className="w-5 h-5 fill-black text-black dark:fill-white dark:text-white"
+                                            />
                                         ))}
                                     </div>
                                 </div>
                             </div>
                             <div className="flex items-center gap-2 bg-green-50 dark:bg-green-950 px-4 py-2 rounded-lg">
                                 <Shield className="w-5 h-5 text-green-600" />
-                                <span className="text-sm text-green-600 font-medium">ყველა მიმოხილვა დადასტურებული შესყიდვებიდან</span>
+                                <span className="text-sm text-green-600 font-medium">
+                                    ყველა მიმოხილვა დადასტურებული შესყიდვებიდან
+                                </span>
                             </div>
                         </div>
 
@@ -449,7 +473,9 @@ const ProductDetails = () => {
                             <div className="text-center py-12">
                                 <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                                 <p className="text-gray-500">ჯერ არ არის შეფასებები</p>
-                                <p className="text-sm text-gray-400 mt-2">იყავი პირველი, ვინც შეაფასებს ამ პროდუქტს</p>
+                                <p className="text-sm text-gray-400 mt-2">
+                                    იყავი პირველი, ვინც შეაფასებს ამ პროდუქტს
+                                </p>
                             </div>
 
                             {/* Example Review 1 - Remove 'hidden' class when showing real reviews */}
@@ -459,7 +485,7 @@ const ProductDetails = () => {
                                     <div className="w-10 h-10 rounded-full bg-teal-600 text-white flex items-center justify-center font-semibold flex-shrink-0">
                                         M
                                     </div>
-                                    
+
                                     <div className="flex-1">
                                         {/* User Info */}
                                         <div className="mb-2">
@@ -467,21 +493,28 @@ const ProductDetails = () => {
                                                 <h4 className="font-semibold">MoCharani</h4>
                                                 <span className="text-sm">in</span>
                                                 <span className="text-sm">🇬🇧</span>
-                                                <span className="text-sm text-gray-500">on Dec 18, 2025</span>
+                                                <span className="text-sm text-gray-500">
+                                                    on Dec 18, 2025
+                                                </span>
                                             </div>
                                             <div className="flex items-center gap-2">
                                                 <div className="flex">
                                                     {[1, 2, 3, 4, 5].map((star) => (
-                                                        <Star key={star} className="w-4 h-4 fill-black text-black dark:fill-white dark:text-white" />
+                                                        <Star
+                                                            key={star}
+                                                            className="w-4 h-4 fill-black text-black dark:fill-white dark:text-white"
+                                                        />
                                                     ))}
                                                 </div>
                                                 <span className="text-lg">😍</span>
                                             </div>
                                         </div>
-                                        
+
                                         {/* Review Text */}
                                         <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                                            Real good heavy product looks really good for the money not light so it's looking A1* hopefully it's like that on Christmas Day🤞
+                                            Real good heavy product looks really good for the money
+                                            not light so it's looking A1* hopefully it's like that
+                                            on Christmas Day🤞
                                         </p>
                                     </div>
                                 </div>
@@ -493,27 +526,34 @@ const ProductDetails = () => {
                                     <div className="w-10 h-10 rounded-full bg-gray-400 text-white flex items-center justify-center font-semibold flex-shrink-0">
                                         M
                                     </div>
-                                    
+
                                     <div className="flex-1">
                                         <div className="mb-2">
                                             <div className="flex items-center gap-2 mb-1">
                                                 <h4 className="font-semibold">ma***82</h4>
                                                 <span className="text-sm">in</span>
                                                 <span className="text-sm">🇵🇱</span>
-                                                <span className="text-sm text-gray-500">on Dec 12, 2025</span>
+                                                <span className="text-sm text-gray-500">
+                                                    on Dec 12, 2025
+                                                </span>
                                             </div>
                                             <div className="flex items-center gap-2">
                                                 <div className="flex">
                                                     {[1, 2, 3, 4, 5].map((star) => (
-                                                        <Star key={star} className="w-4 h-4 fill-black text-black dark:fill-white dark:text-white" />
+                                                        <Star
+                                                            key={star}
+                                                            className="w-4 h-4 fill-black text-black dark:fill-white dark:text-white"
+                                                        />
                                                     ))}
                                                 </div>
                                                 <span className="text-lg">😍</span>
                                             </div>
                                         </div>
-                                        
+
                                         <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                                            Everything is fine. The mouse is nice-looking. I haven't tested it yet because it's one of the gifts for my son, but it seems sturdy
+                                            Everything is fine. The mouse is nice-looking. I haven't
+                                            tested it yet because it's one of the gifts for my son,
+                                            but it seems sturdy
                                         </p>
                                     </div>
                                 </div>
@@ -525,27 +565,34 @@ const ProductDetails = () => {
                                     <div className="w-10 h-10 rounded-full bg-teal-700 text-white flex items-center justify-center font-semibold flex-shrink-0">
                                         O
                                     </div>
-                                    
+
                                     <div className="flex-1">
                                         <div className="mb-2">
                                             <div className="flex items-center gap-2 mb-1">
                                                 <h4 className="font-semibold">Olexand</h4>
                                                 <span className="text-sm">in</span>
                                                 <span className="text-sm">🇺🇦</span>
-                                                <span className="text-sm text-gray-500">on Dec 17, 2025</span>
+                                                <span className="text-sm text-gray-500">
+                                                    on Dec 17, 2025
+                                                </span>
                                             </div>
                                             <div className="flex items-center gap-2">
                                                 <div className="flex">
                                                     {[1, 2, 3, 4, 5].map((star) => (
-                                                        <Star key={star} className="w-4 h-4 fill-black text-black dark:fill-white dark:text-white" />
+                                                        <Star
+                                                            key={star}
+                                                            className="w-4 h-4 fill-black text-black dark:fill-white dark:text-white"
+                                                        />
                                                     ))}
                                                 </div>
                                                 <span className="text-lg">😍</span>
                                             </div>
                                         </div>
-                                        
+
                                         <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                                            Great packaging from the seller. It's packed in an additional branded box. Excellent protection and a great first impression
+                                            Great packaging from the seller. It's packed in an
+                                            additional branded box. Excellent protection and a great
+                                            first impression
                                         </p>
                                     </div>
                                 </div>
@@ -557,33 +604,203 @@ const ProductDetails = () => {
                                     <div className="w-10 h-10 rounded-full bg-gray-400 text-white flex items-center justify-center font-semibold flex-shrink-0">
                                         I
                                     </div>
-                                    
+
                                     <div className="flex-1">
                                         <div className="mb-2">
                                             <div className="flex items-center gap-2 mb-1">
                                                 <h4 className="font-semibold">Ir***st</h4>
                                                 <span className="text-sm">in</span>
                                                 <span className="text-sm">🇦🇪</span>
-                                                <span className="text-sm text-gray-500">on Dec 17, 2025</span>
+                                                <span className="text-sm text-gray-500">
+                                                    on Dec 17, 2025
+                                                </span>
                                             </div>
                                             <div className="flex items-center gap-2">
                                                 <div className="flex">
                                                     {[1, 2, 3, 4, 5].map((star) => (
-                                                        <Star key={star} className="w-4 h-4 fill-black text-black dark:fill-white dark:text-white" />
+                                                        <Star
+                                                            key={star}
+                                                            className="w-4 h-4 fill-black text-black dark:fill-white dark:text-white"
+                                                        />
                                                     ))}
                                                 </div>
                                                 <span className="text-lg">😍</span>
                                             </div>
                                         </div>
-                                        
+
                                         <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                                            attack shark mice are good overall, this color is just as good for putting it at that price
+                                            attack shark mice are good overall, this color is just
+                                            as good for putting it at that price
                                         </p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+
+                {/* Similar Products Section */}
+                <div className="mt-8">
+                    <div className="mb-6">
+                        <h2 className="text-2xl font-bold mb-2">მსგავსი პროდუქტები</h2>
+                        <p className="text-gray-600 dark:text-gray-400">
+                            იხილეთ სხვა პროდუქტები იმავე კატეგორიიდან
+                        </p>
+                    </div>
+
+                    {isSimilarLoading ? (
+                        <div className="flex items-center justify-center h-64">
+                            <div className="text-muted-foreground">იტვირთება...</div>
+                        </div>
+                    ) : similarProducts && similarProducts.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {similarProducts.map((similarProduct) => {
+                                const simActiveSale = getActiveSale(similarProduct);
+                                const simDiscountedPrice = calculateDiscountedPrice(similarProduct);
+                                const simDiscountDisplay = getDiscountDisplay(similarProduct);
+                                const simOriginalPrice = parseFloat(similarProduct.price);
+                                const simInStock = similarProduct.stock > 0;
+                                const simIsNew = isNewProduct(similarProduct);
+                                const simFinalPrice = simDiscountedPrice || simOriginalPrice;
+                                const pLink = similarProduct.name
+                                    .toLowerCase()
+                                    .trim()
+                                    .replace(/\s+/g, '-');
+                                return (
+                                    <div
+                                        key={similarProduct.uid}
+                                        className="group bg-white dark:bg-slate-900 rounded-lg overflow-hidden border-2 hover:border-[#006FEAFF] transition-all duration-300 hover:shadow-xl cursor-pointer"
+                                        onClick={() => navigate(`/product/${pLink}/${similarProduct.uid}`)}
+                                    >
+                                        {/* Image */}
+                                        <div className="relative h-64 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 overflow-hidden">
+                                            {/* Badges */}
+                                            <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
+                                                {simIsNew && (
+                                                    <Badge className="bg-blue-500 text-white shadow-lg text-xs">
+                                                        <Sparkles className="w-3 h-3 mr-1" />
+                                                        ახალი
+                                                    </Badge>
+                                                )}
+                                                {simActiveSale && simDiscountDisplay && (
+                                                    <Badge className="bg-red-500 text-white shadow-lg text-xs">
+                                                        <Zap className="w-3 h-3 mr-1" />-
+                                                        {simDiscountDisplay}
+                                                    </Badge>
+                                                )}
+                                            </div>
+
+                                            {/* Product Image */}
+                                            <div className="absolute inset-0 flex items-center justify-center p-4">
+                                                {similarProduct.image ? (
+                                                    <img
+                                                        src={`${API_URL}${similarProduct.image}`}
+                                                        alt={similarProduct.name}
+                                                        className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-300"
+                                                    />
+                                                ) : (
+                                                    <Package className="w-20 h-20 text-slate-300" />
+                                                )}
+                                            </div>
+
+                                            {/* Gradient Overlay */}
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                                            {/* Out of Stock */}
+                                            {!simInStock && (
+                                                <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                                                    <Badge
+                                                        variant="secondary"
+                                                        className="text-lg px-4 py-2"
+                                                    >
+                                                        არ არის მარაგში
+                                                    </Badge>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Content */}
+                                        <div className="p-4">
+                                            {/* Category and Brand */}
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <Badge variant="outline" className="text-xs">
+                                                    {similarProduct?.category?.name}
+                                                </Badge>
+                                                {similarProduct.brand && (
+                                                    <Badge variant="outline" className="text-xs">
+                                                        {similarProduct.brand.name}
+                                                    </Badge>
+                                                )}
+                                            </div>
+
+                                            {/* Product Name */}
+                                            <h3 className="font-semibold text-base mb-2 line-clamp-2 group-hover:text-[#006FEAFF] transition-colors">
+                                                {similarProduct.name}
+                                            </h3>
+
+                                            {/* Weight/Unit */}
+                                            <p className="text-xs text-muted-foreground mb-3">
+                                                {similarProduct.weight} {similarProduct?.unit?.name}
+                                            </p>
+
+                                            {/* Price */}
+                                            <div className="flex items-center gap-2 mb-3">
+                                                {simDiscountedPrice ? (
+                                                    <>
+                                                        <span className="text-2xl font-bold text-[#006FEAFF]">
+                                                            {simFinalPrice.toFixed(2)}₾
+                                                        </span>
+                                                        <span className="text-sm text-muted-foreground line-through">
+                                                            {simOriginalPrice.toFixed(2)}₾
+                                                        </span>
+                                                    </>
+                                                ) : (
+                                                    <span className="text-2xl font-bold text-[#006FEAFF]">
+                                                        {simOriginalPrice.toFixed(2)}₾
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            {/* Add to Cart Button */}
+                                            <Button
+                                                className="w-full group/btn relative overflow-hidden bg-[#006FEAFF] hover:bg-[#0056cc]"
+                                                size="sm"
+                                                disabled={!simInStock}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    // if (simInStock) {
+                                                    //     dispatch(
+                                                    //         addItemToCart({
+                                                    //             product_uid: similarProduct.uid,
+                                                    //             product_image: similarProduct.image || '',
+                                                    //             has_sale: !!simActiveSale,
+                                                    //             new_price: simFinalPrice,
+                                                    //             old_price: simDiscountedPrice ? simOriginalPrice : null,
+                                                    //             product_name: similarProduct.name,
+                                                    //             quantity: 1,
+                                                    //         })
+                                                    //     );
+                                                    // }
+                                                }}
+                                            >
+                                                <span className="relative z-10 flex items-center justify-center gap-2">
+                                                    <ShoppingCart className="w-4 h-4" />
+                                                    {simInStock
+                                                        ? 'კალათაში დამატება'
+                                                        : 'არ არის მარაგში'}
+                                                </span>
+                                            </Button>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <div className="text-center py-12 bg-white dark:bg-slate-900 rounded-lg">
+                            <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                            <p className="text-gray-500">მსგავსი პროდუქტები არ მოიძებნა</p>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

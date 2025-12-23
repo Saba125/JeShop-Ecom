@@ -8,7 +8,6 @@ import { deleteImage } from "../../../config/multer";
 const updateBrand = async (req: Request, res: Response) => {
   const db: IDbTools = req.app.locals.db;
   const body = req.body;
-  console.log(body);
   const validate = validateSchema(brandSchema, body);
   if (!validate.success) {
     return helpers.sendError(res, validate.error);

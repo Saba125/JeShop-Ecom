@@ -70,7 +70,6 @@ const getSingleProduct = async (req: Request, res: Response) => {
   if (!dbRes) {
     return helpers.sendError(res, "მსგავსი პროდუქტი ვერ მოიძებნა");
   }
-  console.log(dbRes);
   helpers.sendSuccess(res, dbRes);
 };
 export default getSingleProduct;
