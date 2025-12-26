@@ -1,28 +1,46 @@
 import { useState } from 'react';
-import { TrendingUp, ShoppingCart, Heart, Eye, Star, Zap, Sparkles } from 'lucide-react';
+import { TrendingUp, ShoppingCart, Heart, Eye, Sparkles } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { addItemToCart } from '@/store/cartSlice';
-import { useDispatch } from 'react-redux';
+import { addItemToWishlist } from '@/store/wishListSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import { useGetProducts } from '@/api/products/get';
 import { API_URL } from '@/constants';
 import type { TGetProducts } from '@/types';
 import { useNavigate } from 'react-router-dom';
-
+import type { RootState } from '@/store/store';
 const FeaturedProductsSection = () => {
     const { data: products, isPending } = useGetProducts();
     const [hoveredId, setHoveredId] = useState<number | null>(null);
     const [favorites, setFavorites] = useState<number[]>([]);
+    const wishlist = useSelector((state: RootState) => state.wishlist.products);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const toggleFavorite = (id: number) => {
+    const toggleFavorite = (product: TGetProducts) => {
+        const discountedPrice = calculateDiscountedPrice(product);
+        const activeSale = getActiveSale(product);
+        const originalPrice = parseFloat(product.price);
         setFavorites((prev) =>
-            prev.includes(id) ? prev.filter((fav) => fav !== id) : [...prev, id]
+            prev.includes(product.uid)
+                ? prev.filter((fav) => fav !== product.uid)
+                : [...prev, product.uid]
+        );
+        dispatch(
+            addItemToWishlist({
+                product_uid: product.uid,
+                product_image: product.image || '',
+                has_sale: !!activeSale,
+                new_price: discountedPrice || originalPrice,
+                old_price: discountedPrice ? originalPrice : null,
+                product_name: product.name,
+                quantity: 1,
+                stock: product.stock,
+            })
         );
     };
 
-    // Get active sale for a product
     const getActiveSale = (product: TGetProducts) => {
         return product.sales_items?.find((sale) => sale.is_active === 1);
     };
@@ -51,7 +69,6 @@ const FeaturedProductsSection = () => {
         }
         return null;
     };
-
 
     if (isPending) {
         return (
@@ -127,7 +144,7 @@ const FeaturedProductsSection = () => {
                                         className={`rounded-full shadow-lg ${isFavorite ? 'bg-red-500 text-white hover:bg-red-600' : ''}`}
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            toggleFavorite(product.uid);
+                                            toggleFavorite(product);
                                         }}
                                     >
                                         <Heart

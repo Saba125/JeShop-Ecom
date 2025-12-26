@@ -1,11 +1,10 @@
 import CFlex from '../ui/flex';
-import { ShoppingCart, Plus, Minus, Trash2, X } from 'lucide-react';
+import { ShoppingCart, Plus, Minus, X } from 'lucide-react';
 import {
     Sheet,
     SheetClose,
     SheetContent,
     SheetDescription,
-    SheetFooter,
     SheetHeader,
     SheetTitle,
     SheetTrigger,
@@ -17,24 +16,26 @@ import type { RootState } from '@/store/store';
 import { useSelector, useDispatch } from 'react-redux';
 import { API_URL } from '@/constants';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import type { CartItems } from '@/types';
 import { removeItemFromCart, updateItemQuantity } from '@/store/cartSlice';
 
 const Cart = () => {
     const cart = useSelector((state: RootState) => state.cart);
     const dispatch = useDispatch();
-    
+
     const cartItems = cart.products.reduce((total, item) => total + item.quantity, 0);
-    const cartTotal = cart.products.reduce((total, item) => total + (item.new_price * item.quantity), 0);
+    const cartTotal = cart.products.reduce(
+        (total, item) => total + item.new_price * item.quantity,
+        0
+    );
     const cartSavings = cart.products.reduce((total, item) => {
         if (item.has_sale && item.old_price) {
-            return total + ((item.old_price - item.new_price) * item.quantity);
+            return total + (item.old_price - item.new_price) * item.quantity;
         }
         return total;
     }, 0);
 
-    const handleQuantityChange = (productUid: number, method: "minus" | "plus") => {
-            dispatch(updateItemQuantity({method, product_uid: productUid}))
+    const handleQuantityChange = (productUid: number, method: 'minus' | 'plus') => {
+        dispatch(updateItemQuantity({ method, product_uid: productUid }));
     };
 
     const handleRemoveItem = (productUid: number) => {
@@ -66,7 +67,7 @@ const Cart = () => {
                     </div>
                 </CFlex>
             </SheetTrigger>
-            
+
             <SheetContent side="right" className="w-full max-w-md flex flex-col p-0">
                 <SheetHeader className="px-6 pt-6 pb-4">
                     <div className="flex items-center justify-between">
@@ -92,7 +93,9 @@ const Cart = () => {
                         <div className="flex flex-col items-center justify-center h-64 text-center">
                             <ShoppingCart className="w-20 h-20 text-gray-300 mb-4" />
                             <p className="text-gray-500 text-lg">თქვენი კალათა ცარიელია</p>
-                            <p className="text-gray-400 text-sm mt-2">დაამატეთ პროდუქტები კალათაში</p>
+                            <p className="text-gray-400 text-sm mt-2">
+                                დაამატეთ პროდუქტები კალათაში
+                            </p>
                         </div>
                     ) : (
                         <div className="space-y-4 py-4">
@@ -131,7 +134,7 @@ const Cart = () => {
                                         <h4 className="font-semibold text-sm line-clamp-2 mb-1">
                                             {item.product_name}
                                         </h4>
-                                        
+
                                         {/* Price */}
                                         <div className="flex items-center gap-2 mb-2">
                                             <span className="text-lg font-bold text-[#006FEAFF]">
@@ -142,8 +145,17 @@ const Cart = () => {
                                                     <span className="text-xs text-gray-400 line-through">
                                                         {item.old_price.toFixed(2)}₾
                                                     </span>
-                                                    <Badge variant="destructive" className="text-xs px-1 py-0">
-                                                        -{((item.old_price - item.new_price) / item.old_price * 100).toFixed(0)}%
+                                                    <Badge
+                                                        variant="destructive"
+                                                        className="text-xs px-1 py-0"
+                                                    >
+                                                        -
+                                                        {(
+                                                            ((item.old_price - item.new_price) /
+                                                                item.old_price) *
+                                                            100
+                                                        ).toFixed(0)}
+                                                        %
                                                     </Badge>
                                                 </>
                                             )}
@@ -155,7 +167,9 @@ const Cart = () => {
                                                 variant="outline"
                                                 size="icon"
                                                 className="h-7 w-7"
-                                                onClick={() => handleQuantityChange(item.product_uid, "minus")}
+                                                onClick={() =>
+                                                    handleQuantityChange(item.product_uid, 'minus')
+                                                }
                                                 disabled={item.quantity <= 1}
                                             >
                                                 <Minus className="h-3 w-3" />
@@ -167,7 +181,9 @@ const Cart = () => {
                                                 variant="outline"
                                                 size="icon"
                                                 className="h-7 w-7"
-                                                onClick={() => handleQuantityChange(item.product_uid, "plus")}
+                                                onClick={() =>
+                                                    handleQuantityChange(item.product_uid, 'plus')
+                                                }
                                                 disabled={item.quantity >= item.stock}
                                             >
                                                 <Plus className="h-3 w-3" />
@@ -180,7 +196,10 @@ const Cart = () => {
                                         {/* Subtotal */}
                                         <div className="mt-2 text-right">
                                             <span className="text-sm text-gray-600">
-                                                ჯამი: <span className="font-semibold">{(item.new_price * item.quantity).toFixed(2)}₾</span>
+                                                ჯამი:{' '}
+                                                <span className="font-semibold">
+                                                    {(item.new_price * item.quantity).toFixed(2)}₾
+                                                </span>
                                             </span>
                                         </div>
                                     </div>
@@ -203,21 +222,23 @@ const Cart = () => {
                                 {cartSavings > 0 && (
                                     <div className="flex justify-between text-sm text-green-600">
                                         <span>თქვენ დაზოგეთ:</span>
-                                        <span className="font-semibold">-{cartSavings.toFixed(2)}₾</span>
+                                        <span className="font-semibold">
+                                            -{cartSavings.toFixed(2)}₾
+                                        </span>
                                     </div>
                                 )}
                                 <Separator />
                                 <div className="flex justify-between text-lg font-bold">
                                     <span>სულ:</span>
-                                    <span className="text-[#006FEAFF]">{cartTotal.toFixed(2)}₾</span>
+                                    <span className="text-[#006FEAFF]">
+                                        {cartTotal.toFixed(2)}₾
+                                    </span>
                                 </div>
                             </div>
 
                             {/* Checkout Button */}
                             <SheetClose asChild>
-                                <Button
-                                    className="w-full py-6 bg-[#006FEAFF] text-white font-semibold rounded-md hover:bg-[#0056cc] transition-colors text-lg"
-                                >
+                                <Button className="w-full py-6 bg-[#006FEAFF] text-white font-semibold rounded-md hover:bg-[#0056cc] transition-colors text-lg">
                                     <ShoppingCart className="w-5 h-5 mr-2" />
                                     გადახდა
                                 </Button>

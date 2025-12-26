@@ -5,6 +5,8 @@ import { lazy } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import ProductDetails from '@/pages/(store)/(client)/(products)/product_details';
 import ContactUs from '@/pages/contact_us';
+import AboutUs from '@/pages/about_us';
+import Wishlist from '@/pages/(store)/wishlist';
 const AuthLayout = lazy(() => import('../pages/(auth)/layout'));
 const SignIn = lazy(() => import('../pages/(auth)/sign-in'));
 const SignUp = lazy(() => import('../pages/(auth)/sign-up'));
@@ -31,7 +33,6 @@ const UserRoutes = () => {
                         }, 
                     ],
                 },
-                // For single product page
                 {
                     path: 'product/:name/:uid',
                     element: <ProductDetails />,
@@ -40,6 +41,15 @@ const UserRoutes = () => {
                 {
                     path: 'contact',
                     element: <ContactUs />,
+                },
+
+                {
+                    path: 'about-us',
+                    element: <AboutUs />,
+                },
+                {
+                    path: 'wishlist',
+                    element: <Wishlist />,
                 },
             ],
         },

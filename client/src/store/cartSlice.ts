@@ -1,57 +1,75 @@
-/* eslint-disable prettier/prettier */
-import { createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
-import type { Cart, CartItems } from '@/types';
-import { toast } from 'sonner';
+import { createSlice } from "@reduxjs/toolkit";
+import type { CartItems } from "@/types";
+import type { PayloadAction } from "@reduxjs/toolkit";
+interface CartState {
+  products: CartItems[];
+}
 
-const initialState: Cart = {
-    products: [],
+const initialState: CartState = {
+  products: JSON.parse(localStorage.getItem("cart") || "[]"),
 };
 
-export const cartSlice = createSlice({
-    name: 'cart',
-    initialState,
-    reducers: {
-        addItemToCart: (state, action: PayloadAction<CartItems>) => {
-            const findExistingItem = state.products.find(
-                (item) => item.product_uid === action.payload.product_uid
-            );
-            if (findExistingItem && findExistingItem.quantity + 1 > action.payload.stock) {
-                toast.error("მონაცემი აღემატება მარაგს");
-                return;
-            }
-            if (findExistingItem) {
-                findExistingItem.quantity += action.payload.quantity;
-            } else {
-                state.products.push(action.payload);
-            }
-        },
-        removeItemFromCart: (state, action: PayloadAction<number>) => {
-            const existingItem = state.products.find((item) => item.product_uid === action.payload);
-            if (existingItem) {
-                state.products = state.products.filter((item) => item.product_uid !== action.payload);
-            }
-        },
-        updateItemQuantity: (state, action: PayloadAction<{ product_uid: number;  method: "plus" | "minus" }>)  => {
-            const existingItem = state.products.find((item) => item.product_uid === action.payload.product_uid)
-            if (!existingItem) {
-                toast.error("პროდუქტი ვერ მოიძებნა! სცადეთ მოგვიანებით")
-                return;
-            }
-            if (action.payload.method === "plus") {
-                if (existingItem.quantity + 1 > existingItem.stock) {
-                    toast.error("მეტს ვერ დაამატებთ!")
-                    return;
-                }
-                existingItem.quantity = existingItem.quantity + 1
-            } else {
-                existingItem.quantity = existingItem.quantity - 1;
-            }
+const cartSlice = createSlice({
+  name: "cart",
+  initialState,
+  reducers: {
+    addItemToCart(state, action: PayloadAction<CartItems>) {
+      const existing = state.products.find(
+        item => item.product_uid === action.payload.product_uid
+      );
+
+      if (existing) {
+        if (existing.quantity < existing.stock) {
+          existing.quantity += 1;
         }
-            
+      } else {
+        state.products.push(action.payload);
+      }
+
+      localStorage.setItem("cart", JSON.stringify(state.products));
     },
+
+    updateItemQuantity(
+      state,
+      action: PayloadAction<{ product_uid: number; method: "plus" | "minus" }>
+    ) {
+      const item = state.products.find(
+        p => p.product_uid === action.payload.product_uid
+      );
+
+      if (!item) return;
+
+      if (action.payload.method === "plus" && item.quantity < item.stock) {
+        item.quantity += 1;
+      }
+
+      if (action.payload.method === "minus" && item.quantity > 1) {
+        item.quantity -= 1;
+      }
+
+      localStorage.setItem("cart", JSON.stringify(state.products));
+    },
+
+    removeItemFromCart(state, action: PayloadAction<number>) {
+      state.products = state.products.filter(
+        item => item.product_uid !== action.payload
+      );
+
+      localStorage.setItem("cart", JSON.stringify(state.products));
+    },
+
+    clearCart(state) {
+      state.products = [];
+      localStorage.removeItem("cart");
+    },
+  },
 });
 
-export const { addItemToCart, removeItemFromCart, updateItemQuantity } = cartSlice.actions;
+export const {
+  addItemToCart,
+  updateItemQuantity,
+  removeItemFromCart,
+  clearCart,
+} = cartSlice.actions;
 
 export default cartSlice.reducer;

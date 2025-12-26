@@ -1,13 +1,8 @@
-import { useSelector } from 'react-redux';
-import { CAvatar } from '../common/custom-avatar';
 import CFlex from '../ui/flex';
-import type { RootState } from '@/store/store';
-import { useNavigate } from 'react-router-dom';
 import { CButton } from '../common/custom-button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useSidebar } from '../ui/sidebar';
-import { Menu, Headphones, User, ShoppingCart } from 'lucide-react';
-import { ModeToggle } from '../common/mode-toggle';
+import { Menu, Headphones } from 'lucide-react';
 import { useTheme } from '@/providers/theme-provider';
 import CBreadCrumb from '../common/custom-breadcrumb';
 import Cart from '../cart/cart';

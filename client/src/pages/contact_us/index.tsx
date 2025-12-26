@@ -26,8 +26,6 @@ const ContactUs = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Handle form submission here
-        console.log('Form submitted:', formData);
     };
 
     const handleChange = (
@@ -40,9 +38,8 @@ const ContactUs = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-slate-950 py-12">
+        <div className="min-h-screen  dark:bg-slate-950 py-12">
             <div className="container mx-auto px-4 max-w-7xl">
-                {/* Header */}
                 <div className="text-center mb-12">
                     <h1 className="text-4xl font-bold mb-4">დაგვიკავშირდით</h1>
                     <p className="text-gray-600 dark:text-gray-400 text-lg">
@@ -51,17 +48,14 @@ const ContactUs = () => {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Contact Information */}
                     <div className="lg:col-span-1 space-y-6">
-                        {/* Contact Cards */}
                         <Card className="bg-white dark:bg-slate-900">
                             <CardContent className="p-6">
                                 <h2 className="text-xl font-semibold mb-6">საკონტაქტო ინფორმაცია</h2>
                                 
-                                {/* Address */}
                                 <div className="flex gap-4 mb-6">
                                     <div className="w-12 h-12 bg-[#006FEAFF] bg-opacity-10 rounded-lg flex items-center justify-center flex-shrink-0">
-                                        <MapPin className="w-6 h-6 text-[#006FEAFF]" />
+                                        <MapPin className="w-6 h-6 text-white" />
                                     </div>
                                     <div>
                                         <h3 className="font-semibold mb-1">მისამართი</h3>
@@ -77,10 +71,9 @@ const ContactUs = () => {
                                     </div>
                                 </div>
 
-                                {/* Phone */}
                                 <div className="flex gap-4 mb-6">
                                     <div className="w-12 h-12 bg-[#006FEAFF] bg-opacity-10 rounded-lg flex items-center justify-center flex-shrink-0">
-                                        <Phone className="w-6 h-6 text-[#006FEAFF]" />
+                                        <Phone className="w-6 h-6 text-white " />
                                     </div>
                                     <div>
                                         <h3 className="font-semibold mb-1">ტელეფონი</h3>
@@ -93,10 +86,9 @@ const ContactUs = () => {
                                     </div>
                                 </div>
 
-                                {/* Email */}
                                 <div className="flex gap-4 mb-6">
                                     <div className="w-12 h-12 bg-[#006FEAFF] bg-opacity-10 rounded-lg flex items-center justify-center flex-shrink-0">
-                                        <Mail className="w-6 h-6 text-[#006FEAFF]" />
+                                        <Mail className="w-6 h-6 text-white" />
                                     </div>
                                     <div>
                                         <h3 className="font-semibold mb-1">ელ-ფოსტა</h3>
@@ -109,10 +101,9 @@ const ContactUs = () => {
                                     </div>
                                 </div>
 
-                                {/* Working Hours */}
                                 <div className="flex gap-4">
                                     <div className="w-12 h-12 bg-[#006FEAFF] bg-opacity-10 rounded-lg flex items-center justify-center flex-shrink-0">
-                                        <Clock className="w-6 h-6 text-[#006FEAFF]" />
+                                        <Clock className="w-6 h-6 text-white" />
                                     </div>
                                     <div>
                                         <h3 className="font-semibold mb-1">სამუშაო საათები</h3>
@@ -130,7 +121,6 @@ const ContactUs = () => {
                             </CardContent>
                         </Card>
 
-                        {/* Social Media */}
                         <Card className="bg-white dark:bg-slate-900">
                             <CardContent className="p-6">
                                 <h2 className="text-xl font-semibold mb-4">სოციალური ქსელები</h2>
@@ -158,7 +148,7 @@ const ContactUs = () => {
                             <CardContent className="p-6">
                                 <div className="flex items-center gap-3 mb-6">
                                     <div className="w-12 h-12 bg-[#006FEAFF] bg-opacity-10 rounded-lg flex items-center justify-center">
-                                        <MessageCircle className="w-6 h-6 text-[#006FEAFF]" />
+                                        <MessageCircle className="w-6 h-6 text-white" />
                                     </div>
                                     <div>
                                         <h2 className="text-2xl font-semibold">გამოგვიგზავნეთ შეტყობინება</h2>

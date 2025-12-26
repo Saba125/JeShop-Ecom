@@ -120,7 +120,20 @@ export type User = {
 export type Cart = {
     products: CartItems[];
 };
+export type Wishlist = {
+    products: CartItems[];
+};
 export type CartItems = {
+    product_uid: number;
+    product_name: string;
+    product_image: string | null;
+    quantity: number;
+    old_price: number | null;
+    new_price: number;
+    has_sale: boolean;
+    stock: number;
+};
+export type WishlistItems = {
     product_uid: number;
     product_name: string;
     product_image: string | null;
