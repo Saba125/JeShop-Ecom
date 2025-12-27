@@ -1,6 +1,6 @@
 import { useGetSingleProduct } from '@/api/products/get_single';
 import { useParams } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -40,6 +40,9 @@ const ProductDetails = () => {
     const getActiveSale = (product: TGetProducts) => {
         return product.sales_items?.find((sale) => sale.is_active === 1);
     };
+     useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [params.uid]); // Scroll to top when product ID changes
 
     const calculateDiscountedPrice = (product: TGetProducts) => {
         const activeSale = getActiveSale(product);

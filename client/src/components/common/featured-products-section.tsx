@@ -15,7 +15,6 @@ const FeaturedProductsSection = () => {
     const { data: products, isPending } = useGetProducts();
     const [hoveredId, setHoveredId] = useState<number | null>(null);
     const [favorites, setFavorites] = useState<number[]>([]);
-    const wishlist = useSelector((state: RootState) => state.wishlist.products);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const toggleFavorite = (product: TGetProducts) => {

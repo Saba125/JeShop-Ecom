@@ -1,6 +1,7 @@
 import deleteProduct from "./delete_";
 import getProducts from "./get_";
 import getProductByBrandAndCategory from "./get_by_brand_and_category";
+import getProductByCategory from "./get_by_category";
 import getProductsPaginated from "./get_paginated";
 import getSingleProduct from "./get_single";
 import addProduct from "./post_";
@@ -13,6 +14,7 @@ const ProductRes = {
   deleteProduct,
   getProductsPaginated,
   getSingleProduct,
-  getProductByBrandAndCategory
+  getProductByBrandAndCategory,
+  getProductByCategory
 };
 export default ProductRes;

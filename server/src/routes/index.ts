@@ -46,6 +46,7 @@ Router.post(
   productImageUploader.single("image"),
   ProductRes.addProduct,
 );
+Router.post("/products/category/:name", ProductRes.getProductByCategory);
 Router.post("/products/similar/:uid", ProductRes.getProductByBrandAndCategory);
 Router.get("/products/paginated", authMiddleware, ProductRes.getProductsPaginated);
 Router.post("/products/all", authMiddleware, ProductRes.getProducts);

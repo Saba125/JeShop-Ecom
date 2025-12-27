@@ -7,6 +7,7 @@ import ProductDetails from '@/pages/(store)/(client)/(products)/product_details'
 import ContactUs from '@/pages/contact_us';
 import AboutUs from '@/pages/about_us';
 import Wishlist from '@/pages/(store)/wishlist';
+import Category from '@/pages/(store)/category';
 const AuthLayout = lazy(() => import('../pages/(auth)/layout'));
 const SignIn = lazy(() => import('../pages/(auth)/sign-in'));
 const SignUp = lazy(() => import('../pages/(auth)/sign-up'));
@@ -30,8 +31,16 @@ const UserRoutes = () => {
                         {
                             path: 'keyboards',
                             element: <KeyboardsPage />,
-                        }, 
+                        },
                     ],
+                },
+                {
+                    path: 'product/:name/:uid',
+                    element: <ProductDetails />,
+                },
+                {
+                    path: 'category/:name',
+                    element: <Category />,
                 },
                 {
                     path: 'product/:name/:uid',
