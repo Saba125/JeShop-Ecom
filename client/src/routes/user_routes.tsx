@@ -29,8 +29,8 @@ const UserRoutes = () => {
                     element: <ProductsLayout />,
                     children: [
                         {
-                            path: 'keyboards',
-                            element: <KeyboardsPage />,
+                            path: 'category/:name',
+                            element: <Category />,
                         },
                     ],
                 },
@@ -38,10 +38,7 @@ const UserRoutes = () => {
                     path: 'product/:name/:uid',
                     element: <ProductDetails />,
                 },
-                {
-                    path: 'category/:name',
-                    element: <Category />,
-                },
+             
                 {
                     path: 'product/:name/:uid',
                     element: <ProductDetails />,

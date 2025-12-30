@@ -7,6 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
 import { useGetBrands } from '@/api/brands/get_';
+import { Outlet } from 'react-router-dom';
 
 const ProductsFiltersSidebar = () => {
     const { data: brands } = useGetBrands();
@@ -17,33 +18,15 @@ const ProductsFiltersSidebar = () => {
     const [inStock, setInStock] = useState(false);
     const [onSale, setOnSale] = useState(false);
     const locations = [location.pathname.split('/')];
-    const categories = [
-        { id: '1', name: 'ელექტრონიკა', count: 45 },
-        { id: '2', name: 'ტანსაცმელი', count: 123 },
-        { id: '3', name: 'საკვები პროდუქტები', count: 89 },
-        { id: '4', name: 'სახლის ნივთები', count: 67 },
-        { id: '5', name: 'სპორტი', count: 34 },
-    ];
+    
     const plugTypes = [
-        {
-            uid: '0',
-            name: 'კაბელიანი',
-        },
-        {
-            uid: '1',
-            name: 'უკაბელო',
-        },
+        { uid: '0', name: 'კაბელიანი' },
+        { uid: '1', name: 'უკაბელო' },
     ];
+    
     const mapName: any = {
         keyboards: 'კლავიატურები',
         mouses: 'მაუსები',
-    };
-    const handleCategoryToggle = (categoryId: string) => {
-        setSelectedCategories((prev) =>
-            prev.includes(categoryId)
-                ? prev.filter((id) => id !== categoryId)
-                : [...prev, categoryId]
-        );
     };
 
     const handleBrandToggle = (brandId: string) => {
@@ -51,6 +34,7 @@ const ProductsFiltersSidebar = () => {
             prev.includes(brandId) ? prev.filter((id) => id !== brandId) : [...prev, brandId]
         );
     };
+    
     const handlePlugToggle = (plugId: string) => {
         setSelectedPlugTypes((prev) =>
             prev.includes(plugId) ? prev.filter((id) => id !== plugId) : [...prev, plugId]
@@ -60,6 +44,7 @@ const ProductsFiltersSidebar = () => {
     const clearAllFilters = () => {
         setSelectedCategories([]);
         setSelectedBrands([]);
+        setSelectedPlugTypes([]);
         setPriceRange([0, 1000]);
         setInStock(false);
         setOnSale(false);
@@ -68,236 +53,206 @@ const ProductsFiltersSidebar = () => {
     const activeFiltersCount =
         selectedCategories.length +
         selectedBrands.length +
+        selectedPlugTypes.length +
         (inStock ? 1 : 0) +
         (onSale ? 1 : 0) +
         (priceRange[0] !== 0 || priceRange[1] !== 1000 ? 1 : 0);
 
     return (
-        <div className="max-w-[300px]">
-            <Card className="border-l-0 border-t-0">
-                <CardContent className="">
-                    {/* Header */}
-                    <h3
-                        className="text-2xl
-                        mb-3
-                        tracking-wide
-                     font-bold"
-                    >
-                        {mapName[locations[0][2]]}
-                    </h3>
-                    <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-lg font-semibold flex items-center gap-2">
-                            <SlidersHorizontal className="w-5 h-5" />
-                            ფილტრები
-                        </h2>
-                        {activeFiltersCount > 0 && (
-                            <div className="flex items-center gap-2">
-                                <Badge variant="secondary">{activeFiltersCount}</Badge>
-                                <Button variant="ghost" size="sm" onClick={clearAllFilters}>
-                                    <X className="w-4 h-4" />
-                                </Button>
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="space-y-6">
-                        {/* Categories */}
-                        {/* <div>
-                            <h3 className="font-semibold text-sm mb-3 text-slate-700 dark:text-slate-300">
-                                კატეგორიები
+        <div className="flex gap-6">
+            {/* Sidebar */}
+            <div className="w-[300px] sticky top-[89.5px] h-fit">
+                <Card className="border-2 shadow-lg">
+                    <CardContent className="p-6">
+                        {/* Header */}
+                        <div className="mb-6">
+                            <h3 className="text-2xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                                {mapName[locations[0][2]]}
                             </h3>
-                            <div className="space-y-3">
-                                {categories.map((category) => (
-                                    <div key={category.id} className="flex items-center space-x-2">
-                                        <Checkbox
-                                            id={`category-${category.id}`}
-                                            checked={selectedCategories.includes(category.id)}
-                                            onCheckedChange={() =>
-                                                handleCategoryToggle(category.id)
-                                            }
-                                        />
-                                        <label
-                                            htmlFor={`category-${category.id}`}
-                                            className="text-sm flex-1 flex items-center justify-between cursor-pointer hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
-                                        >
-                                            <span>{category.name}</span>
-                                            <span className="text-xs text-slate-500 dark:text-slate-400">
-                                                ({category.count})
-                                            </span>
-                                        </label>
-                                    </div>
-                                ))}
-                            </div>
-                        </div> */}
-                        <div>
-                            <h3 className="font-semibold text-sm mb-3 text-slate-700 dark:text-slate-300">
-                                შეერთების ტიპები
-                            </h3>
-                            <div className="space-y-3">
-                                {plugTypes.map((plugType) => (
-                                    <div key={plugType.uid} className="flex items-center space-x-2">
-                                        <Checkbox
-                                            id={`plug-${plugType.uid}`}
-                                            checked={selectedPlugTypes.includes(
-                                                String(plugType.uid)
-                                            )}
-                                            onCheckedChange={() =>
-                                                handlePlugToggle(String(plugType.uid))
-                                            }
-                                        />
-                                        <label
-                                            htmlFor={`brand-${plugType.uid}`}
-                                            className="text-sm flex-1 flex items-center justify-between cursor-pointer hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
-                                        >
-                                            <span>{plugType.name}</span>
-                                            <span className="text-xs text-slate-500 dark:text-slate-400"></span>
-                                        </label>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                        <Separator />
-
-                        {/* Brands */}
-                        <div>
-                            <h3 className="font-semibold text-sm mb-3 text-slate-700 dark:text-slate-300">
-                                ბრენდები
-                            </h3>
-                            <div className="space-y-3">
-                                {brands?.map((brand) => (
-                                    <div key={brand.uid} className="flex items-center space-x-2">
-                                        <Checkbox
-                                            id={`brand-${brand.uid}`}
-                                            checked={selectedBrands.includes(String(brand.uid))}
-                                            onCheckedChange={() =>
-                                                handleBrandToggle(String(brand.uid))
-                                            }
-                                        />
-                                        <label
-                                            htmlFor={`brand-${brand.uid}`}
-                                            className="text-sm flex-1 flex items-center justify-between cursor-pointer hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
-                                        >
-                                            <span>{brand.name}</span>
-                                            <span className="text-xs text-slate-500 dark:text-slate-400"></span>
-                                        </label>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        <Separator />
-
-                        {/* Price Range */}
-                        <div>
-                            <h3 className="font-semibold text-sm mb-4 text-slate-700 dark:text-slate-300">
-                                ფასის დიაპაზონი
-                            </h3>
-                            <div className="space-y-4">
-                                <Slider
-                                    min={0}
-                                    max={1000}
-                                    step={10}
-                                    value={priceRange}
-                                    onValueChange={setPriceRange}
-                                    className="w-full"
-                                />
-                                <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <SlidersHorizontal className="w-5 h-5 text-primary" />
+                                    <h2 className="text-lg font-semibold">ფილტრები</h2>
+                                </div>
+                                {activeFiltersCount > 0 && (
                                     <div className="flex items-center gap-2">
-                                        <span className="text-xs text-slate-500 dark:text-slate-400">
-                                            მინ:
-                                        </span>
-                                        <Badge variant="outline" className="font-mono">
-                                            {priceRange[0]}₾
+                                        <Badge variant="default" className="bg-primary">
+                                            {activeFiltersCount}
                                         </Badge>
+                                        <Button 
+                                            variant="ghost" 
+                                            size="icon"
+                                            className="h-8 w-8"
+                                            onClick={clearAllFilters}
+                                        >
+                                            <X className="w-4 h-4" />
+                                        </Button>
                                     </div>
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-xs text-slate-500 dark:text-slate-400">
-                                            მაქს:
-                                        </span>
-                                        <Badge variant="outline" className="font-mono">
-                                            {priceRange[1]}₾
-                                        </Badge>
-                                    </div>
-                                </div>
+                                )}
                             </div>
                         </div>
 
-                        <Separator />
-
-                        {/* Additional Filters */}
-                        <div>
-                            <h3 className="font-semibold text-sm mb-3 text-slate-700 dark:text-slate-300">
-                                დამატებითი ფილტრები
-                            </h3>
-                            <div className="space-y-3">
-                                <div className="flex items-center space-x-2 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
-                                    <Checkbox
-                                        id="in-stock"
-                                        checked={inStock}
-                                        onCheckedChange={(checked) =>
-                                            setInStock(checked as boolean)
-                                        }
-                                    />
-                                    <label
-                                        htmlFor="in-stock"
-                                        className="text-sm cursor-pointer flex-1"
-                                    >
-                                        მხოლოდ მარაგში არსებული
-                                    </label>
-                                </div>
-                                <div className="flex items-center space-x-2 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
-                                    <Checkbox
-                                        id="on-sale"
-                                        checked={onSale}
-                                        onCheckedChange={(checked) => setOnSale(checked as boolean)}
-                                    />
-                                    <label
-                                        htmlFor="on-sale"
-                                        className="text-sm cursor-pointer flex-1"
-                                    >
-                                        მხოლოდ ფასდაკლებული პროდუქტები
-                                    </label>
+                        <div className="space-y-6">
+                            {/* Connection Types */}
+                            <div>
+                                <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
+                                    შეერთების ტიპები
+                                </h3>
+                                <div className="space-y-2">
+                                    {plugTypes.map((plugType) => (
+                                        <div
+                                            key={plugType.uid}
+                                            className="flex items-center space-x-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
+                                        >
+                                            <Checkbox
+                                                id={`plug-${plugType.uid}`}
+                                                checked={selectedPlugTypes.includes(String(plugType.uid))}
+                                                onCheckedChange={() => handlePlugToggle(String(plugType.uid))}
+                                                className="border-2"
+                                            />
+                                            <label
+                                                htmlFor={`plug-${plugType.uid}`}
+                                                className="text-sm flex-1 cursor-pointer"
+                                            >
+                                                {plugType.name}
+                                            </label>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
+
+                            <Separator />
+
+                            {/* Brands */}
+                            <div>
+                                <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
+                                    ბრენდები
+                                </h3>
+                                <div className="space-y-2 max-h-[200px] overflow-y-auto pr-2">
+                                    {brands?.map((brand) => (
+                                        <div
+                                            key={brand.uid}
+                                            className="flex items-center space-x-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
+                                        >
+                                            <Checkbox
+                                                id={`brand-${brand.uid}`}
+                                                checked={selectedBrands.includes(String(brand.uid))}
+                                                onCheckedChange={() => handleBrandToggle(String(brand.uid))}
+                                                className="border-2"
+                                            />
+                                            <label
+                                                htmlFor={`brand-${brand.uid}`}
+                                                className="text-sm flex-1 cursor-pointer"
+                                            >
+                                                {brand.name}
+                                            </label>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <Separator />
+
+                            {/* Price Range */}
+                            <div>
+                                <h3 className="font-semibold text-sm mb-4">
+                                    ფასის დიაპაზონი
+                                </h3>
+                                <div className="space-y-4">
+                                    <Slider
+                                        min={0}
+                                        max={1000}
+                                        step={10}
+                                        value={priceRange}
+                                        onValueChange={setPriceRange}
+                                        className="w-full"
+                                    />
+                                    <div className="flex items-center justify-between gap-3">
+                                        <div className="flex-1">
+                                            <div className="text-xs text-muted-foreground mb-1">მინ:</div>
+                                            <Badge variant="outline" className="font-mono w-full justify-center">
+                                                {priceRange[0]}₾
+                                            </Badge>
+                                        </div>
+                                        <div className="flex-1">
+                                            <div className="text-xs text-muted-foreground mb-1">მაქს:</div>
+                                            <Badge variant="outline" className="font-mono w-full justify-center">
+                                                {priceRange[1]}₾
+                                            </Badge>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <Separator />
+
+                            {/* Additional Filters */}
+                            <div>
+                                <h3 className="font-semibold text-sm mb-3">
+                                    დამატებითი ფილტრები
+                                </h3>
+                                <div className="space-y-2">
+                                    <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors border">
+                                        <Checkbox
+                                            id="in-stock"
+                                            checked={inStock}
+                                            onCheckedChange={(checked) => setInStock(checked as boolean)}
+                                            className="border-2"
+                                        />
+                                        <label htmlFor="in-stock" className="text-sm cursor-pointer flex-1">
+                                            მხოლოდ მარაგში არსებული
+                                        </label>
+                                    </div>
+                                    <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors border">
+                                        <Checkbox
+                                            id="on-sale"
+                                            checked={onSale}
+                                            onCheckedChange={(checked) => setOnSale(checked as boolean)}
+                                            className="border-2"
+                                        />
+                                        <label htmlFor="on-sale" className="text-sm cursor-pointer flex-1">
+                                            მხოლოდ ფასდაკლებული
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Clear All Button */}
+                            {activeFiltersCount > 0 && (
+                                <>
+                                    <Separator />
+                                    <Button
+                                        variant="outline"
+                                        className="w-full"
+                                        onClick={clearAllFilters}
+                                    >
+                                        <X className="w-4 h-4 mr-2" />
+                                        ფილტრების გასუფთავება
+                                    </Button>
+                                </>
+                            )}
                         </div>
+                    </CardContent>
+                </Card>
 
-                        {/* Clear All Button */}
-                        {activeFiltersCount > 0 && (
-                            <>
-                                <Separator />
-                                <Button variant="outline" className="" onClick={clearAllFilters}>
-                                    <X className="w-4 h-4 " />
-                                    ფილტრების გასუფთავება
-                                </Button>
-                            </>
-                        )}
-                    </div>
-                </CardContent>
-            </Card>
-
-            {/* Active Filters Display */}
-            {activeFiltersCount > 0 && (
-                <Card className="mt-4">
-                    <CardContent className="p-4">
-                        <div className="space-y-3">
-                            <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                {/* Active Filters Display */}
+                {activeFiltersCount > 0 && (
+                    <Card className="mt-4 border-2">
+                        <CardContent className="p-4">
+                            <h3 className="text-sm font-semibold mb-3">
                                 აქტიური ფილტრები:
                             </h3>
                             <div className="flex flex-wrap gap-2">
-                                {selectedCategories.map((catId) => {
-                                    const category = categories.find((c) => c.id === catId);
+                                {selectedPlugTypes.map((plugId) => {
+                                    const plug = plugTypes.find((p) => String(p.uid) === plugId);
                                     return (
-                                        <Badge
-                                            key={catId}
-                                            variant="secondary"
-                                            className="gap-1 pr-1"
-                                        >
-                                            {category?.name}
+                                        <Badge key={plugId} variant="secondary" className="gap-1 pr-1">
+                                            {plug?.name}
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
                                                 className="h-4 w-4 hover:bg-slate-300 dark:hover:bg-slate-700"
-                                                onClick={() => handleCategoryToggle(catId)}
+                                                onClick={() => handlePlugToggle(plugId)}
                                             >
                                                 <X className="w-3 h-3" />
                                             </Button>
@@ -307,11 +262,7 @@ const ProductsFiltersSidebar = () => {
                                 {selectedBrands.map((brandId) => {
                                     const brand = brands?.find((b) => String(b.uid) === brandId);
                                     return (
-                                        <Badge
-                                            key={brandId}
-                                            variant="secondary"
-                                            className="gap-1 pr-1"
-                                        >
+                                        <Badge key={brandId} variant="secondary" className="gap-1 pr-1">
                                             {brand?.name}
                                             <Button
                                                 variant="ghost"
@@ -330,7 +281,7 @@ const ProductsFiltersSidebar = () => {
                                         <Button
                                             variant="ghost"
                                             size="icon"
-                                            className="h-4 w-4 hover:bg-slate-300 dark:hover:bg-slate-700"
+                                            className="h-4 w-4"
                                             onClick={() => setInStock(false)}
                                         >
                                             <X className="w-3 h-3" />
@@ -343,7 +294,7 @@ const ProductsFiltersSidebar = () => {
                                         <Button
                                             variant="ghost"
                                             size="icon"
-                                            className="h-4 w-4 hover:bg-slate-300 dark:hover:bg-slate-700"
+                                            className="h-4 w-4"
                                             onClick={() => setOnSale(false)}
                                         >
                                             <X className="w-3 h-3" />
@@ -356,7 +307,7 @@ const ProductsFiltersSidebar = () => {
                                         <Button
                                             variant="ghost"
                                             size="icon"
-                                            className="h-4 w-4 hover:bg-slate-300 dark:hover:bg-slate-700"
+                                            className="h-4 w-4"
                                             onClick={() => setPriceRange([0, 1000])}
                                         >
                                             <X className="w-3 h-3" />
@@ -364,10 +315,15 @@ const ProductsFiltersSidebar = () => {
                                     </Badge>
                                 )}
                             </div>
-                        </div>
-                    </CardContent>
-                </Card>
-            )}
+                        </CardContent>
+                    </Card>
+                )}
+            </div>
+
+            {/* Products Area */}
+            <div className="flex-1">
+                <Outlet />
+            </div>
         </div>
     );
 };
