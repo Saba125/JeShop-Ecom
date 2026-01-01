@@ -56,7 +56,7 @@ export function AppSidebar({ sidebarItems }: AppSidebarProps) {
     );
 
     return (
-        <Sidebar className="border-r z-99">
+        <Sidebar className="border-r z-60">
             <SidebarHeader className="border-b px-6 py-4">
                 <Logo />
             </SidebarHeader>

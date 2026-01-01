@@ -27,7 +27,7 @@ const CategoriesSection = () => {
     }
     
     return (
-        <section className="container mx-auto px-4 py-16">
+        <section className="container font-heading mx-auto px-4 py-16">
             <div className="flex items-center justify-between mb-8">
                 <div>
                     <h2 className="text-3xl font-bold mb-2">კატეგორიები</h2>

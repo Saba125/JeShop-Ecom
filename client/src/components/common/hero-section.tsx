@@ -15,7 +15,6 @@ const HeroSwiper: React.FC = () => {
   const [hasLoaded, setHasLoaded] = useState<boolean>(false);
   const autoplayRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Initial load animation
   useEffect(() => {
     setTimeout(() => setHasLoaded(true), 100);
   }, []);
