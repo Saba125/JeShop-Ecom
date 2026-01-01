@@ -17,7 +17,8 @@ export const useLogin = () => {
         },
         onSuccess: (data) => {
             const { accessToken, refreshToken, user } = data;
-            navigate(user.user_type === 1 ? "/admin" : "/");
+            navigate(user.user_type === 1 ? '/admin' : '/');
+            navigate(0);
             localStorage.setItem(AUTH_TOKEN, accessToken);
             localStorage.setItem(REFRESH_TOKEN, refreshToken);
             dispatch(setUser(user));
