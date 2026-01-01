@@ -106,24 +106,10 @@ const Category = () => {
     return (
         <div className="p-6">
             {/* Header */}
-            <div className="mb-6 pb-4 border-b-2">
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-3xl font-bold mb-1 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                            {params.name}
-                        </h1>
-                        <p className="text-sm text-muted-foreground">
-                            <Badge variant="secondary" className="mr-2">
-                                {products.length}
-                            </Badge>
-                            პროდუქტი ნაპოვნია
-                        </p>
-                    </div>
-                </div>
-            </div>
+           
 
             {/* Products Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {products.map((product) => {
                     const activeSale = getActiveSale(product);
                     const discountedPrice = calculateDiscountedPrice(product);

@@ -1,331 +1,363 @@
 import { useState } from 'react';
-import { X, SlidersHorizontal } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { X, SlidersHorizontal, ChevronDown, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
-import { useGetBrands } from '@/api/brands/get_';
+import { Input } from '@/components/ui/input';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Outlet } from 'react-router-dom';
 
-const ProductsFiltersSidebar = () => {
-    const { data: brands } = useGetBrands();
-    const [priceRange, setPriceRange] = useState([0, 1000]);
-    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-    const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
-    const [selectedPlugTypes, setSelectedPlugTypes] = useState<string[]>([]);
-    const [inStock, setInStock] = useState(false);
-    const [onSale, setOnSale] = useState(false);
-    const locations = [location.pathname.split('/')];
-    
-    const plugTypes = [
-        { uid: '0', name: 'კაბელიანი' },
-        { uid: '1', name: 'უკაბელო' },
-    ];
-    
-    const mapName: any = {
-        keyboards: 'კლავიატურები',
-        mouses: 'მაუსები',
-    };
+// Mock data for demo
+const mockBrands = [
+  { uid: '1', name: 'Logitech' },
+  { uid: '2', name: 'Razer' },
+  { uid: '3', name: 'Corsair' },
+  { uid: '4', name: 'SteelSeries' },
+  { uid: '5', name: 'HyperX' },
+  { uid: '6', name: 'ASUS' },
+  { uid: '7', name: 'Microsoft' },
+];
 
-    const handleBrandToggle = (brandId: string) => {
-        setSelectedBrands((prev) =>
-            prev.includes(brandId) ? prev.filter((id) => id !== brandId) : [...prev, brandId]
-        );
-    };
-    
-    const handlePlugToggle = (plugId: string) => {
-        setSelectedPlugTypes((prev) =>
-            prev.includes(plugId) ? prev.filter((id) => id !== plugId) : [...prev, plugId]
-        );
-    };
+const ProductsHorizontalFilters = () => {
+  const brands = mockBrands;
+  const [priceRange, setPriceRange] = useState([0, 1000]);
+  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [selectedPlugTypes, setSelectedPlugTypes] = useState<string[]>([]);
+  const [inStock, setInStock] = useState(false);
+  const [onSale, setOnSale] = useState(false);
+  const [brandSearch, setBrandSearch] = useState('');
+  const [sortBy, setSortBy] = useState('popular');
 
-    const clearAllFilters = () => {
-        setSelectedCategories([]);
-        setSelectedBrands([]);
-        setSelectedPlugTypes([]);
-        setPriceRange([0, 1000]);
-        setInStock(false);
-        setOnSale(false);
-    };
+  const plugTypes = [
+    { uid: '0', name: 'კაბელიანი' },
+    { uid: '1', name: 'უკაბელო' },
+  ];
 
-    const activeFiltersCount =
-        selectedCategories.length +
-        selectedBrands.length +
-        selectedPlugTypes.length +
-        (inStock ? 1 : 0) +
-        (onSale ? 1 : 0) +
-        (priceRange[0] !== 0 || priceRange[1] !== 1000 ? 1 : 0);
+  const sortOptions = [
+    { value: 'popular', label: 'პოპულარული' },
+    { value: 'price-low', label: 'ფასი: დაბალიდან მაღალამდე' },
+    { value: 'price-high', label: 'ფასი: მაღალიდან დაბალამდე' },
+    { value: 'newest', label: 'ახალი' },
+  ];
 
-    return (
-        <div className="flex gap-6">
-            {/* Sidebar */}
-            <div className="w-[300px] sticky top-[89.5px] h-fit">
-                <Card className="border-2 shadow-lg">
-                    <CardContent className="p-6">
-                        {/* Header */}
-                        <div className="mb-6">
-                            <h3 className="text-2xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                                {mapName[locations[0][2]]}
-                            </h3>
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <SlidersHorizontal className="w-5 h-5 text-primary" />
-                                    <h2 className="text-lg font-semibold">ფილტრები</h2>
-                                </div>
-                                {activeFiltersCount > 0 && (
-                                    <div className="flex items-center gap-2">
-                                        <Badge variant="default" className="bg-primary">
-                                            {activeFiltersCount}
-                                        </Badge>
-                                        <Button 
-                                            variant="ghost" 
-                                            size="icon"
-                                            className="h-8 w-8"
-                                            onClick={clearAllFilters}
-                                        >
-                                            <X className="w-4 h-4" />
-                                        </Button>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-
-                        <div className="space-y-6">
-                            {/* Connection Types */}
-                            <div>
-                                <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
-                                    შეერთების ტიპები
-                                </h3>
-                                <div className="space-y-2">
-                                    {plugTypes.map((plugType) => (
-                                        <div
-                                            key={plugType.uid}
-                                            className="flex items-center space-x-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
-                                        >
-                                            <Checkbox
-                                                id={`plug-${plugType.uid}`}
-                                                checked={selectedPlugTypes.includes(String(plugType.uid))}
-                                                onCheckedChange={() => handlePlugToggle(String(plugType.uid))}
-                                                className="border-2"
-                                            />
-                                            <label
-                                                htmlFor={`plug-${plugType.uid}`}
-                                                className="text-sm flex-1 cursor-pointer"
-                                            >
-                                                {plugType.name}
-                                            </label>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            <Separator />
-
-                            {/* Brands */}
-                            <div>
-                                <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
-                                    ბრენდები
-                                </h3>
-                                <div className="space-y-2 max-h-[200px] overflow-y-auto pr-2">
-                                    {brands?.map((brand) => (
-                                        <div
-                                            key={brand.uid}
-                                            className="flex items-center space-x-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
-                                        >
-                                            <Checkbox
-                                                id={`brand-${brand.uid}`}
-                                                checked={selectedBrands.includes(String(brand.uid))}
-                                                onCheckedChange={() => handleBrandToggle(String(brand.uid))}
-                                                className="border-2"
-                                            />
-                                            <label
-                                                htmlFor={`brand-${brand.uid}`}
-                                                className="text-sm flex-1 cursor-pointer"
-                                            >
-                                                {brand.name}
-                                            </label>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            <Separator />
-
-                            {/* Price Range */}
-                            <div>
-                                <h3 className="font-semibold text-sm mb-4">
-                                    ფასის დიაპაზონი
-                                </h3>
-                                <div className="space-y-4">
-                                    <Slider
-                                        min={0}
-                                        max={1000}
-                                        step={10}
-                                        value={priceRange}
-                                        onValueChange={setPriceRange}
-                                        className="w-full"
-                                    />
-                                    <div className="flex items-center justify-between gap-3">
-                                        <div className="flex-1">
-                                            <div className="text-xs text-muted-foreground mb-1">მინ:</div>
-                                            <Badge variant="outline" className="font-mono w-full justify-center">
-                                                {priceRange[0]}₾
-                                            </Badge>
-                                        </div>
-                                        <div className="flex-1">
-                                            <div className="text-xs text-muted-foreground mb-1">მაქს:</div>
-                                            <Badge variant="outline" className="font-mono w-full justify-center">
-                                                {priceRange[1]}₾
-                                            </Badge>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <Separator />
-
-                            {/* Additional Filters */}
-                            <div>
-                                <h3 className="font-semibold text-sm mb-3">
-                                    დამატებითი ფილტრები
-                                </h3>
-                                <div className="space-y-2">
-                                    <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors border">
-                                        <Checkbox
-                                            id="in-stock"
-                                            checked={inStock}
-                                            onCheckedChange={(checked) => setInStock(checked as boolean)}
-                                            className="border-2"
-                                        />
-                                        <label htmlFor="in-stock" className="text-sm cursor-pointer flex-1">
-                                            მხოლოდ მარაგში არსებული
-                                        </label>
-                                    </div>
-                                    <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors border">
-                                        <Checkbox
-                                            id="on-sale"
-                                            checked={onSale}
-                                            onCheckedChange={(checked) => setOnSale(checked as boolean)}
-                                            className="border-2"
-                                        />
-                                        <label htmlFor="on-sale" className="text-sm cursor-pointer flex-1">
-                                            მხოლოდ ფასდაკლებული
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Clear All Button */}
-                            {activeFiltersCount > 0 && (
-                                <>
-                                    <Separator />
-                                    <Button
-                                        variant="outline"
-                                        className="w-full"
-                                        onClick={clearAllFilters}
-                                    >
-                                        <X className="w-4 h-4 mr-2" />
-                                        ფილტრების გასუფთავება
-                                    </Button>
-                                </>
-                            )}
-                        </div>
-                    </CardContent>
-                </Card>
-
-                {/* Active Filters Display */}
-                {activeFiltersCount > 0 && (
-                    <Card className="mt-4 border-2">
-                        <CardContent className="p-4">
-                            <h3 className="text-sm font-semibold mb-3">
-                                აქტიური ფილტრები:
-                            </h3>
-                            <div className="flex flex-wrap gap-2">
-                                {selectedPlugTypes.map((plugId) => {
-                                    const plug = plugTypes.find((p) => String(p.uid) === plugId);
-                                    return (
-                                        <Badge key={plugId} variant="secondary" className="gap-1 pr-1">
-                                            {plug?.name}
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                className="h-4 w-4 hover:bg-slate-300 dark:hover:bg-slate-700"
-                                                onClick={() => handlePlugToggle(plugId)}
-                                            >
-                                                <X className="w-3 h-3" />
-                                            </Button>
-                                        </Badge>
-                                    );
-                                })}
-                                {selectedBrands.map((brandId) => {
-                                    const brand = brands?.find((b) => String(b.uid) === brandId);
-                                    return (
-                                        <Badge key={brandId} variant="secondary" className="gap-1 pr-1">
-                                            {brand?.name}
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                className="h-4 w-4 hover:bg-slate-300 dark:hover:bg-slate-700"
-                                                onClick={() => handleBrandToggle(brandId)}
-                                            >
-                                                <X className="w-3 h-3" />
-                                            </Button>
-                                        </Badge>
-                                    );
-                                })}
-                                {inStock && (
-                                    <Badge variant="secondary" className="gap-1 pr-1">
-                                        მარაგში
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            className="h-4 w-4"
-                                            onClick={() => setInStock(false)}
-                                        >
-                                            <X className="w-3 h-3" />
-                                        </Button>
-                                    </Badge>
-                                )}
-                                {onSale && (
-                                    <Badge variant="secondary" className="gap-1 pr-1">
-                                        ფასდაკლებული
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            className="h-4 w-4"
-                                            onClick={() => setOnSale(false)}
-                                        >
-                                            <X className="w-3 h-3" />
-                                        </Button>
-                                    </Badge>
-                                )}
-                                {(priceRange[0] !== 0 || priceRange[1] !== 1000) && (
-                                    <Badge variant="secondary" className="gap-1 pr-1">
-                                        ფასი: {priceRange[0]}₾ - {priceRange[1]}₾
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            className="h-4 w-4"
-                                            onClick={() => setPriceRange([0, 1000])}
-                                        >
-                                            <X className="w-3 h-3" />
-                                        </Button>
-                                    </Badge>
-                                )}
-                            </div>
-                        </CardContent>
-                    </Card>
-                )}
-            </div>
-
-            {/* Products Area */}
-            <div className="flex-1">
-                <Outlet />
-            </div>
-        </div>
+  const handleBrandToggle = (brandId: string) => {
+    setSelectedBrands((prev) =>
+      prev.includes(brandId) ? prev.filter((id) => id !== brandId) : [...prev, brandId]
     );
+  };
+
+  const handlePlugToggle = (plugId: string) => {
+    setSelectedPlugTypes((prev) =>
+      prev.includes(plugId) ? prev.filter((id) => id !== plugId) : [...prev, plugId]
+    );
+  };
+
+  const clearAllFilters = () => {
+    setSelectedBrands([]);
+    setSelectedPlugTypes([]);
+    setPriceRange([0, 1000]);
+    setInStock(false);
+    setOnSale(false);
+  };
+
+  const filteredBrands = brands?.filter((brand) =>
+    brand.name.toLowerCase().includes(brandSearch.toLowerCase())
+  );
+
+  const activeFiltersCount =
+    selectedBrands.length +
+    selectedPlugTypes.length +
+    (inStock ? 1 : 0) +
+    (onSale ? 1 : 0) +
+    (priceRange[0] !== 0 || priceRange[1] !== 1000 ? 1 : 0);
+
+  const removeFilter = (type: string, value?: string) => {
+    switch (type) {
+      case 'brand':
+        if (value) handleBrandToggle(value);
+        break;
+      case 'plug':
+        if (value) handlePlugToggle(value);
+        break;
+      case 'stock':
+        setInStock(false);
+        break;
+      case 'sale':
+        setOnSale(false);
+        break;
+      case 'price':
+        setPriceRange([0, 1000]);
+        break;
+    }
+  };
+
+  return (
+    <div className="w-full">
+      {/* Sticky Filter Bar */}
+      <div className="sticky top-[89.5px] z-10 bg-background border-b shadow-sm">
+        <div className="px-6 py-4">
+          {/* Main Filter Row */}
+          <div className="flex items-center gap-3 flex-wrap">
+            {/* Connection Type Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant={selectedPlugTypes.length > 0 ? 'default' : 'outline'}
+                  className="h-9"
+                >
+                  შეერთება
+                  {selectedPlugTypes.length > 0 && (
+                    <Badge className="ml-2 h-5 px-1.5" variant="secondary">
+                      {selectedPlugTypes.length}
+                    </Badge>
+                  )}
+                  <ChevronDown className="ml-1 w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56 p-3">
+                <div className="space-y-2">
+                  {plugTypes.map((plugType) => (
+                    <label
+                      key={plugType.uid}
+                      className="flex items-center space-x-2 py-1.5 px-2 rounded hover:bg-slate-50 dark:hover:bg-slate-900 cursor-pointer"
+                    >
+                      <Checkbox
+                        checked={selectedPlugTypes.includes(String(plugType.uid))}
+                        onCheckedChange={() => handlePlugToggle(String(plugType.uid))}
+                      />
+                      <span className="text-sm">{plugType.name}</span>
+                    </label>
+                  ))}
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Brand Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant={selectedBrands.length > 0 ? 'default' : 'outline'}
+                  className="h-9"
+                >
+                  ბრენდი
+                  {selectedBrands.length > 0 && (
+                    <Badge className="ml-2 h-5 px-1.5" variant="secondary">
+                      {selectedBrands.length}
+                    </Badge>
+                  )}
+                  <ChevronDown className="ml-1 w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-64 p-3">
+                <div className="space-y-3">
+                  {brands && brands.length > 5 && (
+                    <div className="relative">
+                      <Search className="absolute left-2 top-2.5 w-3.5 h-3.5 text-muted-foreground" />
+                      <Input
+                        placeholder="ძიება..."
+                        value={brandSearch}
+                        onChange={(e) => setBrandSearch(e.target.value)}
+                        className="h-9 pl-8 text-sm"
+                      />
+                    </div>
+                  )}
+                  <div className="space-y-1 max-h-[300px] overflow-y-auto pr-1">
+                    {filteredBrands?.map((brand) => (
+                      <label
+                        key={brand.uid}
+                        className="flex items-center space-x-2 py-1.5 px-2 rounded hover:bg-slate-50 dark:hover:bg-slate-900 cursor-pointer"
+                      >
+                        <Checkbox
+                          checked={selectedBrands.includes(String(brand.uid))}
+                          onCheckedChange={() => handleBrandToggle(String(brand.uid))}
+                        />
+                        <span className="text-sm">{brand.name}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Price Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant={
+                    priceRange[0] !== 0 || priceRange[1] !== 1000 ? 'default' : 'outline'
+                  }
+                  className="h-9"
+                >
+                  ფასი
+                  {(priceRange[0] !== 0 || priceRange[1] !== 1000) && (
+                    <span className="ml-2 text-xs">
+                      {priceRange[0]}-{priceRange[1]}₾
+                    </span>
+                  )}
+                  <ChevronDown className="ml-1 w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-72 p-4">
+                <div className="space-y-4">
+                  <div>
+                    <div className="text-sm font-medium mb-3">ფასის დიაპაზონი</div>
+                    <Slider
+                      min={0}
+                      max={1000}
+                      step={10}
+                      value={priceRange}
+                      onValueChange={setPriceRange}
+                      className="w-full"
+                    />
+                    <div className="flex items-center justify-between mt-3 text-sm">
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="number"
+                          value={priceRange[0]}
+                          onChange={(e) =>
+                            setPriceRange([Number(e.target.value), priceRange[1]])
+                          }
+                          className="w-20 h-8 text-xs"
+                        />
+                        <span>₾</span>
+                      </div>
+                      <span className="text-muted-foreground">-</span>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="number"
+                          value={priceRange[1]}
+                          onChange={(e) =>
+                            setPriceRange([priceRange[0], Number(e.target.value)])
+                          }
+                          className="w-20 h-8 text-xs"
+                        />
+                        <span>₾</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Quick Filters */}
+            <Button
+              variant={inStock ? 'default' : 'outline'}
+              className="h-9"
+              onClick={() => setInStock(!inStock)}
+            >
+              მარაგში
+            </Button>
+
+            <Button
+              variant={onSale ? 'default' : 'outline'}
+              className="h-9"
+              onClick={() => setOnSale(!onSale)}
+            >
+              ფასდაკლებული
+            </Button>
+
+            {/* Spacer */}
+            <div className="flex-1" />
+
+            {/* Sort Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="h-9">
+                  დალაგება
+                  <ChevronDown className="ml-1 w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <div className="p-2 space-y-1">
+                  {sortOptions.map((option) => (
+                    <button
+                      key={option.value}
+                      className={`w-full text-left px-3 py-2 text-sm rounded hover:bg-slate-100 dark:hover:bg-slate-800 ${
+                        sortBy === option.value ? 'bg-slate-100 dark:bg-slate-800 font-medium' : ''
+                      }`}
+                      onClick={() => setSortBy(option.value)}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Clear All */}
+            {activeFiltersCount > 0 && (
+              <Button
+                variant="ghost"
+                className="h-9 text-muted-foreground"
+                onClick={clearAllFilters}
+              >
+                <X className="w-4 h-4 mr-1" />
+                გასუფთავება ({activeFiltersCount})
+              </Button>
+            )}
+          </div>
+
+          {/* Active Filters Pills */}
+          {activeFiltersCount > 0 && (
+            <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t">
+              {selectedPlugTypes.map((plugId) => {
+                const plug = plugTypes.find((p) => String(p.uid) === plugId);
+                return (
+                  <Badge key={plugId} variant="secondary" className="h-7 gap-1.5 pr-1">
+                    {plug?.name}
+                    <button
+                      className="ml-1 hover:bg-slate-300 dark:hover:bg-slate-700 rounded p-0.5"
+                      onClick={() => removeFilter('plug', plugId)}
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </Badge>
+                );
+              })}
+              {selectedBrands.map((brandId) => {
+                const brand = brands?.find((b) => String(b.uid) === brandId);
+                return (
+                  <Badge key={brandId} variant="secondary" className="h-7 gap-1.5 pr-1">
+                    {brand?.name}
+                    <button
+                      className="ml-1 hover:bg-slate-300 dark:hover:bg-slate-700 rounded p-0.5"
+                      onClick={() => removeFilter('brand', brandId)}
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </Badge>
+                );
+              })}
+              {(priceRange[0] !== 0 || priceRange[1] !== 1000) && (
+                <Badge variant="secondary" className="h-7 gap-1.5 pr-1">
+                  {priceRange[0]}₾ - {priceRange[1]}₾
+                  <button
+                    className="ml-1 hover:bg-slate-300 dark:hover:bg-slate-700 rounded p-0.5"
+                    onClick={() => removeFilter('price')}
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </Badge>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Products Area */}
+      <div className="px-6 py-8">
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold mb-2">კლავიატურები</h1>
+        </div>
+          <Outlet />
+      </div>
+    </div>
+  );
 };
 
-export default ProductsFiltersSidebar;
+export default ProductsHorizontalFilters;
