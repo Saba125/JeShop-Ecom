@@ -4,6 +4,16 @@ import helpers from "../../../lib/helpers";
 
 const getProducts = async (req: Request, res: Response) => {
   const db: IDbTools = req.app.locals.db!;
+  const body = req.body;
+  const filter = [];
+  if (body.brand) {
+    filter.push("b.name = :name");
+  }
+  if (body.stock_available) {
+    filter.push("p.stock > 0");
+  }
+  const shouldApplyFilter = filter.length > 0 ? ` where ${filter.join("and")}` : null;
+  console.log(shouldApplyFilter);
   const dbRes = await db.select(`
        SELECT
       p.uid,

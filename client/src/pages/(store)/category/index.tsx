@@ -1,6 +1,6 @@
 import { useGetProductsByCategory } from '@/api/products/get_by_category';
 import { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useOutletContext } from 'react-router-dom';
 import { ShoppingCart, Heart, Eye, Sparkles, LayoutGrid } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,14 @@ import { useDispatch } from 'react-redux';
 import { API_URL } from '@/constants';
 import type { TGetProducts } from '@/types';
 
+type FiltersContext = {
+    priceRange: number[];
+    selectedBrands: string[];
+    selectedPlugTypes: string[];
+    inStock: boolean;
+    onSale: boolean;
+    sortBy: string;
+};
 const Category = () => {
     const params = useParams();
     const { data: products, isLoading } = useGetProductsByCategory(params.name!);
@@ -18,7 +26,9 @@ const Category = () => {
     const [favorites, setFavorites] = useState<number[]>([]);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
+    const { priceRange, selectedBrands, selectedPlugTypes, inStock, onSale, sortBy } =
+        useOutletContext<FiltersContext>();
+    console.log(priceRange, selectedBrands);
     const toggleFavorite = (product: TGetProducts) => {
         const discountedPrice = calculateDiscountedPrice(product);
         const activeSale = getActiveSale(product);
@@ -106,7 +116,6 @@ const Category = () => {
     return (
         <div className="p-6">
             {/* Header */}
-           
 
             {/* Products Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -161,7 +170,9 @@ const Category = () => {
                                             toggleFavorite(product);
                                         }}
                                     >
-                                        <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
+                                        <Heart
+                                            className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`}
+                                        />
                                     </Button>
                                     <Button
                                         size="icon"
@@ -250,7 +261,9 @@ const Category = () => {
                                                     product_image: product.image || '',
                                                     has_sale: !!activeSale,
                                                     new_price: discountedPrice || originalPrice,
-                                                    old_price: discountedPrice ? originalPrice : null,
+                                                    old_price: discountedPrice
+                                                        ? originalPrice
+                                                        : null,
                                                     product_name: product.name,
                                                     quantity: 1,
                                                     stock: product.stock,
