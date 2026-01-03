@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useGetProductsByCategory } from "@/api/products/get_by_category";
-import { LucideKeyboard, ShoppingCart, Heart, Eye, Sparkles } from "lucide-react";
+import { LucideKeyboard, ShoppingCart, Heart, Eye, Sparkles, Keyboard, ArrowRight } from "lucide-react";
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -112,18 +112,25 @@ const KeyboardsSection = () => {
 
     return (
         <section className="container mx-auto px-4 py-16">
-            <div className="flex items-center gap-3 mb-8">
-                <div className="p-2 bg-primary/10 rounded-lg">
-                    <LucideKeyboard className="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                    <h2 className="text-3xl font-bold">კლავიატურები</h2>
-                    <p className="text-sm text-muted-foreground">
-                        აღმოაჩინეთ მაღალი ხარისხის კლავიატურები
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="p-2 bg-cyan-50 rounded-lg">
+                            <Keyboard className="h-6 w-6 text-[#0083EF]" />
+                        </div>
+                        <h2 className="text-3xl font-bold">კლავიატურები</h2>
+                    </div>
+                    {/* Gradient underline */}
+                    <div className="h-0.5 w-[50%] bg-gradient-to-r from-[#0083EF] to-transparent"></div>
+                    <p className="text-muted-foreground mt-4">
+                        {' '}
+                        აღმოაჩინეთ ჩვენი საუკეთესო შეთავაზებები 
                     </p>
                 </div>
+                <Button variant="ghost">
+                    ყველას ნახვა <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
             </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {products.map((product) => {
                     const activeSale = getActiveSale(product);

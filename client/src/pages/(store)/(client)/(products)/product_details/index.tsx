@@ -117,7 +117,6 @@ const ProductDetails = () => {
         );
     }
 
-    // Move ALL these calculations AFTER the checks above:
     const activeSale = getActiveSale(product);
     const discountedPrice = calculateDiscountedPrice(product);
     const discountDisplay = getDiscountDisplay(product);

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '../ui/button';
-import { ArrowRight, BoxIcon, LucideKeyboard } from 'lucide-react';
+import { ArrowRight, BoxIcon } from 'lucide-react';
 import { Card } from '../ui/card';
 import { useGetCategories } from '@/api/category/get';
 import type { Category } from '@/types';
@@ -27,20 +27,21 @@ const CategoriesSection = () => {
     return (
         <section className="container font-heading mx-auto px-4 py-16">
             <div className="flex items-center justify-between mb-8">
-                <div>
-                    <div className='flex items-center gap-3'>
-                        <div className="p-2 bg-primary/10 rounded-lg">
-                            <BoxIcon className="h-6 w-6 text-primary" />
+                <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="p-2 bg-cyan-50 rounded-lg">
+                            <BoxIcon className="h-6 w-6 text-[#0083EF]" />
                         </div>
-                        <h2 className="text-3xl font-bold mb-2">კატეგორიები</h2>
+                        <h2 className="text-3xl font-bold">კატეგორიები</h2>
                     </div>
-                    <p className="text-muted-foreground">აირჩიე შენთვის სასურველი კატეგორია</p>
+                    {/* Gradient underline */}
+                    <div className="h-0.5 w-[50%] bg-gradient-to-r from-[#0083EF] to-transparent"></div>
+                    <p className="text-muted-foreground mt-4">აირჩიე შენთვის სასურველი კატეგორია</p>
                 </div>
                 <Button variant="ghost">
                     ყველას ნახვა <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
             </div>
-
             <div className="relative ">
                 <Carousel
                     plugins={[plugin.current]}
