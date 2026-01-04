@@ -7,9 +7,7 @@ export const useGetProducts = (filter: any) => {
   return useQuery<TGetProducts[]>({
     queryKey: queryKeys.products.all,
     queryFn: async () => {
-      const { data } = await Api.post("/products/all", {
-        filter
-      });
+      const { data } = await Api.post("/products/all");
       return data as TGetProducts[]; 
     },
   });

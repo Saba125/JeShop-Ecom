@@ -1,7 +1,7 @@
 import { useGetProductsByCategory } from '@/api/products/get_by_category';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useParams, useNavigate, useOutletContext } from 'react-router-dom';
-import { ShoppingCart, Heart, Eye, Sparkles, LayoutGrid } from 'lucide-react';
+import { ShoppingCart, Heart, Eye, Sparkles, LayoutGrid, Loader2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -11,7 +11,7 @@ import { useDispatch } from 'react-redux';
 import { API_URL } from '@/constants';
 import type { TGetProducts } from '@/types';
 
-type FiltersContext = {
+export type FiltersContext = {
     priceRange: number[];
     selectedBrands: string[];
     selectedPlugTypes: string[];
@@ -19,16 +19,34 @@ type FiltersContext = {
     onSale: boolean;
     sortBy: string;
 };
+
 const Category = () => {
     const params = useParams();
-    const { data: products, isLoading } = useGetProductsByCategory(params.name!);
+    const { priceRange, selectedBrands, selectedPlugTypes, inStock, onSale, sortBy } =
+        useOutletContext<FiltersContext>();
+    
+    // Memoize the filter object to prevent unnecessary re-renders
+    const filters = useMemo(() => ({
+        priceRange,
+        selectedBrands,
+        selectedPlugTypes,
+        inStock,
+        onSale,
+        sortBy,
+    }), [priceRange, selectedBrands, selectedPlugTypes, inStock, onSale, sortBy]);
+    
+    // Add debounce delay parameter (500ms default)
+    const { data: products, isLoading, isFetching } = useGetProductsByCategory(
+        params.name!,
+        filters,
+        500 // debounce delay in milliseconds
+    );
+    
     const [hoveredId, setHoveredId] = useState<number | null>(null);
     const [favorites, setFavorites] = useState<number[]>([]);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { priceRange, selectedBrands, selectedPlugTypes, inStock, onSale, sortBy } =
-        useOutletContext<FiltersContext>();
-    console.log(priceRange, selectedBrands);
+
     const toggleFavorite = (product: TGetProducts) => {
         const discountedPrice = calculateDiscountedPrice(product);
         const activeSale = getActiveSale(product);
@@ -81,6 +99,7 @@ const Category = () => {
         return null;
     };
 
+    // Initial loading state (no data yet)
     if (isLoading) {
         return (
             <div className="p-6">
@@ -115,10 +134,16 @@ const Category = () => {
 
     return (
         <div className="p-6">
-            {/* Header */}
+            {/* Loading indicator for filter changes */}
+            {isFetching && (
+                <div className="flex items-center gap-2 mb-4 text-sm text-muted-foreground">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>პროდუქტების ჩატვირთვა...</span>
+                </div>
+            )}
 
             {/* Products Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ${isFetching ? 'opacity-60' : ''}`}>
                 {products.map((product) => {
                     const activeSale = getActiveSale(product);
                     const discountedPrice = calculateDiscountedPrice(product);

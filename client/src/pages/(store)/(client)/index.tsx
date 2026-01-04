@@ -21,14 +21,7 @@ export default function MainPage() {
             >
                 <CategoriesSection />
             </motion.div>
-            <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-            >
-                <BrandsSection />
-            </motion.div>
+
             {/* <motion.div
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -46,7 +39,14 @@ export default function MainPage() {
             >
                 <SaleProductsSection />
             </motion.div>
-
+            <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+            >
+                <BrandsSection />
+            </motion.div>
             <motion.div
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
