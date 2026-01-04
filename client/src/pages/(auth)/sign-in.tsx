@@ -28,6 +28,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setUser } from '@/store/userSlice';
 import { toast } from 'sonner';
+import { useGoogleLogin as useGoogleLoginn } from '@react-oauth/google';
 const SignIn = () => {
     const { data: currentIp } = useCurrentIp();
     const dispatch = useDispatch();
@@ -45,6 +46,25 @@ const SignIn = () => {
     }
     const { mutate: googleLogin, isPending: googleLoading } = useGoogleLogin();
     const navigate = useNavigate();
+    const googleAuth = useGoogleLoginn({
+        flow: 'implicit', // or 'auth-code' if your backend expects code
+        onSuccess: (tokenResponse) => {
+            // tokenResponse.access_token
+            googleLogin(tokenResponse.access_token, {
+                onSuccess: (data) => {
+                    dispatch(setUser(data.user));
+                    localStorage.setItem(AUTH_TOKEN, data.accessToken);
+                    localStorage.setItem(REFRESH_TOKEN, data.refreshToken);
+
+                    navigate(data.user.user_type === 1 ? '/admin' : '/');
+                    toast.success(`Welcome back, ${data.user.username}!`);
+                },
+            });
+        },
+        onError: () => {
+            toast.error('Google login failed');
+        },
+    });
     return (
         <AuthForm
             title="მოგესალმებით!"
@@ -118,6 +138,7 @@ const SignIn = () => {
                                     variant="outline"
                                     text="Google"
                                     icon={FcGoogle}
+                                    onClick={() => googleAuth()}
                                 />
                                 <CButton
                                     disabled={isPending}

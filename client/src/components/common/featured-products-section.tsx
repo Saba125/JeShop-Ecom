@@ -20,7 +20,7 @@ import type { TGetProducts } from '@/types';
 import { useNavigate } from 'react-router-dom';
 import type { RootState } from '@/store/store';
 const FeaturedProductsSection = () => {
-    const { data: products, isPending } = useGetProducts();
+    const { data: products, isPending } = useGetProducts({});
     const [hoveredId, setHoveredId] = useState<number | null>(null);
     const [favorites, setFavorites] = useState<number[]>([]);
     const dispatch = useDispatch();
