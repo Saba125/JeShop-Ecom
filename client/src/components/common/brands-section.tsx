@@ -35,9 +35,7 @@ const BrandsSection = () => {
                     <div className="h-0.5 w-[50%] bg-gradient-to-r from-[#0083EF] to-transparent"></div>
                     <p className="text-muted-foreground mt-4">სანდო და ხარისხიანი ბრენდები</p>
                 </div>
-                <Button variant="ghost">
-                    ყველას ნახვა <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+               
             </div>
             <div className="relative">
                 <Carousel

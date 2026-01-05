@@ -14,10 +14,11 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from '@/components/ui/carousel';
+import { useNavigate } from 'react-router-dom';
 
 const CategoriesSection = () => {
     const plugin = React.useRef(Autoplay({ delay: 3000, stopOnInteraction: true }));
-
+    const navigate = useNavigate();
     const { data: categories, isLoading } = useGetCategories();
 
     if (isLoading) {
@@ -38,9 +39,7 @@ const CategoriesSection = () => {
                     <div className="h-0.5 w-[50%] bg-gradient-to-r from-[#0083EF] to-transparent"></div>
                     <p className="text-muted-foreground mt-4">აირჩიე შენთვის სასურველი კატეგორია</p>
                 </div>
-                <Button variant="ghost">
-                    ყველას ნახვა <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+            
             </div>
             <div className="relative ">
                 <Carousel
@@ -57,7 +56,11 @@ const CategoriesSection = () => {
                                 key={category.uid || category.name}
                                 className="pl-4 md:basis-1/2 lg:basis-1/3"
                             >
-                                <Card className="group cursor-pointer overflow-hidden border-2 hover:border-primary transition-all hover:shadow-xl">
+                                <Card
+                                onClick={() => {
+                                    navigate(category.url)
+                                }}
+                                className="group cursor-pointer overflow-hidden border-2 hover:border-primary transition-all hover:shadow-xl">
                                     <div
                                         style={{
                                             backgroundImage: `url(${API_URL}${category.image})`,

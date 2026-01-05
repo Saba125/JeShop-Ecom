@@ -127,7 +127,7 @@ const KeyboardsSection = () => {
                         აღმოაჩინეთ ჩვენი საუკეთესო შეთავაზებები 
                     </p>
                 </div>
-                <Button variant="ghost">
+                <Button onClick={() => navigate("/products/category/keyboards")} variant="ghost">
                     ყველას ნახვა <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
             </div>
