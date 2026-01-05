@@ -24,24 +24,25 @@ const Category = () => {
     const params = useParams();
     const { priceRange, selectedBrands, selectedPlugTypes, inStock, onSale, sortBy } =
         useOutletContext<FiltersContext>();
-    
-    // Memoize the filter object to prevent unnecessary re-renders
-    const filters = useMemo(() => ({
-        priceRange,
-        selectedBrands,
-        selectedPlugTypes,
-        inStock,
-        onSale,
-        sortBy,
-    }), [priceRange, selectedBrands, selectedPlugTypes, inStock, onSale, sortBy]);
-    
-    // Add debounce delay parameter (500ms default)
-    const { data: products, isLoading, isFetching } = useGetProductsByCategory(
-        params.name!,
-        filters,
-        500 // debounce delay in milliseconds
+
+    const filters = useMemo(
+        () => ({
+            priceRange,
+            selectedBrands,
+            selectedPlugTypes,
+            inStock,
+            onSale,
+            sortBy,
+        }),
+        [priceRange, selectedBrands, selectedPlugTypes, inStock, onSale, sortBy]
     );
-    
+
+    const {
+        data: products,
+        isLoading,
+        isFetching,
+    } = useGetProductsByCategory(params.name!, filters, 500);
+
     const [hoveredId, setHoveredId] = useState<number | null>(null);
     const [favorites, setFavorites] = useState<number[]>([]);
     const dispatch = useDispatch();
@@ -143,7 +144,9 @@ const Category = () => {
             )}
 
             {/* Products Grid */}
-            <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ${isFetching ? 'opacity-60' : ''}`}>
+            <div
+                className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ${isFetching ? 'opacity-60' : ''}`}
+            >
                 {products.map((product) => {
                     const activeSale = getActiveSale(product);
                     const discountedPrice = calculateDiscountedPrice(product);

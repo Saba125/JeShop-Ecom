@@ -24,6 +24,7 @@ import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import type { TGetProducts } from '@/types';
 import { useGetSimilarProducts } from '@/api/products/get_similar';
+import { addItemToCart } from '@/store/cartSlice';
 
 const ProductDetails = () => {
     const params = useParams();
@@ -42,7 +43,7 @@ const ProductDetails = () => {
     };
      useEffect(() => {
         window.scrollTo(0, 0);
-    }, [params.uid]); // Scroll to top when product ID changes
+    }, [params.uid]); 
 
     const calculateDiscountedPrice = (product: TGetProducts) => {
         const activeSale = getActiveSale(product);
@@ -82,17 +83,18 @@ const ProductDetails = () => {
             const discountedPrice = calculateDiscountedPrice(product);
             const originalPrice = parseFloat(product.price);
 
-            // dispatch(
-            //     addItemToCart({
-            //         product_uid: product.uid,
-            //         product_image: product.image || '',
-            //         has_sale: !!activeSale,
-            //         new_price: discountedPrice || originalPrice,
-            //         old_price: discountedPrice ? originalPrice : null,
-            //         product_name: product.name,
-            //         quantity: quantity,
-            //     })
-            // );
+            dispatch(
+                addItemToCart({
+                    product_uid: product.uid,
+                    product_image: product.image || '',
+                    has_sale: !!activeSale,
+                    new_price: discountedPrice || originalPrice,
+                    old_price: discountedPrice ? originalPrice : null,
+                    product_name: product.name,
+                    quantity: quantity,
+                    stock: product.stock
+                })
+            );
         }
     };
 

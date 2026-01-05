@@ -10,7 +10,7 @@ import {
     DropdownMenuContent,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useParams, type Params } from 'react-router-dom';
 
 const mockBrands = [
     { uid: '1', name: 'Logitech' },
@@ -21,9 +21,17 @@ const mockBrands = [
     { uid: '6', name: 'ASUS' },
     { uid: '7', name: 'Microsoft' },
 ];
+const titleMap: any = {
+    keyboards: "კლავიატურები",
+    mouses: "მაუსები",
+    headsets: "ყურსასმენები",
+    mousepads: "მაუსპადები"
+}
+
 
 const ProductsHorizontalFilters = () => {
     const brands = mockBrands;
+    const params: any = useParams();
     const [priceRange, setPriceRange] = useState([0, 1000]);
     const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
     const [selectedPlugTypes, setSelectedPlugTypes] = useState<string[]>([]);
@@ -305,7 +313,7 @@ const ProductsHorizontalFilters = () => {
             {/* Products Area */}
             <div className="px-6 py-8 pt-[140px]">
                 <div className="mb-6">
-                    <h1 className="text-3xl font-bold mb-2">კლავიატურები</h1>
+                    <h1 className="text-3xl font-bold mb-2">{titleMap[params.name]}</h1>
                 </div>
                 <Outlet
                     context={{

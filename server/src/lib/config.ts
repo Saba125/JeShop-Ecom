@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 interface Config {
-  APP_PORT:number;
+  APP_PORT: number;
   DB_PORT: number;
   DB_HOST: string;
   DB_USER: string;
@@ -16,8 +16,9 @@ interface Config {
   EMAIL_PORT: number;
   JWT_SECRET: string;
   COOKIE_SECRET: string;
-  CLIENT_ID:string;
-  CLIENT_SECRET:string;
+  CLIENT_ID: string;
+  CLIENT_SECRET: string;
+  REDIRECT_URI: string;
 }
 
 const config: Config = {
@@ -37,6 +38,7 @@ const config: Config = {
   COOKIE_SECRET: process.env.COOKIE_SECRET || "defaultcookie",
   CLIENT_ID: process.env.CLIENT_ID || "",
   CLIENT_SECRET: process.env.CLIENT_SECRET || "",
+  REDIRECT_URI: process.env.REDIRECT_URI || "",
 };
 
 export default config;

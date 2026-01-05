@@ -29,12 +29,12 @@ const clientSidebarItems: SidebarItems = [
     },
     {
         title: 'კლავიატურები',
-        url: '/keyboards',
+        url: '/products/category/keyboards',
         icon: Keyboard,
     },
     {
         title: 'მაუსები',
-        url: '/mice',
+        url: '/products/category/mouses',
         icon: Mouse,
     },
     {

@@ -7,9 +7,6 @@ import {
     FormLabel,
     FormMessage,
 } from '@/components/ui/form';
-import { GoogleLogin } from '@react-oauth/google';
-
-import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import formSchema from '@/schemas/login';
 import { useForm } from 'react-hook-form';
@@ -21,7 +18,6 @@ import { CButton } from '@/components/common/custom-button';
 import CFlex from '@/components/ui/flex';
 import { useLogin } from '@/api/users/login';
 import { useCurrentIp } from '@/api/ip_address/get_ip';
-import axios from 'axios';
 import { API_URL, AUTH_TOKEN, CLIENT_ID, REFRESH_TOKEN } from '@/constants';
 import { useGoogleLogin } from '@/api/google';
 import { useNavigate } from 'react-router-dom';
@@ -29,6 +25,7 @@ import { useDispatch } from 'react-redux';
 import { setUser } from '@/store/userSlice';
 import { toast } from 'sonner';
 import { useGoogleLogin as useGoogleLoginn } from '@react-oauth/google';
+import { Input } from '@/components/ui/input';
 const SignIn = () => {
     const { data: currentIp } = useCurrentIp();
     const dispatch = useDispatch();
@@ -47,21 +44,22 @@ const SignIn = () => {
     const { mutate: googleLogin, isPending: googleLoading } = useGoogleLogin();
     const navigate = useNavigate();
     const googleAuth = useGoogleLoginn({
-        flow: 'implicit', // or 'auth-code' if your backend expects code
-        onSuccess: (tokenResponse) => {
-            // tokenResponse.access_token
-            googleLogin(tokenResponse.access_token, {
+        flow: 'auth-code',
+        onSuccess: (codeResponse) => {
+            console.log('GOOGLE CODE', codeResponse);
+
+            googleLogin(codeResponse.code, {
                 onSuccess: (data) => {
+                    console.log('LOGIN SUCCESS');
                     dispatch(setUser(data.user));
                     localStorage.setItem(AUTH_TOKEN, data.accessToken);
                     localStorage.setItem(REFRESH_TOKEN, data.refreshToken);
-
                     navigate(data.user.user_type === 1 ? '/admin' : '/');
-                    toast.success(`Welcome back, ${data.user.username}!`);
                 },
             });
         },
-        onError: () => {
+        onError: (err) => {
+            console.error('GOOGLE ERROR', err);
             toast.error('Google login failed');
         },
     });
@@ -71,25 +69,6 @@ const SignIn = () => {
             subtitle="შეყივანეთ მონაცემები"
             body={
                 <>
-                    <GoogleLogin
-                        onSuccess={(res) => {
-                            if (!res.credential) return;
-
-                            googleLogin(res.credential, {
-                                onSuccess: (data) => {
-                                    dispatch(setUser(data.user));
-                                    localStorage.setItem(AUTH_TOKEN, data.accessToken);
-                                    localStorage.setItem(REFRESH_TOKEN, data.refreshToken);
-                                    navigate(data.user.user_type === 1 ? '/admin' : '/');
-
-                                    toast.success(`Welcome back, ${data.user.username}!`);
-                                },
-                            });
-                        }}
-                        onError={() => {
-                            console.log('Google Login Failed');
-                        }}
-                    />
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                             <FormField
