@@ -4,7 +4,6 @@ import helpers from "../../../lib/helpers";
 
 const getProducts = async (req: Request, res: Response) => {
   const db: IDbTools = req.app.locals.db!;
-  const body = req.body;
   const dbRes = await db.select(`
        SELECT
       p.uid,

@@ -12,44 +12,44 @@ const getProductByCategory = async (req: Request, res: Response) => {
   const params: Record<string, any> = {
     categoryName: name,
   };
-  where.push(`c.name = :categoryName`);
+  where.push("c.name = :categoryName");
   if (priceRange?.length === 2) {
-    where.push(`p.price BETWEEN :minPrice AND :maxPrice`);
+    where.push("p.price BETWEEN :minPrice AND :maxPrice");
     params.minPrice = priceRange[0];
     params.maxPrice = priceRange[1];
   }
   if (selectedBrands?.length > 0) {
-    where.push(`b.uid IN (:brandIds)`);
+    where.push("b.uid IN (:brandIds)");
     params.brandIds = selectedBrands;
   }
   if (selectedPlugTypes?.length > 0) {
-    where.push(`p.plug_type IN (:plugTypes)`);
+    where.push("p.plug_type IN (:plugTypes)");
     params.plugTypes = selectedPlugTypes;
   }
   if (inStock) {
-    where.push(`p.stock > 0`);
+    where.push("p.stock > 0");
   }
   if (onSale) {
-    where.push(`si.is_active = 1`);
+    where.push("si.is_active = 1");
   }
-  let orderBy = `ORDER BY p.created_at DESC`;
+  let orderBy = "ORDER BY p.created_at DESC";
 
   switch (sortBy) {
     case "price-low":
-      orderBy = `ORDER BY p.price ASC`;
+      orderBy = "ORDER BY p.price ASC";
       break;
 
     case "price-high":
-      orderBy = `ORDER BY p.price DESC`;
+      orderBy = "ORDER BY p.price DESC";
       break;
 
     case "newest":
-      orderBy = `ORDER BY p.created_at DESC`;
+      orderBy = "ORDER BY p.created_at DESC";
       break;
 
     case "popular":
     default:
-      orderBy = `ORDER BY p.uid DESC`; // or sales count later
+      orderBy = "ORDER BY p.uid DESC";
   }
   const whereClause = where.length ? `WHERE ${where.join(" AND ")}` : "";
 

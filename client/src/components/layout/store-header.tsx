@@ -10,6 +10,7 @@ import ProfileSection from '../common/profile-section';
 import { useGetProducts } from '@/api/products/get';
 import type { TGetProducts } from '@/types';
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from '@/constants';
 
 const StoreHeader = () => {
     const navigate = useNavigate();
@@ -33,7 +34,6 @@ const StoreHeader = () => {
     };
 
     const handleProductClick = (product: TGetProducts) => {
-        console.log(`i am here`);
         const pLink = product.name.toLowerCase().trim().replace(/\s+/g, '-');
         navigate(`/product/${pLink}/${product.uid}`);
         setSearchValue('');
@@ -45,7 +45,6 @@ const StoreHeader = () => {
             className="fixed right-0 top-0 w-full z-50 pl-[275px] px-5 h-[73.5px] border-b flex items-center justify-between"
             style={{ backgroundColor: theme === 'dark' ? '#121212' : '#ffffff' }}
         >
-            {/* Search Bar */}
             <div className="relative flex-1 max-w-2xl">
                 <div
                     className="relative flex items-center border rounded-lg"
@@ -92,16 +91,16 @@ const StoreHeader = () => {
                                 იტვირთება...
                             </div>
                         ) : filteredProducts.length > 0 ? (
-                            <div className="max-h-96 overflow-y-auto">
+                            <div className="max-h-96 ">
                                 {filteredProducts.map((product) => (
                                     <div
                                         key={product.uid}
-                                        onClick={() => handleProductClick(product)}
-                                        className="px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer flex items-center gap-3 border-b last:border-b-0"
+                                        onMouseDown={() => handleProductClick(product)}
+                                        className="px-4 py-3 w-full hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer flex items-center gap-3 border-b last:border-b-0"
                                     >
                                         {product.image ? (
                                             <img
-                                                src={product.image}
+                                                src={`${API_URL}${product.image}`}
                                                 alt={product.name}
                                                 className="w-12 h-12 object-cover rounded-lg flex-shrink-0"
                                             />

@@ -92,11 +92,20 @@ export const userEditSchema = z.object({
   user_type: z.string().min(1, "აირჩიეთ ტიპი"),
   status: z.string().min(1, "აირჩიეთ სტატუსი!"),
 });
+export const reviewsSchema = z.object({
+  uid: z.number().optional(),
+  username: z
+    .string()
+    .optional(),
+  email: z.email("იმეილი არასწორია, გთხოვ სწორად შეიყვანო").optional(),
+  product_uid: z.number(),
+  rating: z.number(),
+  description: z.string().min(1, "შეიყვანეთ აღწერა!")
+});
 export const validateSchema = <T>(schema: z.ZodSchema<T>, data: any) => {
   const result = schema.safeParse(data);
 
   if (!result.success) {
-    // Return just the first error message
     return {
       success: false as const,
       error: result.error.issues[0].message,

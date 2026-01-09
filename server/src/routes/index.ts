@@ -8,6 +8,7 @@ import UnitRes from "../controllers/units/export";
 import BrandRes from "../controllers/brands/export";
 import SalesRes from "../controllers/sales/export";
 import googleAuth from "../controllers/users/google_auth";
+import ReviewsRes from "../controllers/reviews/export";
 const Router = express.Router();
 // Auth & Users
 Router.post("/register", UsersRes.registerUser);
@@ -75,5 +76,8 @@ Router.get("/sales/paginated", authMiddleware, SalesRes.getPaginatedSales);
 Router.post("/sale", authMiddleware, SalesRes.addSale);
 Router.get("/sales/all", authMiddleware, SalesRes.getSales);
 Router.delete("/sale/:uid", authMiddleware, SalesRes.deleteSale);
-
+// Reviews
+Router.get("/reviews", ReviewsRes.getReviews);
+Router.post("/review", ReviewsRes.addReview);
+Router.put("/review", ReviewsRes.editReview);
 export default Router;

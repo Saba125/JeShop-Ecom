@@ -4,6 +4,8 @@ import { IDbResponse } from "../interfaces/db";
 import { IUser } from "../interfaces/user";
 import pool from "./db_connection";
 export type TTableNames =
+
+  | "reviews"
   | "sales"
   | "sales_items"
   | "brands"

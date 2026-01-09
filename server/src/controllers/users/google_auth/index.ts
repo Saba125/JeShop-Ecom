@@ -7,7 +7,7 @@ import { IDbTools } from "../../../db/db_tools";
 const client = new OAuth2Client(
   config.CLIENT_ID,
   config.CLIENT_SECRET,
-  "postmessage" // Important: use "postmessage" for auth-code flow
+  "postmessage"
 );
 
 const googleAuth = async (req: Request, res: Response) => {
@@ -17,18 +17,15 @@ const googleAuth = async (req: Request, res: Response) => {
 
     let payload;
 
-    // Check if it's an authorization code (starts with "4/" or contains "/")
-    if (credential.startsWith('4/') || credential.includes('/')) {
-      console.log('Processing authorization code...');
+    if (credential.startsWith("4/") || credential.includes("/")) {
+      console.log("მუშავდება ავტორიზაციის კოდი...");
 
-      // Exchange authorization code for tokens
       const { tokens } = await client.getToken(credential);
 
       if (!tokens.id_token) {
         return helpers.sendError(res, "No ID token received from Google");
       }
 
-      // Verify the ID token
       const ticket = await client.verifyIdToken({
         idToken: tokens.id_token,
         audience: config.CLIENT_ID,
