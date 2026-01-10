@@ -34,7 +34,7 @@ const useDebounce = <T,>(value: T, delay: number): T => {
 
 export const useGetProductsByCategory = (
   name: string,
-  filter: FiltersContext,
+  filter?: FiltersContext,
   debounceDelay: number = 500 // 500ms default delay
 ) => {
   // Debounce the entire filter object with deep comparison

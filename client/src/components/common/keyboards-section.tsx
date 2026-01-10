@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { API_URL } from '@/constants';
 import type { TGetProducts } from '@/types';
 
-const KeyboardsSection = () => {
+const ProductsSection = ({name} : {name: string}) => {
     const { data: products, isLoading } = useGetProductsByCategory("keyboards");
     const [hoveredId, setHoveredId] = useState<number | null>(null);
     const [favorites, setFavorites] = useState<number[]>([]);
@@ -118,7 +118,7 @@ const KeyboardsSection = () => {
                         <div className="p-2 bg-cyan-50 rounded-lg">
                             <Keyboard className="h-6 w-6 text-[#0083EF]" />
                         </div>
-                        <h2 className="text-3xl font-bold">კლავიატურები</h2>
+                        <h2 className="text-3xl font-bold">{name}</h2>
                     </div>
                     {/* Gradient underline */}
                     <div className="h-0.5 w-[50%] bg-gradient-to-r from-[#0083EF] to-transparent"></div>
@@ -328,4 +328,4 @@ const KeyboardsSection = () => {
     );
 };
 
-export default KeyboardsSection;
+export default ProductsSection;
