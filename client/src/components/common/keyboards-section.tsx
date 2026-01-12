@@ -118,7 +118,7 @@ const ProductsSection = ({name} : {name: string}) => {
     }
 
     return (
-        <section className="container mx-auto px-4 py-16">
+        <section className="container mx-auto px-4 py-16 overflow-hidden">
             <div className="flex items-center justify-between mb-8">
                 <div className="flex-1">
                     <div className="flex items-center gap-3 mb-4">
@@ -142,9 +142,9 @@ const ProductsSection = ({name} : {name: string}) => {
                     align: "start",
                     loop: true,
                 }}
-                className="w-full"
+                className="w-full -mx-4 px-4"
             >
-                <CarouselContent className="-ml-2 md:-ml-4">
+                <CarouselContent className="">
                     {products.map((product) => {
                         const activeSale = getActiveSale(product);
                         const discountedPrice = calculateDiscountedPrice(product);
@@ -156,7 +156,7 @@ const ProductsSection = ({name} : {name: string}) => {
                         const originalPrice = parseFloat(product.price);
 
                         return (
-                            <CarouselItem key={product.uid} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+                            <CarouselItem key={product.uid} className="pl-4 basis-[90%] xs:basis-[80%] sm:basis-1/2 md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
                                 <Card
                                     onClick={() => {
                                         const pLink = product.name
@@ -170,7 +170,7 @@ const ProductsSection = ({name} : {name: string}) => {
                                     onMouseLeave={() => setHoveredId(null)}
                                 >
                                     {/* Image Section */}
-                                    <div className="relative h-64 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 overflow-hidden">
+                                    <div className="relative h-48 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 overflow-hidden">
                                         {/* Discount Badge */}
                                         {activeSale && discountPercent > 0 && (
                                             <div className="absolute top-0 left-0 z-10">
@@ -250,7 +250,7 @@ const ProductsSection = ({name} : {name: string}) => {
                                         )}
                                     </div>
 
-                                    <CardContent className="p-5">
+                                    <CardContent className="p-4">
                                         {/* Category and Brand */}
                                         <div className="flex items-center gap-2 mb-2">
                                             <Badge variant="outline" className="text-xs">
@@ -264,23 +264,23 @@ const ProductsSection = ({name} : {name: string}) => {
                                         </div>
 
                                         {/* Product Name */}
-                                        <h3 className="font-semibold text-lg mb-3 line-clamp-2 group-hover:text-primary transition-colors">
+                                        <h3 className="font-semibold text-base mb-2 line-clamp-2 group-hover:text-primary transition-colors">
                                             {product.name}
                                         </h3>
 
                                         {/* Weight/Unit */}
-                                        <p className="text-xs text-muted-foreground mb-3">
+                                        <p className="text-xs text-muted-foreground mb-2">
                                             {product.weight} {product.unit.name}
                                         </p>
 
                                         {/* Price Section */}
-                                        <div className="mb-4">
-                                            <div className="flex items-center gap-3 mb-1">
-                                                <span className="text-3xl font-black text-primary">
+                                        <div className="mb-3">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <span className="text-2xl font-black text-primary">
                                                     {(discountedPrice || originalPrice).toFixed(2)}₾
                                                 </span>
                                                 {discountedPrice && (
-                                                    <span className="text-lg text-muted-foreground line-through">
+                                                    <span className="text-sm text-muted-foreground line-through">
                                                         {originalPrice.toFixed(2)}₾
                                                     </span>
                                                 )}
@@ -290,7 +290,7 @@ const ProductsSection = ({name} : {name: string}) => {
                                         {/* Add to Cart Button */}
                                         <Button
                                             className="w-full group/btn relative overflow-hidden"
-                                            size="lg"
+                                            size="default"
                                             disabled={!inStock}
                                             onClick={(e) => {
                                                 e.stopPropagation();
