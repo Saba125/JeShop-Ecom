@@ -1,25 +1,48 @@
 import { useState } from 'react';
-import { useGetProductsByCategory } from "@/api/products/get_by_category";
-import { LucideKeyboard, ShoppingCart, Heart, Eye, Sparkles, Keyboard, ArrowRight } from "lucide-react";
+import { useGetProductsByCategory } from '@/api/products/get_by_category';
+import {
+    LucideKeyboard,
+    ShoppingCart,
+    Heart,
+    Eye,
+    Sparkles,
+    Keyboard,
+    ArrowRight,
+    Mouse,
+    Headphones,
+    SquareMousePointer,
+} from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+    CarouselNext,
+    CarouselPrevious,
+} from '@/components/ui/carousel';
 import { addItemToCart } from '@/store/cartSlice';
 import { addItemToWishlist } from '@/store/wishListSlice';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { API_URL } from '@/constants';
 import type { TGetProducts } from '@/types';
+const titleMap: Record<string, string> = {
+    keyboards: 'კლავიატურები',
+    mouses: 'მაუსები',
+    headsets: 'ყურსასმენები',
+    mousepads: 'მაუსპადები',
+};
 
-const ProductsSection = ({name} : {name: string}) => {
-    const { data: products, isLoading } = useGetProductsByCategory("keyboards");
+const iconMap: Record<string, React.ElementType> = {
+    keyboards: Keyboard,
+    mouses: Mouse,
+    headsets: Headphones,
+    mousepads: SquareMousePointer,
+};
+const ProductsSection = ({ name }: { name: string }) => {
+    const { data: products, isLoading } = useGetProductsByCategory('keyboards');
     const [hoveredId, setHoveredId] = useState<number | null>(null);
     const [favorites, setFavorites] = useState<number[]>([]);
     const dispatch = useDispatch();
@@ -116,30 +139,31 @@ const ProductsSection = ({name} : {name: string}) => {
             </section>
         );
     }
-
+    const Icon = iconMap[name] ?? Keyboard;
+    const title = titleMap[name] ?? name;
     return (
         <section className="container mx-auto px-4 py-16 overflow-hidden">
             <div className="flex items-center justify-between mb-8">
                 <div className="flex-1">
                     <div className="flex items-center gap-3 mb-4">
                         <div className="p-2 bg-cyan-50 rounded-lg">
-                            <Keyboard className="h-6 w-6 text-[#0083EF]" />
+                            <Icon className="h-6 w-6 text-[#0083EF]" />
                         </div>
-                        <h2 className="text-3xl font-bold">{name}</h2>
+                        <h2 className="text-3xl font-bold">{title}</h2>
                     </div>
                     <div className="h-0.5 w-[50%] bg-gradient-to-r from-[#0083EF] to-transparent"></div>
                     <p className="text-muted-foreground mt-4">
-                        აღმოაჩინეთ ჩვენი საუკეთესო შეთავაზებები 
+                        აღმოაჩინეთ ჩვენი საუკეთესო შეთავაზებები
                     </p>
                 </div>
-                <Button onClick={() => navigate("/products/category/keyboards")} variant="ghost">
+                <Button onClick={() => navigate('/products/category/keyboards')} variant="ghost">
                     ყველას ნახვა <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
             </div>
 
             <Carousel
                 opts={{
-                    align: "start",
+                    align: 'start',
                     loop: true,
                 }}
                 className="w-full -mx-4 px-4"
@@ -156,7 +180,10 @@ const ProductsSection = ({name} : {name: string}) => {
                         const originalPrice = parseFloat(product.price);
 
                         return (
-                            <CarouselItem key={product.uid} className="pl-4 basis-[90%] xs:basis-[80%] sm:basis-1/2 md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+                            <CarouselItem
+                                key={product.uid}
+                                className="pl-4 basis-[90%] xs:basis-[80%] sm:basis-1/2 md:basis-1/2 lg:basis-1/3 xl:basis-1/4"
+                            >
                                 <Card
                                     onClick={() => {
                                         const pLink = product.name
@@ -243,7 +270,10 @@ const ProductsSection = ({name} : {name: string}) => {
                                         {/* Out of Stock Overlay */}
                                         {!inStock && (
                                             <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                                                <Badge variant="secondary" className="text-lg px-4 py-2">
+                                                <Badge
+                                                    variant="secondary"
+                                                    className="text-lg px-4 py-2"
+                                                >
                                                     არ არის მარაგში
                                                 </Badge>
                                             </div>
@@ -300,8 +330,11 @@ const ProductsSection = ({name} : {name: string}) => {
                                                             product_uid: product.uid,
                                                             product_image: product.image || '',
                                                             has_sale: !!activeSale,
-                                                            new_price: discountedPrice || originalPrice,
-                                                            old_price: discountedPrice ? originalPrice : null,
+                                                            new_price:
+                                                                discountedPrice || originalPrice,
+                                                            old_price: discountedPrice
+                                                                ? originalPrice
+                                                                : null,
                                                             product_name: product.name,
                                                             quantity: 1,
                                                             stock: product.stock,
@@ -313,7 +346,9 @@ const ProductsSection = ({name} : {name: string}) => {
                                             <span className="relative z-10 flex items-center justify-center gap-2">
                                                 <ShoppingCart className="w-4 h-4" />
                                                 {inStock ? (
-                                                    <span className="font-semibold">კალათაში დამატება</span>
+                                                    <span className="font-semibold">
+                                                        კალათაში დამატება
+                                                    </span>
                                                 ) : (
                                                     <span>არ არის მარაგში</span>
                                                 )}
