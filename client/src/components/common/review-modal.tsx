@@ -1,30 +1,45 @@
 import React, { useState } from 'react';
 import CDialog from './custom-dialog';
 import { Star } from 'lucide-react';
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from '@/components/ui/form';
 interface ReviewsModalProps {
     isOpen: boolean;
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
 const ReviewsModal = ({ isOpen, setIsOpen }: ReviewsModalProps) => {
-    const [selectedStar, setSelectedStar] = useState(0);
+    const [rating, setRating] = useState<number>(0);
+
+    const handleStarClick = (starNumber: number) => {
+        setRating(starNumber);
+    };
+
     return (
         <CDialog
             title="შეფასების გაკეთება"
             open={isOpen}
             onOpenChange={setIsOpen}
             children={
-                <div>
-                    <div className="flex">
-                        {[1, 2, 3, 4, 5].map((star) => (
+                    <div className="flex gap-1">
+                        {[1, 2, 3, 4, 5].map((starNumber) => (
                             <Star
-                                onClick={() => {
-                                    setSelectedStar(star);
-                                }}
-                                key={star}
+                                key={starNumber}
+                                className={`cursor-pointer transition-colors ${
+                                    starNumber <= rating
+                                        ? 'fill-yellow-400 text-yellow-400'
+                                        : 'text-gray-300'
+                                }`}
+                                onClick={() => handleStarClick(starNumber)}
                             />
                         ))}
                     </div>
-                </div>
             }
         />
     );
