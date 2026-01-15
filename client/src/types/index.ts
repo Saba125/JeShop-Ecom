@@ -77,6 +77,16 @@ export type TGetSalesPaginated = {
     data: TGetSales[];
     pagination: Pagination;
 };
+export interface TGetReviews {
+  uid: string;
+  product_uid: string;
+  username: string;
+  email: string;
+  user: User | null
+  rating: number;
+  description: string;
+  create_date: string;
+}
 export type TGetUnit = {
     uid: number;
     name: string;

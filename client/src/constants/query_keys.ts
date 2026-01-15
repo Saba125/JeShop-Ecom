@@ -42,4 +42,8 @@ export const queryKeys = {
     all: ['sales'] as const,
     details: (uid: number | string) => ['sales', uid] as const,
   },
+  reviews: {
+    all: ['reviews'] as const,
+    details: (uid: number | string) => ['reviews', uid] as const,
+  },
 };

@@ -77,7 +77,7 @@ Router.post("/sale", authMiddleware, SalesRes.addSale);
 Router.get("/sales/all", authMiddleware, SalesRes.getSales);
 Router.delete("/sale/:uid", authMiddleware, SalesRes.deleteSale);
 // Reviews
-Router.get("/reviews", ReviewsRes.getReviews);
+Router.get("/reviews/:product_uid", ReviewsRes.getReviews);
 Router.post("/review", ReviewsRes.addReview);
 Router.put("/review", ReviewsRes.editReview);
 export default Router;

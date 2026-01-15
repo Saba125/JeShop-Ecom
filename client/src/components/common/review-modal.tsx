@@ -17,13 +17,16 @@ import type { RootState } from '@/store/store';
 import type z from 'zod';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
+import { useAddReviews } from '@/api/reviews/post';
 interface ReviewsModalProps {
     isOpen: boolean;
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    product_uid: number;
 }
 
-const ReviewsModal = ({ isOpen, setIsOpen }: ReviewsModalProps) => {
+const ReviewsModal = ({ isOpen, setIsOpen, product_uid }: ReviewsModalProps) => {
     const [rating, setRating] = useState<number>(0);
+    const {mutate: addReview, isPending, isSuccess} = useAddReviews()
     const user = useSelector((state: RootState) => state.user);
     const handleStarClick = (starNumber: number) => {
         setRating(starNumber);
@@ -36,14 +39,25 @@ const ReviewsModal = ({ isOpen, setIsOpen }: ReviewsModalProps) => {
             description: '',
             rating: 0,
             username: user.username,
+            product_uid
         },
     });
-    const handleSubmit = async (values: z.infer<typeof formSchema>) => {};
+    const handleSubmit = async (values: z.infer<typeof formSchema>) => {
+        addReview({
+            ...values,
+             rating,
+        })
+    };
+    if (isSuccess) {
+        setIsOpen(false)
+    }
     return (
         <CDialog
+        loading={isPending}
             title="შეფასების გაკეთება"
             open={isOpen}
             onOpenChange={setIsOpen}
+            onSubmit={form.handleSubmit(handleSubmit)}
             children={
                 <Form {...form}>
                     <form className="space-y-5" onSubmit={form.handleSubmit(handleSubmit)}>

@@ -5,5 +5,6 @@ const reviewsSchema = z.object({
     email: z.email('იმეილი არასწორია, გთხოვ სწორად შეიყვანო'),
     rating: z.number(),
     description: z.string().min(1, 'შეიყვანეთ აღწერა!'),
+    product_uid: z.number()
 });
 export default reviewsSchema;

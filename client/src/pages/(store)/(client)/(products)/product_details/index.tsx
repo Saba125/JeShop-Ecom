@@ -28,6 +28,7 @@ import { useGetSimilarProducts } from '@/api/products/get_similar';
 import { addItemToCart } from '@/store/cartSlice';
 import { CButton } from '@/components/common/custom-button';
 import ReviewsModal from '@/components/common/review-modal';
+import { useGetReviews } from '@/api/reviews/get';
 
 const ProductDetails = () => {
     const params = useParams();
@@ -37,6 +38,7 @@ const ProductDetails = () => {
     const { data: similarProducts, isLoading: isSimilarLoading } = useGetSimilarProducts(
         Number(params.uid)
     );
+    const { data: reviews, isLoading: isReviewsLoading } = useGetReviews(Number(params.uid));
     const [quantity, setQuantity] = useState(1);
     const [isFavorite, setIsFavorite] = useState(false);
     const [selectedImage, setSelectedImage] = useState(0);
@@ -439,24 +441,42 @@ const ProductDetails = () => {
                         </div>
                     </div>
 
-                    {/* Reviews Section */}
                     <div className="mt-8">
                         <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
                             {/* Reviews Header */}
                             <div className="flex items-center justify-between mb-6 pb-4 border-b">
                                 <div className="flex items-center gap-4">
-                                    <h2 className="text-2xl font-semibold">0 მიმოხილვა</h2>
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-2xl font-semibold">5.0</span>
-                                        <div className="flex">
-                                            {[1, 2, 3, 4, 5].map((star) => (
-                                                <Star
-                                                    key={star}
-                                                    className="w-5 h-5 fill-black text-black dark:fill-white dark:text-white"
-                                                />
-                                            ))}
+                                    <h2 className="text-2xl font-semibold">
+                                        {reviews?.length || 0} მიმოხილვა
+                                    </h2>
+                                    {reviews && reviews.length > 0 && (
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-2xl font-semibold">
+                                                {(
+                                                    reviews.reduce((sum, r) => sum + r.rating, 0) /
+                                                    reviews.length
+                                                ).toFixed(1)}
+                                            </span>
+                                            <div className="flex">
+                                                {[1, 2, 3, 4, 5].map((star) => (
+                                                    <Star
+                                                        key={star}
+                                                        className={`w-5 h-5 ${
+                                                            star <=
+                                                            Math.round(
+                                                                reviews.reduce(
+                                                                    (sum, r) => sum + r.rating,
+                                                                    0
+                                                                ) / reviews.length
+                                                            )
+                                                                ? 'fill-yellow-400 text-yellow-400'
+                                                                : 'text-gray-300'
+                                                        }`}
+                                                    />
+                                                ))}
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
                                 </div>
                                 <div className="flex items-center gap-2 bg-green-50 dark:bg-green-950 px-4 py-2 rounded-lg">
                                     <Shield className="w-5 h-5 text-green-600" />
@@ -481,182 +501,122 @@ const ProductDetails = () => {
 
                             {/* Reviews List */}
                             <div className="space-y-6">
-                                {/* Empty State - Remove this when you have reviews */}
-                                <div className="text-center py-12">
-                                    <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                                    <p className="text-gray-500">ჯერ არ არის შეფასებები</p>
-                                    <p className="text-sm mb-4 text-gray-400 mt-2">
-                                        იყავი პირველი, ვინც შეაფასებს ამ პროდუქტს
-                                    </p>
-                                    <CButton
-                                        icon={StarIcon}
-                                        text="შეფასების გაკეთება"
-                                        onClick={() => {
-                                            setAddReviewModal(true);
-                                        }}
-                                    />
-                                </div>
-
-                                {/* Example Review 1 - Remove 'hidden' class when showing real reviews */}
-                                <div className="border-b pb-6 last:border-b-0">
-                                    <div className="flex gap-4">
-                                        {/* Avatar */}
-                                        <div className="w-10 h-10 rounded-full bg-teal-600 text-white flex items-center justify-center font-semibold flex-shrink-0">
-                                            M
-                                        </div>
-
-                                        <div className="flex-1">
-                                            {/* User Info */}
-                                            <div className="mb-2">
-                                                <div className="flex items-center gap-2 mb-1">
-                                                    <h4 className="font-semibold">MoCharani</h4>
-                                                    <span className="text-sm">in</span>
-                                                    <span className="text-sm">🇬🇧</span>
-                                                    <span className="text-sm text-gray-500">
-                                                        on Dec 18, 2025
-                                                    </span>
-                                                </div>
-                                                <div className="flex items-center gap-2">
-                                                    <div className="flex">
-                                                        {[1, 2, 3, 4, 5].map((star) => (
-                                                            <Star
-                                                                key={star}
-                                                                className="w-4 h-4 fill-black text-black dark:fill-white dark:text-white"
-                                                            />
-                                                        ))}
-                                                    </div>
-                                                    <span className="text-lg">😍</span>
-                                                </div>
-                                            </div>
-
-                                            {/* Review Text */}
-                                            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                                                Real good heavy product looks really good for the
-                                                money not light so it's looking A1* hopefully it's
-                                                like that on Christmas Day🤞
-                                            </p>
-                                        </div>
+                                {isReviewsLoading ? (
+                                    <div className="text-center py-12">
+                                        <div className="text-muted-foreground">იტვირთება...</div>
                                     </div>
-                                </div>
-
-                                {/* Example Review 2 */}
-                                <div className="border-b pb-6 last:border-b-0 hidden">
-                                    <div className="flex gap-4">
-                                        <div className="w-10 h-10 rounded-full bg-gray-400 text-white flex items-center justify-center font-semibold flex-shrink-0">
-                                            M
-                                        </div>
-
-                                        <div className="flex-1">
-                                            <div className="mb-2">
-                                                <div className="flex items-center gap-2 mb-1">
-                                                    <h4 className="font-semibold">ma***82</h4>
-                                                    <span className="text-sm">in</span>
-                                                    <span className="text-sm">🇵🇱</span>
-                                                    <span className="text-sm text-gray-500">
-                                                        on Dec 12, 2025
-                                                    </span>
-                                                </div>
-                                                <div className="flex items-center gap-2">
-                                                    <div className="flex">
-                                                        {[1, 2, 3, 4, 5].map((star) => (
-                                                            <Star
-                                                                key={star}
-                                                                className="w-4 h-4 fill-black text-black dark:fill-white dark:text-white"
-                                                            />
-                                                        ))}
-                                                    </div>
-                                                    <span className="text-lg">😍</span>
-                                                </div>
-                                            </div>
-
-                                            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                                                Everything is fine. The mouse is nice-looking. I
-                                                haven't tested it yet because it's one of the gifts
-                                                for my son, but it seems sturdy
-                                            </p>
-                                        </div>
+                                ) : !reviews || reviews.length === 0 ? (
+                                    /* Empty State */
+                                    <div className="text-center py-12">
+                                        <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                                        <p className="text-gray-500">ჯერ არ არის შეფასებები</p>
+                                        <p className="text-sm mb-4 text-gray-400 mt-2">
+                                            იყავი პირველი, ვინც შეაფასებს ამ პროდუქტს
+                                        </p>
+                                        <CButton
+                                            icon={StarIcon}
+                                            text="შეფასების გაკეთება"
+                                            onClick={() => {
+                                                setAddReviewModal(true);
+                                            }}
+                                        />
                                     </div>
-                                </div>
+                                ) : (
+                                    /* Actual Reviews */
+                                    <>
+                                        {reviews.map((review) => {
+                                            const getAvatarColor = (username: string) => {
+                                                const colors = [
+                                                    'bg-teal-600',
+                                                    'bg-blue-600',
+                                                    'bg-purple-600',
+                                                    'bg-pink-600',
+                                                    'bg-indigo-600',
+                                                    'bg-green-600',
+                                                    'bg-orange-600',
+                                                    'bg-red-600',
+                                                ];
+                                                const index =
+                                                    username.charCodeAt(0) % colors.length;
+                                                return colors[index];
+                                            };
 
-                                {/* Example Review 3 */}
-                                <div className="border-b pb-6 last:border-b-0 hidden">
-                                    <div className="flex gap-4">
-                                        <div className="w-10 h-10 rounded-full bg-teal-700 text-white flex items-center justify-center font-semibold flex-shrink-0">
-                                            O
-                                        </div>
+                                            const displayName = review.user?.username || review.username || 'Anonymous';
+                                            const avatarLetter = displayName.charAt(0).toUpperCase();
+                                            const avatarColor = getAvatarColor(displayName);
+                                            const formattedDate = dayjs(review.create_date).format(
+                                                'MMM DD, YYYY'
+                                            );
 
-                                        <div className="flex-1">
-                                            <div className="mb-2">
-                                                <div className="flex items-center gap-2 mb-1">
-                                                    <h4 className="font-semibold">Olexand</h4>
-                                                    <span className="text-sm">in</span>
-                                                    <span className="text-sm">🇺🇦</span>
-                                                    <span className="text-sm text-gray-500">
-                                                        on Dec 17, 2025
-                                                    </span>
-                                                </div>
-                                                <div className="flex items-center gap-2">
-                                                    <div className="flex">
-                                                        {[1, 2, 3, 4, 5].map((star) => (
-                                                            <Star
-                                                                key={star}
-                                                                className="w-4 h-4 fill-black text-black dark:fill-white dark:text-white"
-                                                            />
-                                                        ))}
+                                            return (
+                                                <div
+                                                    key={review.uid}
+                                                    className="border-b pb-6 last:border-b-0"
+                                                >
+                                                    <div className="flex gap-4">
+                                                        {/* Avatar */}
+                                                        <div
+                                                            className={`w-10 h-10 rounded-full ${avatarColor} text-white flex items-center justify-center font-semibold flex-shrink-0`}
+                                                        >
+                                                            {avatarLetter}
+                                                        </div>
+
+                                                        <div className="flex-1">
+                                                            {/* User Info */}
+                                                            <div className="mb-2">
+                                                                <div className="flex items-center gap-2 mb-1">
+                                                                    <h4 className="font-semibold">
+                                                                        {displayName}
+                                                                    </h4>
+                                                                    <span className="text-sm text-gray-500">
+                                                                        on {formattedDate}
+                                                                    </span>
+                                                                </div>
+                                                                <div className="flex items-center gap-2">
+                                                                    <div className="flex">
+                                                                        {[1, 2, 3, 4, 5].map(
+                                                                            (star) => (
+                                                                                <Star
+                                                                                    key={star}
+                                                                                    className={`w-4 h-4 ${
+                                                                                        star <=
+                                                                                        review.rating
+                                                                                            ? 'fill-yellow-400 text-yellow-400'
+                                                                                            : 'text-gray-300'
+                                                                                    }`}
+                                                                                />
+                                                                            )
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            {/* Review Text */}
+                                                            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                                                                {review.description}
+                                                            </p>
+                                                        </div>
                                                     </div>
-                                                    <span className="text-lg">😍</span>
                                                 </div>
-                                            </div>
-
-                                            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                                                Great packaging from the seller. It's packed in an
-                                                additional branded box. Excellent protection and a
-                                                great first impression
-                                            </p>
+                                            );
+                                        })}
+                                        
+                                        {/* Add Review Button at bottom */}
+                                        <div className="pt-4 border-t">
+                                            <CButton
+                                                icon={StarIcon}
+                                                text="შეფასების დამატება"
+                                                onClick={() => {
+                                                    setAddReviewModal(true);
+                                                }}
+                                            />
                                         </div>
-                                    </div>
-                                </div>
-
-                                {/* Example Review 4 */}
-                                <div className="border-b pb-6 last:border-b-0 hidden">
-                                    <div className="flex gap-4">
-                                        <div className="w-10 h-10 rounded-full bg-gray-400 text-white flex items-center justify-center font-semibold flex-shrink-0">
-                                            I
-                                        </div>
-
-                                        <div className="flex-1">
-                                            <div className="mb-2">
-                                                <div className="flex items-center gap-2 mb-1">
-                                                    <h4 className="font-semibold">Ir***st</h4>
-                                                    <span className="text-sm">in</span>
-                                                    <span className="text-sm">🇦🇪</span>
-                                                    <span className="text-sm text-gray-500">
-                                                        on Dec 17, 2025
-                                                    </span>
-                                                </div>
-                                                <div className="flex items-center gap-2">
-                                                    <div className="flex">
-                                                        {[1, 2, 3, 4, 5].map((star) => (
-                                                            <Star
-                                                                key={star}
-                                                                className="w-4 h-4 fill-black text-black dark:fill-white dark:text-white"
-                                                            />
-                                                        ))}
-                                                    </div>
-                                                    <span className="text-lg">😍</span>
-                                                </div>
-                                            </div>
-
-                                            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                                                attack shark mice are good overall, this color is
-                                                just as good for putting it at that price
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>
+
 
                     {/* Similar Products Section */}
                     <div className="mt-8">
@@ -832,8 +792,9 @@ const ProductDetails = () => {
             </div>
             {addReviewModal && (
                 <ReviewsModal
-                isOpen={addReviewModal}
-                setIsOpen={setAddReviewModal}
+                    isOpen={addReviewModal}
+                    setIsOpen={setAddReviewModal}
+                    product_uid={Number(params.uid)}
                 />
             )}
         </>

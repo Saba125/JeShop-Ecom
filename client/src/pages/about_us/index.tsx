@@ -101,7 +101,7 @@ const AboutUs = () => {
             </section>
 
             {/* Stats Section */}
-            <section className="py-16 bg-white dark:bg-slate-900">
+            {/* <section className="py-16 bg-white dark:bg-slate-900">
                 <div className="container mx-auto px-4">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                         {stats.map((stat, index) => {
@@ -127,7 +127,7 @@ const AboutUs = () => {
                         })}
                     </div>
                 </div>
-            </section>
+            </section> */}
 
             {/* Mission & Vision */}
             <section className="py-20">
@@ -246,7 +246,7 @@ const AboutUs = () => {
             </section>
 
             {/* Why Choose Us */}
-            <section className="py-20 bg-gradient-to-br from-primary/5 via-blue-500/5 to-transparent">
+            {/* <section className="py-20 bg-gradient-to-br from-primary/5 via-blue-500/5 to-transparent">
                 <div className="container mx-auto px-4">
                     <div className="text-center mb-12">
                         <h2 className="text-4xl font-bold mb-4">რატომ ჩვენ?</h2>
@@ -294,7 +294,7 @@ const AboutUs = () => {
                         </Card>
                     </div>
                 </div>
-            </section>
+            </section> */}
 
             {/* Contact CTA */}
             <section className="py-20">

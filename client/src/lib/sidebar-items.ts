@@ -64,7 +64,7 @@ const clientSidebarItems: SidebarItems = [
     },
     {
         title: 'ჩვენს შესახებ',
-        url: '/about',
+        url: '/about-us',
         icon: Info,
     },
     {
