@@ -1,5 +1,5 @@
 import type { RootState } from '@/store/store';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import CFlex from '../ui/flex';
 import { User } from 'lucide-react';
 import { CAvatar } from './custom-avatar';
@@ -24,10 +24,17 @@ import { CButton } from './custom-button';
 import { FcGoogle } from 'react-icons/fc';
 import { FaGithub } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { useGoogleLogin } from '@/api/google';
+import { useGoogleLogin as useGoogleLoginn } from '@react-oauth/google';
+import { toast } from 'sonner';
+import { setUser } from '@/store/userSlice';
+import { AUTH_TOKEN, REFRESH_TOKEN } from '@/constants';
 const ProfileSection = () => {
+    const dispatch = useDispatch();
     const user = useSelector((state: RootState) => state.user);
     const navigate = useNavigate();
     const { data: currentIp } = useCurrentIp();
+    const { mutate: googleLogin, isPending: googleLoading } = useGoogleLogin();
     const { mutate: loginUser, isPending } = useLogin();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -40,7 +47,26 @@ const ProfileSection = () => {
         values.ip_address = currentIp.ip;
         loginUser(values);
     }
+    const googleAuth = useGoogleLoginn({
+        flow: 'auth-code',
+        onSuccess: (codeResponse) => {
+            console.log('GOOGLE CODE', codeResponse);
 
+            googleLogin(codeResponse.code, {
+                onSuccess: (data) => {
+                    console.log('LOGIN SUCCESS');
+                    dispatch(setUser(data.user));
+                    localStorage.setItem(AUTH_TOKEN, data.accessToken);
+                    localStorage.setItem(REFRESH_TOKEN, data.refreshToken);
+                    navigate(data.user.user_type === 1 ? '/admin' : '/');
+                },
+            });
+        },
+        onError: (err) => {
+            console.error('GOOGLE ERROR', err);
+            toast.error('Google login failed');
+        },
+    });
     return user.uid ? (
         <CFlex className="cursor-pointer" align="center" gap="10px">
             {user.uid ? (
@@ -120,7 +146,10 @@ const ProfileSection = () => {
                         <div className=" text-sm flex justify-end">
                             <span>
                                 არ გაქვთ ანგარიში?{' '}
-                                <Link className="font-bold hover:underline text-[#006FEAFF]">
+                                <Link
+                                    to="/auth/register"
+                                    className="font-bold hover:underline text-[#006FEAFF]"
+                                >
                                     რეგისტრაცია
                                 </Link>
                             </span>
@@ -139,6 +168,7 @@ const ProfileSection = () => {
                                 variant="outline"
                                 text="Google"
                                 icon={FcGoogle}
+                                onClick={() => googleAuth()}
                             />
                             <CButton
                                 disabled={isPending}
