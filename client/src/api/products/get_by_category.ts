@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect, useRef } from "react";
 import Api from "@/api/axios";
-import type { TGetProducts } from "@/types";
+import type { TGetProducts, TGetProductsPaginated } from "@/types";
 import { queryKeys } from "@/constants/query_keys";
 import type { FiltersContext } from "@/pages/(store)/category";
 
@@ -40,7 +40,7 @@ export const useGetProductsByCategory = (
   // Debounce the entire filter object with deep comparison
   const debouncedFilter = useDebounce(filter, debounceDelay);
 
-  return useQuery<TGetProducts[]>({
+  return useQuery<TGetProductsPaginated>({
     queryKey: [
       queryKeys.products.byCategory,
       name,
@@ -51,7 +51,7 @@ export const useGetProductsByCategory = (
       const { data } = await Api.post(`/products/category/${name}`, {
         filter: debouncedFilter,
       });
-      return data as TGetProducts[];
+      return data as TGetProductsPaginated;
     },
     // Keep previous data while loading new results
     placeholderData: (previousData) => previousData,

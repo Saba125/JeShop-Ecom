@@ -119,7 +119,7 @@ const ProductsSection = ({ name }: { name: string }) => {
         );
     }
 
-    if (!products || products.length === 0) {
+    if (!products || products.data.length === 0) {
         return (
             <section className="container mx-auto px-4 py-16">
                 <div className="flex items-center gap-3 mb-8">
@@ -169,7 +169,7 @@ const ProductsSection = ({ name }: { name: string }) => {
                 className="w-full -mx-4 px-4"
             >
                 <CarouselContent className="">
-                    {products.map((product) => {
+                    {products.data.map((product) => {
                         const activeSale = getActiveSale(product);
                         const discountedPrice = calculateDiscountedPrice(product);
                         const discountDisplay = getDiscountDisplay(product);

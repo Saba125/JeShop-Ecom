@@ -7,11 +7,23 @@ const getProductByCategory = async (req: Request, res: Response) => {
   const name = req.params.name;
   const { filter } = req.body;
 
-  const { priceRange, selectedBrands, selectedPlugTypes, inStock, onSale, sortBy } = filter || {};
+  const {
+    priceRange,
+    selectedBrands,
+    selectedPlugTypes,
+    inStock,
+    onSale,
+    sortBy,
+    page = 1,
+    pagination = false,
+  } = filter || {};
   const where: string[] = [];
   const params: Record<string, any> = {
     categoryName: name,
   };
+  const pageSize = 10;
+  const offset = (page - 1) * pageSize;
+
   where.push("c.name = :categoryName");
   if (priceRange?.length === 2) {
     where.push("p.price BETWEEN :minPrice AND :maxPrice");
@@ -32,6 +44,7 @@ const getProductByCategory = async (req: Request, res: Response) => {
   if (onSale) {
     where.push("si.is_active = 1");
   }
+
   let orderBy = "ORDER BY p.created_at DESC";
 
   switch (sortBy) {
@@ -52,7 +65,19 @@ const getProductByCategory = async (req: Request, res: Response) => {
       orderBy = "ORDER BY p.uid DESC";
   }
   const whereClause = where.length ? `WHERE ${where.join(" AND ")}` : "";
+const countRes = await db.selectSingle(
+  `
+  SELECT COUNT(DISTINCT p.uid) AS total
+  FROM products p
+  LEFT JOIN category c ON c.uid = p.category_uid
+  LEFT JOIN brands b ON b.uid = p.brand_uid
+  LEFT JOIN sales_items si ON si.product_uid = p.uid
+  ${whereClause}
+  `,
+  params
+) as {total: number};
 
+const total = countRes?.total || 0;
   const dbRes = await db.select(
     `
   SELECT
@@ -114,10 +139,18 @@ const getProductByCategory = async (req: Request, res: Response) => {
 
   GROUP BY p.uid
   ${orderBy}
+  ${pagination ? `LIMIT ${pageSize} offset ${offset} ` : ""}
   `,
     params,
   );
-
-  helpers.sendSuccess(res, dbRes.list);
+  helpers.sendSuccess(res, {
+    data: dbRes.list,
+    pagination: {
+      page,
+      pageSize,
+      total,
+      totalPages: Math.ceil(total / pageSize),
+    },
+  });
 };
 export default getProductByCategory;

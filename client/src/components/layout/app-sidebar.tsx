@@ -30,7 +30,6 @@ export function AppSidebar({ sidebarItems }: AppSidebarProps) {
         <SidebarMenu>
             {items.map((item) => {
                 const isActive = currentPath === item.url;
-                console.log(item)
                 return (
                     <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton asChild isActive={isActive} className="group">

@@ -10,6 +10,7 @@ import { addItemToWishlist } from '@/store/wishListSlice';
 import { useDispatch } from 'react-redux';
 import { API_URL } from '@/constants';
 import type { TGetProducts } from '@/types';
+import CPagination from '@/components/common/custom-pagination';
 
 export type FiltersContext = {
     priceRange: number[];
@@ -24,7 +25,8 @@ const Category = () => {
     const params = useParams();
     const { priceRange, selectedBrands, selectedPlugTypes, inStock, onSale, sortBy } =
         useOutletContext<FiltersContext>();
-
+    const [page, setPage] = useState(1);
+    const pageSize = 10;
     const filters = useMemo(
         () => ({
             priceRange,
@@ -33,8 +35,9 @@ const Category = () => {
             inStock,
             onSale,
             sortBy,
+            pagination: true,
         }),
-        [priceRange, selectedBrands, selectedPlugTypes, inStock, onSale, sortBy]
+        [priceRange, selectedBrands, selectedPlugTypes, inStock, onSale, sortBy, page]
     );
 
     const {
@@ -116,8 +119,8 @@ const Category = () => {
             </div>
         );
     }
-
-    if (!products || products.length === 0) {
+    console.log(products)
+    if (!products || products.data.length === 0) {
         return (
             <div className="p-6">
                 <Card className="border-2">
@@ -143,12 +146,11 @@ const Category = () => {
                 </div>
             )}
 
-
             {/* Products Grid */}
             <div
                 className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ${isFetching ? 'opacity-60' : ''}`}
             >
-                {products.map((product) => {
+                {products.data.map((product) => {
                     const activeSale = getActiveSale(product);
                     const discountedPrice = calculateDiscountedPrice(product);
                     const discountDisplay = getDiscountDisplay(product);
@@ -327,6 +329,9 @@ const Category = () => {
                         </Card>
                     );
                 })}
+            </div>
+            <div>
+                <CPagination page={page} setPage={setPage}  totalPages={products.pagination.totalPages} />
             </div>
         </div>
     );
