@@ -1,5 +1,5 @@
 import { useGetProductsByCategory } from '@/api/products/get_by_category';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useParams, useNavigate, useOutletContext } from 'react-router-dom';
 import { ShoppingCart, Heart, Eye, Sparkles, LayoutGrid, Loader2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -26,7 +26,6 @@ const Category = () => {
     const { priceRange, selectedBrands, selectedPlugTypes, inStock, onSale, sortBy } =
         useOutletContext<FiltersContext>();
     const [page, setPage] = useState(1);
-    const pageSize = 10;
     const filters = useMemo(
         () => ({
             priceRange,
@@ -36,6 +35,7 @@ const Category = () => {
             onSale,
             sortBy,
             pagination: true,
+            page,
         }),
         [priceRange, selectedBrands, selectedPlugTypes, inStock, onSale, sortBy, page]
     );
@@ -50,7 +50,7 @@ const Category = () => {
     const [favorites, setFavorites] = useState<number[]>([]);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
+    console.log(page);
     const toggleFavorite = (product: TGetProducts) => {
         const discountedPrice = calculateDiscountedPrice(product);
         const activeSale = getActiveSale(product);
@@ -73,6 +73,13 @@ const Category = () => {
             })
         );
     };
+
+    useEffect(() => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+        });
+    }, [page]);
 
     const getActiveSale = (product: TGetProducts) => {
         return product.sales_items?.find((sale) => sale.is_active === 1);
@@ -119,7 +126,7 @@ const Category = () => {
             </div>
         );
     }
-    console.log(products)
+    console.log(products);
     if (!products || products.data.length === 0) {
         return (
             <div className="p-6">
@@ -330,8 +337,13 @@ const Category = () => {
                     );
                 })}
             </div>
-            <div>
-                <CPagination page={page} setPage={setPage}  totalPages={products.pagination.totalPages} />
+            <div className='mt-10'>
+                <CPagination
+                    align="center"
+                    page={page}
+                    setPage={setPage}
+                    totalPages={products.pagination.totalPages}
+                />
             </div>
         </div>
     );

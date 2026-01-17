@@ -39,7 +39,6 @@ export const useGetProductsByCategory = (
 ) => {
   // Debounce the entire filter object with deep comparison
   const debouncedFilter = useDebounce(filter, debounceDelay);
-
   return useQuery<TGetProductsPaginated>({
     queryKey: [
       queryKeys.products.byCategory,
