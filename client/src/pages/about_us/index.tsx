@@ -36,11 +36,11 @@ const AboutUs = () => {
             title: 'მომხმარებელზე ზრუნვა',
             description: 'თქვენი კმაყოფილება არის ჩვენი პრიორიტეტი. ყოველთვის მზად ვართ დაგეხმაროთ',
         },
-        {
-            icon: Zap,
-            title: 'სიჩქარე',
-            description: 'სწრაფი მიწოდება და ეფექტური მომსახურება მთელი საქართველოს მასშტაბით',
-        },
+        // {
+        //     icon: Zap,
+        //     title: 'სიჩქარე',
+        //     description: 'სწრაფი მიწოდება და ეფექტური მომსახურება მთელი საქართველოს მასშტაბით',
+        // },
         {
             icon: TrendingUp,
             title: 'ინოვაცია',
@@ -203,7 +203,7 @@ const AboutUs = () => {
             </section>
 
             {/* Team Section */}
-            <section className="py-20">
+            {/* <section className="py-20">
                 <div className="container mx-auto px-4">
                     <div className="text-center mb-12">
                         <h2 className="text-4xl font-bold mb-4">ჩვენი გუნდი</h2>
@@ -243,7 +243,7 @@ const AboutUs = () => {
                         ))}
                     </div>
                 </div>
-            </section>
+            </section> */}
 
             {/* Why Choose Us */}
             {/* <section className="py-20 bg-gradient-to-br from-primary/5 via-blue-500/5 to-transparent">
@@ -315,7 +315,7 @@ const AboutUs = () => {
                                     </div>
                                     <p className="text-sm font-semibold">მისამართი</p>
                                     <p className="text-xs text-muted-foreground">
-                                        თბილისი, საქართველო
+                                        ქუთაისი, საქართველო
                                     </p>
                                 </div>
 
@@ -325,7 +325,7 @@ const AboutUs = () => {
                                     </div>
                                     <p className="text-sm font-semibold">ტელეფონი</p>
                                     <p className="text-xs text-muted-foreground">
-                                        +995 XXX XX XX XX
+                                        +995 571 13 48 44
                                     </p>
                                 </div>
 
@@ -335,7 +335,7 @@ const AboutUs = () => {
                                     </div>
                                     <p className="text-sm font-semibold">ელ-ფოსტა</p>
                                     <p className="text-xs text-muted-foreground">
-                                        info@example.ge
+                                        jiadzeb@gmail.com
                                     </p>
                                 </div>
                             </div>

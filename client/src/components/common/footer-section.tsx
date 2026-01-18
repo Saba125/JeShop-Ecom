@@ -7,11 +7,11 @@ import Logo from '@/components/common/logo';
 export default function Footer() {
   const quickLinks = [
     { title: 'მთავარი', url: '/' },
-    { title: 'კლავიატურები', url: '/keyboards' },
-    { title: 'მაუსები', url: '/mice' },
-    { title: 'ყურსასმენები', url: '/headsets' },
-    { title: 'მაუსპადები', url: '/mousepads' },
-    { title: 'ბრენდები', url: '/brands' },
+    { title: 'კლავიატურები', url: '/products/category/keyboards' },
+    { title: 'მაუსები', url: '/products/category/mouses' },
+    { title: 'ყურსასმენები', url: '/products/category/headsets' },
+    { title: 'მაუსპადები', url: '/products/category/mousepads' },
+    { title: 'ბრენდები', url: '/products/category/brands' },
   ];
 
   const customerService = [
@@ -99,7 +99,7 @@ export default function Footer() {
               <div className="flex items-center gap-3 text-sm">
                 <Phone className="h-4 w-4 text-primary" />
                 <a href="tel:+995555123456" className="hover:text-primary transition-colors">
-                  +995 555 123 456
+                  +995 571 13 48 44
                 </a>
               </div>
               <div className="flex items-center gap-3 text-sm">
@@ -111,8 +111,7 @@ export default function Footer() {
               <div className="flex items-start gap-3 text-sm">
                 <MapPin className="h-4 w-4 text-primary mt-0.5" />
                 <span className="text-muted-foreground">
-                  თბილისი, საქართველო<br />
-                  ვაჟა-ფშაველას 71
+                  ქუთაისი, საქართველო<br />
                 </span>
               </div>
             </div>
