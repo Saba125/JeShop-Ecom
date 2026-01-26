@@ -15,8 +15,8 @@ export default function Footer() {
   ];
 
   const customerService = [
-    { title: 'ჩვენს შესახებ', url: '/about' },
-    { title: 'კონტაქტი', url: '/contact' },
+    { title: 'ჩვენს შესახებ', url: '/about-us' },
+    { title: 'კონტაქტი', url: '/contact-us' },
     { title: 'მიწოდების პირობები', url: '/shipping' },
     { title: 'დაბრუნების პოლიტიკა', url: '/returns' },
     { title: 'გარანტია', url: '/warranty' },
