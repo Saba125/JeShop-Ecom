@@ -40,8 +40,9 @@ interface AddProductProps {
     isOpen: boolean;
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
     data: TGetProducts | null;
+    setSelectedData: React.Dispatch<React.SetStateAction<TGetProducts | null>>;
 }
-const AddProduct = ({ isOpen, setIsOpen, data }: AddProductProps) => {
+const AddProduct = ({ isOpen, setIsOpen, data, setSelectedData }: AddProductProps) => {
     const {
         mutate: addProduct,
         isPending: isAddProductPending,
@@ -154,9 +155,11 @@ const AddProduct = ({ isOpen, setIsOpen, data }: AddProductProps) => {
     }
     return (
         <CDialog
-        
             open={isOpen}
-            onOpenChange={setIsOpen}
+            onOpenChange={() => {
+                setIsOpen(false);
+                setSelectedData(null)
+            }}
             title={data ? `რედაქტირება '${data.name}'` : 'დაამატეთ ახალი პროდუქტი'}
             children={
                 <Form {...form}>

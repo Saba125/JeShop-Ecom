@@ -37,11 +37,14 @@ const iconMap: Record<string, React.ElementType> = {
 };
 
 const ProductsSection = ({ name }: { name: string }) => {
-    const { data: products, isLoading } = useGetProductsByCategory('keyboards');
+    const { data: products, isLoading } = useGetProductsByCategory(name);
     const [hoveredId, setHoveredId] = useState<number | null>(null);
     const [favorites, setFavorites] = useState<number[]>([]);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    const Icon = iconMap[name] ?? Keyboard;
+    const title = titleMap[name] ?? name;
 
     const toggleFavorite = (product: TGetProducts) => {
         const discountedPrice = calculateDiscountedPrice(product);
@@ -125,9 +128,9 @@ const ProductsSection = ({ name }: { name: string }) => {
                             <LucideKeyboard className="h-6 w-6 text-primary" />
                         </div>
                         <div>
-                            <h2 className="text-3xl font-bold">კლავიატურები</h2>
+                            <h2 className="text-3xl font-bold">{title}</h2>
                             <p className="text-sm text-muted-foreground">
-                                აღმოაჩინეთ მაღალი ხარისხის კლავიატურები
+                                აღმოაჩინეთ მაღალი ხარისხის {title}
                             </p>
                         </div>
                     </div>
@@ -138,9 +141,6 @@ const ProductsSection = ({ name }: { name: string }) => {
             </section>
         );
     }
-
-    const Icon = iconMap[name] ?? Keyboard;
-    const title = titleMap[name] ?? name;
 
     return (
         <section className="w-full py-16">
@@ -158,7 +158,10 @@ const ProductsSection = ({ name }: { name: string }) => {
                             აღმოაჩინეთ ჩვენი საუკეთესო შეთავაზებები
                         </p>
                     </div>
-                    <Button onClick={() => navigate('/products/category/keyboards')} variant="ghost">
+                    <Button
+                        onClick={() => navigate('/products/category/keyboards')}
+                        variant="ghost"
+                    >
                         ყველას ნახვა <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                 </div>
@@ -322,8 +325,7 @@ const ProductsSection = ({ name }: { name: string }) => {
                                                         product_uid: product.uid,
                                                         product_image: product.image || '',
                                                         has_sale: !!activeSale,
-                                                        new_price:
-                                                            discountedPrice || originalPrice,
+                                                        new_price: discountedPrice || originalPrice,
                                                         old_price: discountedPrice
                                                             ? originalPrice
                                                             : null,

@@ -54,7 +54,15 @@ export default function MainPage() {
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
             >
-                <ProductsSection name='keyboards' />
+                <ProductsSection name="keyboards" />
+            </motion.div>
+            <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+            >
+                <ProductsSection name="mouses" />
             </motion.div>
             <motion.div
                 initial={{ opacity: 0, y: 50 }}

@@ -19,7 +19,7 @@ const getProductsPaginated = async (req: Request, res: Response) => {
       p.uid,
       ANY_VALUE(p.name) AS name,
       ANY_VALUE(p.price) AS price,
-
+      p.weight,
       ANY_VALUE(
         JSON_OBJECT(
           'uid', c.uid,

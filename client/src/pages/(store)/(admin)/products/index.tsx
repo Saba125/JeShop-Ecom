@@ -21,7 +21,7 @@ const AdminProducts = () => {
     const { mutate: deleteProduct, isSuccess } = useDeleteProduct();
     const [isOpen, setIsOpen] = useState(false);
     const [selectedData, setSelectedData] = useState<TGetProducts | null>(null);
-
+    console.log(products)
     // Helper function to get active sale
     const getActiveSale = (item: TGetProducts) => {
         return item.sales_items?.find(sale => sale.is_active === 1);
@@ -164,7 +164,7 @@ const AdminProducts = () => {
                 totalPages={products?.pagination.totalPages!}
             />
 
-            {isOpen && <AddProduct data={selectedData} isOpen={isOpen} setIsOpen={setIsOpen} />}
+            {isOpen && <AddProduct data={selectedData} setSelectedData={setSelectedData} isOpen={isOpen} setIsOpen={setIsOpen} />}
         </>
     );
 };
