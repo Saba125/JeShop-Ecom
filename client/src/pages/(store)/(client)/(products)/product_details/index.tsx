@@ -18,6 +18,8 @@ import {
     Zap,
     Search,
     StarIcon,
+    ChevronRight,
+    ChevronLeft,
 } from 'lucide-react';
 import { API_URL } from '@/constants';
 import { useDispatch } from 'react-redux';
@@ -43,6 +45,9 @@ const ProductDetails = () => {
     const [isFavorite, setIsFavorite] = useState(false);
     const [selectedImage, setSelectedImage] = useState(0);
     const [addReviewModal, setAddReviewModal] = useState(false);
+    const [simCurrent, setSimCurrent] = useState(0);
+const SIM_VISIBLE = 4;
+const simMax = Math.max(0, (similarProducts?.length ?? 0) - SIM_VISIBLE);
     const getActiveSale = (product: TGetProducts) => {
         return product.sales_items?.find((sale) => sale.is_active === 1);
     };
@@ -627,166 +632,165 @@ const ProductDetails = () => {
                             </p>
                         </div>
 
-                        {isSimilarLoading ? (
-                            <div className="flex items-center justify-center h-64">
-                                <div className="text-muted-foreground">იტვირთება...</div>
+                    {isSimilarLoading ? (
+    <div className="flex items-center justify-center h-64">
+        <div className="text-muted-foreground">იტვირთება...</div>
+    </div>
+) : similarProducts && similarProducts.length > 0 ? (
+    <div className="relative px-10">
+        {/* Prev */}
+        <button
+            onClick={() => setSimCurrent((c) => Math.max(0, c - 1))}
+            disabled={simCurrent === 0}
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center disabled:opacity-30 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
+        >
+            <ChevronLeft className="w-4 h-4" />
+        </button>
+
+        {/* Track */}
+        <div className="overflow-hidden">
+            <div
+                className="flex transition-transform duration-300 ease-in-out"
+                style={{ transform: `translateX(calc(-${simCurrent} * (100% / ${SIM_VISIBLE}) - ${simCurrent} * 6px))` }}
+            >
+                {similarProducts.map((similarProduct) => {
+                    const simActiveSale = getActiveSale(similarProduct);
+                    const simDiscountedPrice = calculateDiscountedPrice(similarProduct);
+                    const simDiscountDisplay = getDiscountDisplay(similarProduct);
+                    const simOriginalPrice = parseFloat(similarProduct.price);
+                    const simInStock = similarProduct.stock > 0;
+                    const simIsNew = isNewProduct(similarProduct);
+                    const simFinalPrice = simDiscountedPrice || simOriginalPrice;
+                    const pLink = similarProduct.name.toLowerCase().trim().replace(/\s+/g, '-');
+
+                    return (
+                        <div
+                            key={similarProduct.uid}
+                            className="flex-none w-[calc(25%-6px)] mr-3 last:mr-0 group bg-white dark:bg-slate-900 rounded-lg overflow-hidden border-2 hover:border-[#006FEAFF] transition-all duration-300 hover:shadow-xl cursor-pointer"
+                            onClick={() => navigate(`/product/${pLink}/${similarProduct.uid}`)}
+                        >
+                            {/* Image */}
+                            <div className="relative h-64 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 overflow-hidden">
+                                {/* Badges */}
+                                <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
+                                    {simIsNew && (
+                                        <Badge className="bg-blue-500 text-white shadow-lg text-xs">
+                                            <Sparkles className="w-3 h-3 mr-1" />
+                                            ახალი
+                                        </Badge>
+                                    )}
+                                    {simActiveSale && simDiscountDisplay && (
+                                        <Badge className="bg-red-500 text-white shadow-lg text-xs">
+                                            <Zap className="w-3 h-3 mr-1" />-{simDiscountDisplay}
+                                        </Badge>
+                                    )}
+                                </div>
+
+                                {/* Product Image */}
+                                <div className="absolute inset-0 flex items-center justify-center p-4">
+                                    {similarProduct.image ? (
+                                        <img
+                                            src={`${API_URL}${similarProduct.image}`}
+                                            alt={similarProduct.name}
+                                            className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-300"
+                                        />
+                                    ) : (
+                                        <Package className="w-20 h-20 text-slate-300" />
+                                    )}
+                                </div>
+
+                                {/* Gradient Overlay */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                                {/* Out of Stock */}
+                                {!simInStock && (
+                                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                                        <Badge variant="secondary" className="text-lg px-4 py-2">
+                                            არ არის მარაგში
+                                        </Badge>
+                                    </div>
+                                )}
                             </div>
-                        ) : similarProducts && similarProducts.length > 0 ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                                {similarProducts.map((similarProduct) => {
-                                    const simActiveSale = getActiveSale(similarProduct);
-                                    const simDiscountedPrice =
-                                        calculateDiscountedPrice(similarProduct);
-                                    const simDiscountDisplay = getDiscountDisplay(similarProduct);
-                                    const simOriginalPrice = parseFloat(similarProduct.price);
-                                    const simInStock = similarProduct.stock > 0;
-                                    const simIsNew = isNewProduct(similarProduct);
-                                    const simFinalPrice = simDiscountedPrice || simOriginalPrice;
-                                    const pLink = similarProduct.name
-                                        .toLowerCase()
-                                        .trim()
-                                        .replace(/\s+/g, '-');
-                                    return (
-                                        <div
-                                            key={similarProduct.uid}
-                                            className="group bg-white dark:bg-slate-900 rounded-lg overflow-hidden border-2 hover:border-[#006FEAFF] transition-all duration-300 hover:shadow-xl cursor-pointer"
-                                            onClick={() =>
-                                                navigate(`/product/${pLink}/${similarProduct.uid}`)
-                                            }
-                                        >
-                                            {/* Image */}
-                                            <div className="relative h-64 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 overflow-hidden">
-                                                {/* Badges */}
-                                                <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
-                                                    {simIsNew && (
-                                                        <Badge className="bg-blue-500 text-white shadow-lg text-xs">
-                                                            <Sparkles className="w-3 h-3 mr-1" />
-                                                            ახალი
-                                                        </Badge>
-                                                    )}
-                                                    {simActiveSale && simDiscountDisplay && (
-                                                        <Badge className="bg-red-500 text-white shadow-lg text-xs">
-                                                            <Zap className="w-3 h-3 mr-1" />-
-                                                            {simDiscountDisplay}
-                                                        </Badge>
-                                                    )}
-                                                </div>
 
-                                                {/* Product Image */}
-                                                <div className="absolute inset-0 flex items-center justify-center p-4">
-                                                    {similarProduct.image ? (
-                                                        <img
-                                                            src={`${API_URL}${similarProduct.image}`}
-                                                            alt={similarProduct.name}
-                                                            className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-300"
-                                                        />
-                                                    ) : (
-                                                        <Package className="w-20 h-20 text-slate-300" />
-                                                    )}
-                                                </div>
+                            {/* Content */}
+                            <div className="p-4">
+                                {/* Category and Brand */}
+                                <div className="flex items-center gap-2 mb-2">
+                                    <Badge variant="outline" className="text-xs">
+                                        {similarProduct?.category?.name}
+                                    </Badge>
+                                    {similarProduct.brand && (
+                                        <Badge variant="outline" className="text-xs">
+                                            {similarProduct.brand.name}
+                                        </Badge>
+                                    )}
+                                </div>
 
-                                                {/* Gradient Overlay */}
-                                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                {/* Product Name */}
+                                <h3 className="font-semibold text-base mb-2 line-clamp-2 group-hover:text-[#006FEAFF] transition-colors">
+                                    {similarProduct.name}
+                                </h3>
 
-                                                {/* Out of Stock */}
-                                                {!simInStock && (
-                                                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                                                        <Badge
-                                                            variant="secondary"
-                                                            className="text-lg px-4 py-2"
-                                                        >
-                                                            არ არის მარაგში
-                                                        </Badge>
-                                                    </div>
-                                                )}
-                                            </div>
+                                {/* Weight/Unit */}
+                                <p className="text-xs text-muted-foreground mb-3">
+                                    {similarProduct.weight} {similarProduct?.unit?.name}
+                                </p>
 
-                                            {/* Content */}
-                                            <div className="p-4">
-                                                {/* Category and Brand */}
-                                                <div className="flex items-center gap-2 mb-2">
-                                                    <Badge variant="outline" className="text-xs">
-                                                        {similarProduct?.category?.name}
-                                                    </Badge>
-                                                    {similarProduct.brand && (
-                                                        <Badge
-                                                            variant="outline"
-                                                            className="text-xs"
-                                                        >
-                                                            {similarProduct.brand.name}
-                                                        </Badge>
-                                                    )}
-                                                </div>
+                                {/* Price */}
+                                <div className="flex items-center gap-2 mb-3">
+                                    {simDiscountedPrice ? (
+                                        <>
+                                            <span className="text-2xl font-bold text-[#006FEAFF]">
+                                                {simFinalPrice.toFixed(2)}₾
+                                            </span>
+                                            <span className="text-sm text-muted-foreground line-through">
+                                                {simOriginalPrice.toFixed(2)}₾
+                                            </span>
+                                        </>
+                                    ) : (
+                                        <span className="text-2xl font-bold text-[#006FEAFF]">
+                                            {simOriginalPrice.toFixed(2)}₾
+                                        </span>
+                                    )}
+                                </div>
 
-                                                {/* Product Name */}
-                                                <h3 className="font-semibold text-base mb-2 line-clamp-2 group-hover:text-[#006FEAFF] transition-colors">
-                                                    {similarProduct.name}
-                                                </h3>
-
-                                                {/* Weight/Unit */}
-                                                <p className="text-xs text-muted-foreground mb-3">
-                                                    {similarProduct.weight}{' '}
-                                                    {similarProduct?.unit?.name}
-                                                </p>
-
-                                                {/* Price */}
-                                                <div className="flex items-center gap-2 mb-3">
-                                                    {simDiscountedPrice ? (
-                                                        <>
-                                                            <span className="text-2xl font-bold text-[#006FEAFF]">
-                                                                {simFinalPrice.toFixed(2)}₾
-                                                            </span>
-                                                            <span className="text-sm text-muted-foreground line-through">
-                                                                {simOriginalPrice.toFixed(2)}₾
-                                                            </span>
-                                                        </>
-                                                    ) : (
-                                                        <span className="text-2xl font-bold text-[#006FEAFF]">
-                                                            {simOriginalPrice.toFixed(2)}₾
-                                                        </span>
-                                                    )}
-                                                </div>
-
-                                                {/* Add to Cart Button */}
-                                                <Button
-                                                    className="w-full group/btn relative overflow-hidden bg-[#006FEAFF] hover:bg-[#0056cc]"
-                                                    size="sm"
-                                                    disabled={!simInStock}
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        // if (simInStock) {
-                                                        //     dispatch(
-                                                        //         addItemToCart({
-                                                        //             product_uid: similarProduct.uid,
-                                                        //             product_image: similarProduct.image || '',
-                                                        //             has_sale: !!simActiveSale,
-                                                        //             new_price: simFinalPrice,
-                                                        //             old_price: simDiscountedPrice ? simOriginalPrice : null,
-                                                        //             product_name: similarProduct.name,
-                                                        //             quantity: 1,
-                                                        //         })
-                                                        //     );
-                                                        // }
-                                                    }}
-                                                >
-                                                    <span className="relative z-10 flex items-center justify-center gap-2">
-                                                        <ShoppingCart className="w-4 h-4" />
-                                                        {simInStock
-                                                            ? 'კალათაში დამატება'
-                                                            : 'არ არის მარაგში'}
-                                                    </span>
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    );
-                                })}
+                                {/* Add to Cart Button */}
+                                <Button
+                                    className="w-full group/btn relative overflow-hidden bg-[#006FEAFF] hover:bg-[#0056cc]"
+                                    size="sm"
+                                    disabled={!simInStock}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        // dispatch(addItemToCart({ ... }))
+                                    }}
+                                >
+                                    <span className="relative z-10 flex items-center justify-center gap-2">
+                                        <ShoppingCart className="w-4 h-4" />
+                                        {simInStock ? 'კალათაში დამატება' : 'არ არის მარაგში'}
+                                    </span>
+                                </Button>
                             </div>
-                        ) : (
-                            <div className="text-center py-12 bg-white dark:bg-slate-900 rounded-lg">
-                                <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                                <p className="text-gray-500">მსგავსი პროდუქტები არ მოიძებნა</p>
-                            </div>
-                        )}
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+
+        {/* Next */}
+        <button
+            onClick={() => setSimCurrent((c) => Math.min(c + 1, simMax))}
+            disabled={simCurrent >= simMax}
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center disabled:opacity-30 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
+        >
+            <ChevronRight className="w-4 h-4" />
+        </button>
+    </div>
+) : (
+    <div className="text-center py-12 bg-white dark:bg-slate-900 rounded-lg">
+        <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+        <p className="text-gray-500">მსგავსი პროდუქტები არ მოიძებნა</p>
+    </div>
+)}
                     </div>
                 </div>
             </div>
