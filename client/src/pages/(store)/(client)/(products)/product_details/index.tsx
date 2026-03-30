@@ -46,7 +46,7 @@ const ProductDetails = () => {
     const [selectedImage, setSelectedImage] = useState(0);
     const [addReviewModal, setAddReviewModal] = useState(false);
     const [simCurrent, setSimCurrent] = useState(0);
-const SIM_VISIBLE = 4;
+const SIM_VISIBLE = useVisibleCount();
 const simMax = Math.max(0, (similarProducts?.length ?? 0) - SIM_VISIBLE);
     const getActiveSale = (product: TGetProducts) => {
         return product.sales_items?.find((sale) => sale.is_active === 1);
@@ -108,6 +108,9 @@ const simMax = Math.max(0, (similarProducts?.length ?? 0) - SIM_VISIBLE);
         }
     };
 
+    useEffect(() => {
+    setSimCurrent(0);
+}, [SIM_VISIBLE]);  
     if (isLoading) {
         return (
             <div className="container mx-auto px-4 py-8">
@@ -142,6 +145,21 @@ const simMax = Math.max(0, (similarProducts?.length ?? 0) - SIM_VISIBLE);
 
     // NOW it's safe to create thumbnails array
     const thumbnails = [product.image, product.image, product.image, product.image];
+    function useVisibleCount() {
+    const [count, setCount] = useState(4);
+    useEffect(() => {
+        const update = () => {
+            if (window.innerWidth < 640) setCount(1);
+            else if (window.innerWidth < 1024) setCount(2);
+            else setCount(4);
+        };
+        update();
+        window.addEventListener('resize', update);
+        return () => window.removeEventListener('resize', update);
+    }, []);
+    return count;
+}   
+
     return (
         <>
             <div className=" min-h-screen py-6">
@@ -666,7 +684,8 @@ const simMax = Math.max(0, (similarProducts?.length ?? 0) - SIM_VISIBLE);
                     return (
                         <div
                             key={similarProduct.uid}
-                            className="flex-none w-[calc(25%-6px)] mr-3 last:mr-0 group bg-white dark:bg-slate-900 rounded-lg overflow-hidden border-2 hover:border-[#006FEAFF] transition-all duration-300 hover:shadow-xl cursor-pointer"
+                            className="flex-none w-[calc(100%-6px)] sm:w-[calc(50%-6px)] lg:w-[calc(25%-6px)] mr-3 last:mr-0 group bg-white ..."
+
                             onClick={() => navigate(`/product/${pLink}/${similarProduct.uid}`)}
                         >
                             {/* Image */}
