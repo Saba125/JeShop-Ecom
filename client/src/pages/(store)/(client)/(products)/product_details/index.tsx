@@ -112,6 +112,9 @@ const ProductDetails = () => {
         }
     };
 
+    useEffect(() => {
+    setSimCurrent(0);
+}, [SIM_VISIBLE]);  
     if (isLoading) {
         return (
             <div className="container mx-auto px-4 py-8">
@@ -146,6 +149,21 @@ const ProductDetails = () => {
 
     // NOW it's safe to create thumbnails array
     const thumbnails = [product.image, product.image, product.image, product.image];
+    function useVisibleCount() {
+    const [count, setCount] = useState(4);
+    useEffect(() => {
+        const update = () => {
+            if (window.innerWidth < 640) setCount(1);
+            else if (window.innerWidth < 1024) setCount(2);
+            else setCount(4);
+        };
+        update();
+        window.addEventListener('resize', update);
+        return () => window.removeEventListener('resize', update);
+    }, []);
+    return count;
+}   
+
     return (
         <>
             <div className=" min-h-screen py-6">
