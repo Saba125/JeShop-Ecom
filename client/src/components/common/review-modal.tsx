@@ -18,14 +18,16 @@ import type z from 'zod';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import { useAddReviews } from '@/api/reviews/post';
+import type { Review } from '@/types';
 interface ReviewsModalProps {
     isOpen: boolean;
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
     product_uid: number;
+    review: Review | null
 }
 
-const ReviewsModal = ({ isOpen, setIsOpen, product_uid }: ReviewsModalProps) => {
-    const [rating, setRating] = useState<number>(0);
+const ReviewsModal = ({ isOpen, setIsOpen, product_uid, review }: ReviewsModalProps) => {
+    const [rating, setRating] = useState<number>(1);
     const {mutate: addReview, isPending, isSuccess} = useAddReviews()
     const user = useSelector((state: RootState) => state.user);
     const handleStarClick = (starNumber: number) => {
@@ -36,8 +38,8 @@ const ReviewsModal = ({ isOpen, setIsOpen, product_uid }: ReviewsModalProps) => 
         resolver: zodResolver(formSchema),
         defaultValues: {
             email: user.email || '',
-            description: '',
-            rating: 0,
+            description: review?.description,
+            rating: review?.rating,
             username: user.username,
             product_uid
         },

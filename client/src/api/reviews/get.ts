@@ -5,7 +5,7 @@ import { queryKeys } from "@/constants/query_keys";
 
 export const useGetReviews = (product_uid: number) => {
   return useQuery<TGetReviews[]>({
-    queryKey: queryKeys.reviews.all,
+    queryKey: queryKeys.reviews.details(product_uid),
     queryFn: async () => {
       const { data } = await Api.get(`/reviews/${product_uid}`);
       return data as TGetReviews[]; 

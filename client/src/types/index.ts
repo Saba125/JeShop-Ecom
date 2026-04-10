@@ -178,3 +178,10 @@ export type SelectOptions = {
     label: string | JSX.Element;
     value: number | null;
 };
+export type Review = {
+    uid: number;
+    username:string;
+    email:string;
+    rating: number;
+    description: string
+}

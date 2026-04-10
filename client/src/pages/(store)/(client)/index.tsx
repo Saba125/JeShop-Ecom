@@ -14,14 +14,14 @@ export default function MainPage() {
         <div className="min-h-screen bg-background">
             <HeroSection />
 
-            <motion.div
+            {/* <motion.div
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.6 }}
             >
                 <CategoriesSection />
-            </motion.div>
+            </motion.div> */}
 
             {/* <motion.div
                 initial={{ opacity: 0, y: 50 }}
@@ -32,7 +32,7 @@ export default function MainPage() {
                 <FeaturedProductsSection />
             </motion.div> */}
 
-            <motion.div
+            {/* <motion.div
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
@@ -47,7 +47,7 @@ export default function MainPage() {
                 transition={{ duration: 0.6, delay: 0.2 }}
             >
                 <BrandsSection />
-            </motion.div>
+            </motion.div> */}
             <motion.div
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}

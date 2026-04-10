@@ -20,15 +20,7 @@ createRoot(document.getElementById('root')!).render(
                     <Toaster />
                     <GoogleOAuthProvider clientId={CLIENT_ID}>
                         <App />
-                        <Snowfall
-                            color="#838996FF"
-                            style={{
-                                position: 'fixed',
-                                width: '100vw',
-                                height: '100vh',
-                            }}
-                            snowflakeCount={120}
-                        />
+                        
                     </GoogleOAuthProvider>
                 </QueryProvider>
             </Provider>
