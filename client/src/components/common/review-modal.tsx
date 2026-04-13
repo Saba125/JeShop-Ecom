@@ -19,16 +19,18 @@ import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import { useAddReviews } from '@/api/reviews/post';
 import type { Review } from '@/types';
+import { useEditReview } from '@/api/reviews/put';
 interface ReviewsModalProps {
     isOpen: boolean;
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
     product_uid: number;
-    review: Review | null
+    review: Review | null;
 }
 
 const ReviewsModal = ({ isOpen, setIsOpen, product_uid, review }: ReviewsModalProps) => {
     const [rating, setRating] = useState<number>(1);
-    const {mutate: addReview, isPending, isSuccess} = useAddReviews()
+    const { mutate: addReview, isPending: isAddPending, isSuccess: isAddSuccess } = useAddReviews();
+    const { mutate: editReview, isPending: isEditPending, isSuccess: isEditSuccess } = useEditReview();
     const user = useSelector((state: RootState) => state.user);
     const handleStarClick = (starNumber: number) => {
         setRating(starNumber);
@@ -37,26 +39,31 @@ const ReviewsModal = ({ isOpen, setIsOpen, product_uid, review }: ReviewsModalPr
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
+            uid: review?.uid || null,
             email: user.email || '',
             description: review?.description,
             rating: review?.rating,
             username: user.username,
-            product_uid
+            product_uid,
         },
     });
     const handleSubmit = async (values: z.infer<typeof formSchema>) => {
-        addReview({
-            ...values,
-             rating,
-        })
+        if (review) {
+            editReview(values)
+        } else {
+            addReview({
+                ...values,
+                rating,
+            });
+        }
     };
-    if (isSuccess) {
-        setIsOpen(false)
+    if (isAddSuccess || isEditSuccess) {
+        setIsOpen(false);
     }
     return (
         <CDialog
-        loading={isPending}
-            title="შეფასების გაკეთება"
+            loading={isAddPending || isEditPending}
+            title={review ? 'შეფასების რედაქტირება' : 'შეფასების გაკეთება'}
             open={isOpen}
             onOpenChange={setIsOpen}
             onSubmit={form.handleSubmit(handleSubmit)}
@@ -95,7 +102,11 @@ const ReviewsModal = ({ isOpen, setIsOpen, product_uid, review }: ReviewsModalPr
                                     <FormItem>
                                         <FormLabel>სახელი</FormLabel>
                                         <FormControl>
-                                            <Input {...field} placeholder="შეიყვანეთ სახელი..." />
+                                            <Input
+                                                disabled={review !== null}
+                                                {...field}
+                                                placeholder="შეიყვანეთ სახელი..."
+                                            />
                                         </FormControl>
                                     </FormItem>
                                 )}
@@ -107,7 +118,11 @@ const ReviewsModal = ({ isOpen, setIsOpen, product_uid, review }: ReviewsModalPr
                                     <FormItem>
                                         <FormLabel>მაილი</FormLabel>
                                         <FormControl>
-                                            <Input {...field} placeholder="შეიყვანეთ მაილი..." />
+                                            <Input
+                                                disabled={review !== null}
+                                                {...field}
+                                                placeholder="შეიყვანეთ მაილი..."
+                                            />
                                         </FormControl>
                                     </FormItem>
                                 )}

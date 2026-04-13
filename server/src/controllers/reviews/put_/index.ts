@@ -11,6 +11,7 @@ const editReview = async(req:Request, res:Response) => {
     return helpers.sendSuccess(res, validateBody.error);
   }
   const data = validateBody.data;
+  console.log(data);
   const currentReview = await db.selectSingle("SELECT * FROM reviews WHERE uid = :uid", {
     uid: data.uid
   });

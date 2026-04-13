@@ -113,8 +113,8 @@ const ProductDetails = () => {
     };
 
     useEffect(() => {
-    setSimCurrent(0);
-}, [SIM_VISIBLE]);  
+        setSimCurrent(0);
+    }, [SIM_VISIBLE]);
     if (isLoading) {
         return (
             <div className="container mx-auto px-4 py-8">
@@ -149,20 +149,6 @@ const ProductDetails = () => {
 
     // NOW it's safe to create thumbnails array
     const thumbnails = [product.image, product.image, product.image, product.image];
-    function useVisibleCount() {
-    const [count, setCount] = useState(4);
-    useEffect(() => {
-        const update = () => {
-            if (window.innerWidth < 640) setCount(1);
-            else if (window.innerWidth < 1024) setCount(2);
-            else setCount(4);
-        };
-        update();
-        window.addEventListener('resize', update);
-        return () => window.removeEventListener('resize', update);
-    }, []);
-    return count;
-}   
 
     return (
         <>
@@ -632,7 +618,13 @@ const ProductDetails = () => {
                                                         </div>
                                                     </div>
                                                     {review.user?.uid === user.uid ? (
-                                                        <EditIcon className="size-5 cursor-pointer hover:text-slate-700 transition-all" />
+                                                        <EditIcon
+                                                            onClick={() => {
+                                                                setSelectedReview(review);
+                                                                setAddReviewModal(true);
+                                                            }}
+                                                            className="size-5 cursor-pointer hover:text-slate-700 transition-all"
+                                                        />
                                                     ) : null}
                                                 </div>
                                             );
@@ -859,8 +851,12 @@ const ProductDetails = () => {
             {addReviewModal && (
                 <ReviewsModal
                     isOpen={addReviewModal}
-                    setIsOpen={setAddReviewModal}
+                    setIsOpen={() => {
+                        setAddReviewModal(false);
+                        setSelectedReview(null);
+                    }}
                     product_uid={Number(params.uid)}
+                    review={selectedReview}
                 />
             )}
         </>

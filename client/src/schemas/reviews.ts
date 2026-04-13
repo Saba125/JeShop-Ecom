@@ -1,6 +1,7 @@
 import z from 'zod';
 
 const reviewsSchema = z.object({
+    uid: z.number().optional().nullable(),
     username: z.string().min(1, "შეიყვანეთ სახელი!"),
     email: z.email('იმეილი არასწორია, გთხოვ სწორად შეიყვანო'),
     rating: z.number(),

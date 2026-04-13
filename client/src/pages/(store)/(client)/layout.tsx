@@ -14,7 +14,7 @@ const StoreLayout = () => {
         <>
             <SidebarProvider>
                 <AppSidebar sidebarItems={sidebarItems.clientSidebarItems} />
-                <main className="min-h-screen w-full overflow-x-hidden">
+                <main className="min-h-screen w-full overflow-x-hidden overflow-y-hidden">
                     <StoreHeader />
                     <div
                         className={clsx(
