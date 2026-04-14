@@ -565,7 +565,7 @@ const ProductDetails = () => {
                                             const formattedDate = dayjs(review.create_date).format(
                                                 'MMM DD, YYYY'
                                             );
-
+                                            console.log(review)
                                             return (
                                                 <div className="flex justify-between">
                                                     <div

@@ -3,7 +3,7 @@ import CFlex from '../ui/flex';
 import { CButton } from '../common/custom-button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useSidebar } from '../ui/sidebar';
-import { Menu, Headphones, Search, X } from 'lucide-react';
+import { Menu, Headphones, Search, X, SearchIcon } from 'lucide-react';
 import { useTheme } from '@/providers/theme-provider';
 import Cart from '../cart/cart';
 import ProfileSection from '../common/profile-section';
@@ -42,41 +42,50 @@ const StoreHeader = () => {
 
     return (
         <div
-            className="fixed right-0 top-0 w-full z-50 pl-[275px] px-5 h-[73.5px] border-b flex items-center justify-between"
+            className="fixed right-0 top-0 w-full z-50 md:pl-[275px] px-5 h-[73.5px] border-b flex items-center justify-between"
             style={{ backgroundColor: theme === 'dark' ? '#121212' : '#ffffff' }}
         >
+            <div>
+                {isMobile ? (
+                    <CButton onClick={() => toggleSidebar()} variant="outline" icon={Menu} />
+                ) : null}
+            </div>
             <div className="relative flex-1 max-w-2xl">
-                <div
-                    className="relative flex items-center border rounded-lg"
-                    style={{
-                        backgroundColor: theme === 'dark' ? '#1e1e1e' : '#f8f9fa',
-                    }}
-                >
-                    <Search className="absolute left-3 w-5 h-5 text-gray-400" />
-                    <input
-                        type="text"
-                        value={searchValue}
-                        onChange={(e) => {
-                            setSearchValue(e.target.value);
-                            setShowResults(e.target.value.length > 0);
-                        }}
-                        onFocus={() => searchValue && setShowResults(true)}
-                        onBlur={() => setTimeout(() => setShowResults(false), 200)}
-                        placeholder="პროდუქტების ძებნა..."
-                        className="w-full pl-10 pr-10 py-2.5 bg-transparent outline-none text-sm"
+                {isMobile ? (
+                    <SearchIcon />
+                ) : (
+                    <div
+                        className="relative flex items-center border rounded-lg"
                         style={{
-                            color: theme === 'dark' ? '#ffffff' : '#1f2937',
+                            backgroundColor: theme === 'dark' ? '#1e1e1e' : '#f8f9fa',
                         }}
-                    />
-                    {searchValue && (
-                        <button
-                            onClick={handleClearSearch}
-                            className="absolute right-3 p-0.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
-                        >
-                            <X className="w-4 h-4 text-gray-400" />
-                        </button>
-                    )}
-                </div>
+                    >
+                        <Search className="absolute left-3 w-5 h-5 text-gray-400" />
+                        <input
+                            type="text"
+                            value={searchValue}
+                            onChange={(e) => {
+                                setSearchValue(e.target.value);
+                                setShowResults(e.target.value.length > 0);
+                            }}
+                            onFocus={() => searchValue && setShowResults(true)}
+                            onBlur={() => setTimeout(() => setShowResults(false), 200)}
+                            placeholder="პროდუქტების ძებნა..."
+                            className="w-full pl-10 pr-10 py-2.5 bg-transparent outline-none text-sm"
+                            style={{
+                                color: theme === 'dark' ? '#ffffff' : '#1f2937',
+                            }}
+                        />
+                        {searchValue && (
+                            <button
+                                onClick={handleClearSearch}
+                                className="absolute right-3 p-0.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
+                            >
+                                <X className="w-4 h-4 text-gray-400" />
+                            </button>
+                        )}
+                    </div>
+                )}
 
                 {/* Search Results Dropdown */}
                 {showResults && searchValue && (
@@ -130,25 +139,23 @@ const StoreHeader = () => {
                 )}
             </div>
 
-            <div>
-                {isMobile ? (
-                    <CButton onClick={() => toggleSidebar()} variant="outline" icon={Menu} />
-                ) : null}
-            </div>
+            
 
             <CFlex align="center" gap="15px">
-                <CFlex align="center" gap="10px">
-                    <Headphones className="w-7 h-7" strokeWidth={1.5} />
-                    <div className="flex flex-col gap-y-1">
-                        <span className="text-xs text-gray-500">მხარდაჭერა</span>
-                        <a
-                            href="tel:599093209"
-                            className="text-sm font-semibold text-[#006FEAFF] hover:underline leading-tight"
-                        >
-                            571 13 48 44
-                        </a>
-                    </div>
-                </CFlex>
+                {isMobile ? null : (
+                    <CFlex align="center" gap="10px">
+                        <Headphones className="w-7 h-7" strokeWidth={1.5} />
+                        <div className="flex flex-col gap-y-1">
+                            <span className="text-xs text-gray-500">მხარდაჭერა</span>
+                            <a
+                                href="tel:599093209"
+                                className="text-sm font-semibold text-[#006FEAFF] hover:underline leading-tight"
+                            >
+                                571 13 48 44
+                            </a>
+                        </div>
+                    </CFlex>
+                )}
 
                 {/* Profile Section */}
                 <ProfileSection />

@@ -141,6 +141,7 @@ export default function Footer() {
                         {/* Social Links */}
                         <div className="flex gap-3 mt-6">
                             <Button
+                                asChild
                                 size="icon"
                                 variant="outline"
                                 className="hover:bg-primary hover:text-white hover:border-primary transition-colors"
@@ -150,6 +151,7 @@ export default function Footer() {
                                 </a>
                             </Button>
                             <Button
+                                asChild
                                 size="icon"
                                 variant="outline"
                                 className="hover:bg-primary hover:text-white hover:border-primary transition-colors"

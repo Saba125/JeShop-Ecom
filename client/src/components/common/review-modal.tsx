@@ -41,8 +41,8 @@ const ReviewsModal = ({ isOpen, setIsOpen, product_uid, review }: ReviewsModalPr
         defaultValues: {
             uid: review?.uid || null,
             email: user.email || '',
-            description: review?.description,
-            rating: review?.rating,
+            description: review?.description || "",
+            rating: review?.rating || 1,
             username: user.username,
             product_uid,
         },
@@ -55,10 +55,11 @@ const ReviewsModal = ({ isOpen, setIsOpen, product_uid, review }: ReviewsModalPr
                 ...values,
                 rating,
             });
+            console.log(`i am here`)
         }
     };
     if (isAddSuccess || isEditSuccess) {
-        setIsOpen(false);
+        // setIsOpen(false);
     }
     return (
         <CDialog

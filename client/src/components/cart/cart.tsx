@@ -17,11 +17,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { API_URL } from '@/constants';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { removeItemFromCart, updateItemQuantity } from '@/store/cartSlice';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const Cart = () => {
     const cart = useSelector((state: RootState) => state.cart);
     const dispatch = useDispatch();
-
+    const isMobile = useIsMobile();
     const cartItems = cart.products.reduce((total, item) => total + item.quantity, 0);
     const cartTotal = cart.products.reduce(
         (total, item) => total + item.new_price * item.quantity,
@@ -57,14 +58,16 @@ const Cart = () => {
                             </span>
                         )}
                     </div>
-                    <div className="flex flex-col transition-all duration-300">
-                        <span className="text-xs text-gray-500 group-hover:text-[#006FEAFF] transition-colors duration-300">
-                            კალათა
-                        </span>
-                        <span className="text-sm font-semibold group-hover:text-[#006FEAFF] transition-colors duration-300">
-                            {cartTotal.toFixed(2)} ₾
-                        </span>
-                    </div>
+                    {isMobile ? null : (
+                        <div className="flex flex-col transition-all duration-300">
+                            <span className="text-xs text-gray-500 group-hover:text-[#006FEAFF] transition-colors duration-300">
+                                კალათა
+                            </span>
+                            <span className="text-sm font-semibold group-hover:text-[#006FEAFF] transition-colors duration-300">
+                                {cartTotal.toFixed(2)} ₾
+                            </span>
+                        </div>
+                    )}
                 </CFlex>
             </SheetTrigger>
 
@@ -108,7 +111,7 @@ const Cart = () => {
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-red-500 text-white hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        className="absolute -top-2 -right-0 h-6 w-6 rounded-full bg-red-500 text-white hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
                                         onClick={() => handleRemoveItem(item.product_uid)}
                                     >
                                         <X className="h-3 w-3" />

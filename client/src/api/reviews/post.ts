@@ -8,6 +8,7 @@ export const useAddReviews = () => {
     const queryClient = useQueryClient();
     const mutation = useMutation({
         mutationFn: async (data: z.infer<typeof formSchema>) => {
+            console.log(data)
             const response = await Api.post('review', data);
             return response.data;
         },
