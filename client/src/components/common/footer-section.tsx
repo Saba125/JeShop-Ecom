@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import Logo from '@/components/common/logo';
-import { FB_LINK } from '@/constants';
+import { FB_LINK, IG_LINK } from '@/constants';
 
 export default function Footer() {
     const quickLinks = [
@@ -154,23 +154,9 @@ export default function Footer() {
                                 variant="outline"
                                 className="hover:bg-primary hover:text-white hover:border-primary transition-colors"
                             >
-                                <a>
+                                <a href={IG_LINK}>
                                     <Instagram className="h-4 w-4" />
                                 </a>
-                            </Button>
-                            <Button
-                                size="icon"
-                                variant="outline"
-                                className="hover:bg-primary hover:text-white hover:border-primary transition-colors"
-                            >
-                                <Twitter className="h-4 w-4" />
-                            </Button>
-                            <Button
-                                size="icon"
-                                variant="outline"
-                                className="hover:bg-primary hover:text-white hover:border-primary transition-colors"
-                            >
-                                <Youtube className="h-4 w-4" />
                             </Button>
                         </div>
                     </div>

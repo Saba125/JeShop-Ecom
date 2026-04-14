@@ -12,8 +12,10 @@ import {
     MessageCircle,
     Facebook,
     Instagram,
-    Twitter, 
+    Twitter,
 } from 'lucide-react';
+import { CButton } from '@/components/common/custom-button';
+import { FB_LINK } from '@/constants';
 
 const ContactUs = () => {
     const [formData, setFormData] = useState({
@@ -28,9 +30,7 @@ const ContactUs = () => {
         e.preventDefault();
     };
 
-    const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData({
             ...formData,
             [e.target.name]: e.target.value,
@@ -51,8 +51,10 @@ const ContactUs = () => {
                     <div className="lg:col-span-1 space-y-6">
                         <Card className="bg-white dark:bg-slate-900">
                             <CardContent className="p-6">
-                                <h2 className="text-xl font-semibold mb-6">საკონტაქტო ინფორმაცია</h2>
-                                
+                                <h2 className="text-xl font-semibold mb-6">
+                                    საკონტაქტო ინფორმაცია
+                                </h2>
+
                                 <div className="flex gap-4 mb-6">
                                     <div className="w-12 h-12 bg-[#006FEAFF] bg-opacity-10 rounded-lg flex items-center justify-center flex-shrink-0">
                                         <MapPin className="w-6 h-6 text-white" />
@@ -125,9 +127,14 @@ const ContactUs = () => {
                             <CardContent className="p-6">
                                 <h2 className="text-xl font-semibold mb-4">სოციალური ქსელები</h2>
                                 <div className="flex gap-3">
-                                    <button className="w-12 h-12 bg-[#006FEAFF] bg-opacity-10 hover:bg-[#006FEAFF] hover:text-white rounded-lg flex items-center justify-center transition-colors">
-                                        <Facebook className="w-5 h-5" />
-                                    </button>
+                                    <Button
+                                        variant="outline"
+                                        className="hover:bg-primary w-12 h-12  hover:text-white hover:border-primary transition-colors"
+                                    >
+                                        <a href={FB_LINK}>
+                                            <Facebook className="h-4 w-4" />
+                                        </a>
+                                    </Button>
                                     <button className="w-12 h-12 bg-[#006FEAFF] bg-opacity-10 hover:bg-[#006FEAFF] hover:text-white rounded-lg flex items-center justify-center transition-colors">
                                         <Instagram className="w-5 h-5" />
                                     </button>
@@ -151,7 +158,9 @@ const ContactUs = () => {
                                         <MessageCircle className="w-6 h-6 text-white" />
                                     </div>
                                     <div>
-                                        <h2 className="text-2xl font-semibold">გამოგვიგზავნეთ შეტყობინება</h2>
+                                        <h2 className="text-2xl font-semibold">
+                                            გამოგვიგზავნეთ შეტყობინება
+                                        </h2>
                                         <p className="text-sm text-gray-600 dark:text-gray-400">
                                             შეავსეთ ფორმა და ჩვენ დაგიკავშირდებით
                                         </p>
@@ -276,16 +285,20 @@ const ContactUs = () => {
                             <CardContent className="p-6">
                                 <h3 className="font-semibold mb-2">რა არის მიწოდების დრო?</h3>
                                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                                    მიწოდება თბილისში ხდება 1-2 სამუშაო დღის განმავლობაში. რეგიონებში 3-5 სამუშაო დღე.
+                                    მიწოდება თბილისში ხდება 1-2 სამუშაო დღის განმავლობაში.
+                                    რეგიონებში 3-5 სამუშაო დღე.
                                 </p>
                             </CardContent>
                         </Card>
 
                         <Card className="bg-white dark:bg-slate-900">
                             <CardContent className="p-6">
-                                <h3 className="font-semibold mb-2">შემიძლია პროდუქტის დაბრუნება?</h3>
+                                <h3 className="font-semibold mb-2">
+                                    შემიძლია პროდუქტის დაბრუნება?
+                                </h3>
                                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                                    დიახ, შეგიძლიათ პროდუქტის დაბრუნება 14 დღის განმავლობაში შესყიდვიდან.
+                                    დიახ, შეგიძლიათ პროდუქტის დაბრუნება 14 დღის განმავლობაში
+                                    შესყიდვიდან.
                                 </p>
                             </CardContent>
                         </Card>
@@ -294,7 +307,8 @@ const ContactUs = () => {
                             <CardContent className="p-6">
                                 <h3 className="font-semibold mb-2">რა გადახდის მეთოდები გაქვთ?</h3>
                                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                                    ვიღებთ საბანკო ბარათებს, ონლაინ გადახდას და ნაღდი ანგარიშსწორებას მიწოდებისას.
+                                    ვიღებთ საბანკო ბარათებს, ონლაინ გადახდას და ნაღდი
+                                    ანგარიშსწორებას მიწოდებისას.
                                 </p>
                             </CardContent>
                         </Card>
