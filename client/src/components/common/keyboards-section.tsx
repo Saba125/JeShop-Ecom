@@ -74,7 +74,7 @@ const ProductsSection = ({ name }: { name: string }) => {
             } else {
                 scroll('next');
             }
-        }, 6000);
+        }, 3000);
         return () => clearInterval(interval);
     }, [isHoveringCarousel]);
 

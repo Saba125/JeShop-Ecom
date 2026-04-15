@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, SlidersHorizontal, ChevronDown, Search } from 'lucide-react';
+import { X, SlidersHorizontal, ChevronDown, Search, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Slider } from '@/components/ui/slider';
@@ -22,6 +22,7 @@ import {
     SheetTrigger,
 } from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { CButton } from '@/components/common/custom-button';
 
 const mockBrands = [
     { uid: '1', name: 'Logitech' },
@@ -97,9 +98,21 @@ const ProductsHorizontalFilters = () => {
     return (
         <div className="w-full">
             {/* Sticky Filter Bar */}
-            <div className="fixed top-[74px] w-[1590px] z-99 bg-background border-b shadow-sm overflow-y">
+            <div className="fixed top-[74px] w-[1590px]     z-99 bg-background border-b shadow-sm overflow-y">
                 {isMobile ? (
-                    <div>Test </div>
+                    <Sheet>
+                        <SheetTrigger className='px-5 py-3'>
+                            <CButton variant="default" icon={Filter} />
+                        </SheetTrigger>
+                        <SheetContent
+                        side='left'
+                        >
+                            <SheetHeader>
+                                ფილტრები
+                            </SheetHeader>
+                            თესტ
+                        </SheetContent>
+                    </Sheet>
                 ) : (
                     <div className="px-6 py-4">
                         {/* Main Filter Row */}
@@ -173,7 +186,7 @@ const ProductsHorizontalFilters = () => {
                                                 />
                                             </div>
                                         )}
-                                        <div className="space-y-1 max-h-[300px] overflow-y-auto pr-1">
+                                        <div className="space-y-1 max-h-[300px]  pr-1">
                                             {filteredBrands?.map((brand) => (
                                                 <label
                                                     key={brand.uid}
