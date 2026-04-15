@@ -3,7 +3,7 @@ import CFlex from '../ui/flex';
 import { CButton } from '../common/custom-button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useSidebar } from '../ui/sidebar';
-import { Menu, Headphones, Search, X, SearchIcon } from 'lucide-react';
+import { Menu, Headphones, Search, X, SearchIcon, SearchXIcon } from 'lucide-react';
 import { useTheme } from '@/providers/theme-provider';
 import Cart from '../cart/cart';
 import ProfileSection from '../common/profile-section';
@@ -51,9 +51,7 @@ const StoreHeader = () => {
                 ) : null}
             </div>
             <div className="relative flex-1 max-w-2xl">
-                {isMobile ? (
-                    <SearchIcon />
-                ) : (
+                {isMobile ? null : (
                     <div
                         className="relative flex items-center border rounded-lg"
                         style={{
@@ -100,7 +98,7 @@ const StoreHeader = () => {
                                 იტვირთება...
                             </div>
                         ) : filteredProducts.length > 0 ? (
-                            <div className="max-h-96 ">
+                            <div className="max-h-96 overflow-y-auto ">
                                 {filteredProducts.map((product) => (
                                     <div
                                         key={product.uid}
@@ -139,9 +137,8 @@ const StoreHeader = () => {
                 )}
             </div>
 
-            
-
             <CFlex align="center" gap="15px">
+                {isMobile && <SearchIcon />}
                 {isMobile ? null : (
                     <CFlex align="center" gap="10px">
                         <Headphones className="w-7 h-7" strokeWidth={1.5} />

@@ -126,7 +126,6 @@ const Category = () => {
             </div>
         );
     }
-    console.log(products);
     if (!products || products.data.length === 0) {
         return (
             <div className="p-6">
