@@ -42,7 +42,7 @@ export const CAvatar = ({ onLogout }: CAvatarProps) => {
     };
 
     return (
-        <div>
+        <div className='z-50'>
             <DropdownMenu modal={false}>
                 <DropdownMenuTrigger className="cursor-pointer outline-none" asChild>
                     <Avatar className="w-10 h-10 border-2 border-primary/20 hover:border-primary/40 transition-colors">

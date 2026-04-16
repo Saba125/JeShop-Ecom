@@ -98,7 +98,7 @@ const ProductsHorizontalFilters = () => {
     return (
         <div className="w-full">
             {/* Sticky Filter Bar */}
-            <div className="fixed top-[74px] w-[1590px] z-99 bg-background border-b shadow-sm overflow-y">
+            <div className="fixed top-[74px] w-[1590px] z-40 bg-background border-b shadow-sm overflow-y">
                 {isMobile ? (
                     <Sheet>
                         <SheetTrigger className="px-5 py-3">
