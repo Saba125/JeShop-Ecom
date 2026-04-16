@@ -6,10 +6,11 @@ import { removeItemFromWishlist } from '@/store/wishListSlice';
 import { addItemToCart } from '@/store/cartSlice';
 import { API_URL } from '@/constants';
 import type { WishlistItems } from '@/types';
+import { useNavigate } from 'react-router-dom';
 const Wishlist = () => {
     const wishlist = useSelector((state: RootState) => state.wishlist.products);
     const dispatch = useDispatch();
-
+    const navigate = useNavigate();
     const handleRemove = (product: WishlistItems) => {
         dispatch(removeItemFromWishlist(product));
     };
@@ -41,8 +42,8 @@ const Wishlist = () => {
                     <p className="text-muted-foreground mb-6">
                         დაამატეთ პროდუქტები რომლებიც მოგწონთ
                     </p>
-                    <Button>
-                        <ShoppingCart className="w-4 h-4 mr-2" />
+                    <Button onClick={() => navigate("/")}>
+                        <ShoppingCart className="w-4 h-4 " />
                         დაიწყეთ შოპინგი
                     </Button>
                 </div>

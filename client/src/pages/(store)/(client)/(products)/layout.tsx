@@ -98,19 +98,182 @@ const ProductsHorizontalFilters = () => {
     return (
         <div className="w-full">
             {/* Sticky Filter Bar */}
-            <div className="fixed top-[74px] w-[1590px]     z-99 bg-background border-b shadow-sm overflow-y">
+            <div className="fixed top-[74px] w-[1590px] z-99 bg-background border-b shadow-sm overflow-y">
                 {isMobile ? (
                     <Sheet>
-                        <SheetTrigger className='px-5 py-3'>
+                        <SheetTrigger className="px-5 py-3">
                             <CButton variant="default" icon={Filter} />
                         </SheetTrigger>
-                        <SheetContent
-                        side='left'
-                        >
+                        <SheetContent side="left" className="flex flex-col overflow-y-auto">
                             <SheetHeader>
-                                ფილტრები
+                                <SheetTitle>ფილტრები</SheetTitle>
                             </SheetHeader>
-                            თესტ
+
+                            <div className="flex-1 overflow-y-auto py-4 px-5 space-y-6">
+                                {/* Connection Type */}
+                                <div>
+                                    <div className="text-sm font-semibold mb-2">შეერთება</div>
+                                    <div className="space-y-2">
+                                        {plugTypes.map((plugType) => (
+                                            <label
+                                                key={plugType.uid}
+                                                className="flex items-center space-x-2 py-1.5 px-2 rounded hover:bg-slate-50 dark:hover:bg-slate-900 cursor-pointer"
+                                            >
+                                                <Checkbox
+                                                    checked={selectedPlugTypes.includes(
+                                                        String(plugType.uid)
+                                                    )}
+                                                    onCheckedChange={() =>
+                                                        handlePlugToggle(String(plugType.uid))
+                                                    }
+                                                />
+                                                <span className="text-sm">{plugType.name}</span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Brand */}
+                                <div>
+                                    <div className="text-sm font-semibold mb-2">ბრენდი</div>
+                                    {brands && brands.length > 5 && (
+                                        <div className="relative mb-2">
+                                            <Search className="absolute left-2 top-2.5 w-3.5 h-3.5 text-muted-foreground" />
+                                            <Input
+                                                placeholder="ძიება..."
+                                                value={brandSearch}
+                                                onChange={(e) => setBrandSearch(e.target.value)}
+                                                className="h-9 pl-8 text-sm"
+                                            />
+                                        </div>
+                                    )}
+                                    <div className="space-y-1 max-h-[200px] overflow-y-auto pr-1">
+                                        {filteredBrands?.map((brand) => (
+                                            <label
+                                                key={brand.uid}
+                                                className="flex items-center space-x-2 py-1.5 px-2 rounded hover:bg-slate-50 dark:hover:bg-slate-900 cursor-pointer"
+                                            >
+                                                <Checkbox
+                                                    checked={selectedBrands.includes(
+                                                        String(brand.uid)
+                                                    )}
+                                                    onCheckedChange={() =>
+                                                        handleBrandToggle(String(brand.uid))
+                                                    }
+                                                />
+                                                <span className="text-sm">{brand.name}</span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Price Range */}
+                                <div>
+                                    <div className="text-sm font-semibold mb-3">
+                                        ფასის დიაპაზონი
+                                    </div>
+                                    <Slider
+                                        min={0}
+                                        max={1000}
+                                        step={10}
+                                        value={priceRange}
+                                        onValueChange={setPriceRange}
+                                        className="w-full"
+                                    />
+                                    <div className="flex items-center justify-between mt-3 text-sm">
+                                        <div className="flex items-center gap-2">
+                                            <Input
+                                                type="number"
+                                                value={priceRange[0]}
+                                                onChange={(e) =>
+                                                    setPriceRange([
+                                                        Number(e.target.value),
+                                                        priceRange[1],
+                                                    ])
+                                                }
+                                                className="w-20 h-8 text-xs"
+                                            />
+                                            <span>₾</span>
+                                        </div>
+                                        <span className="text-muted-foreground">-</span>
+                                        <div className="flex items-center gap-2">
+                                            <Input
+                                                type="number"
+                                                value={priceRange[1]}
+                                                onChange={(e) =>
+                                                    setPriceRange([
+                                                        priceRange[0],
+                                                        Number(e.target.value),
+                                                    ])
+                                                }
+                                                className="w-20 h-8 text-xs"
+                                            />
+                                            <span>₾</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Quick Filters */}
+                                <div>
+                                    <div className="text-sm font-semibold mb-2">
+                                        სწრაფი ფილტრები
+                                    </div>
+                                    <div className="flex flex-col gap-2">
+                                        <label className="flex items-center space-x-2 py-1.5 px-2 rounded hover:bg-slate-50 dark:hover:bg-slate-900 cursor-pointer">
+                                            <Checkbox
+                                                checked={inStock}
+                                                onCheckedChange={(checked) =>
+                                                    setInStock(!!checked)
+                                                }
+                                            />
+                                            <span className="text-sm">მარაგში</span>
+                                        </label>
+                                        <label className="flex items-center space-x-2 py-1.5 px-2 rounded hover:bg-slate-50 dark:hover:bg-slate-900 cursor-pointer">
+                                            <Checkbox
+                                                checked={onSale}
+                                                onCheckedChange={(checked) => setOnSale(!!checked)}
+                                            />
+                                            <span className="text-sm">ფასდაკლებული</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                {/* Sort */}
+                                <div>
+                                    <div className="text-sm font-semibold mb-2">დალაგება</div>
+                                    <div className="space-y-1">
+                                        {sortOptions.map((option) => (
+                                            <button
+                                                key={option.value}
+                                                className={`w-full text-left px-3 py-2 text-sm rounded hover:bg-slate-100 dark:hover:bg-slate-800 ${
+                                                    sortBy === option.value
+                                                        ? 'bg-slate-100 dark:bg-slate-800 font-medium'
+                                                        : ''
+                                                }`}
+                                                onClick={() => setSortBy(option.value)}
+                                            >
+                                                {option.label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <SheetFooter className="pt-4 border-t flex flex-row gap-2">
+                                {activeFiltersCount > 0 && (
+                                    <Button
+                                        variant="ghost"
+                                        className="flex-1 text-muted-foreground"
+                                        onClick={clearAllFilters}
+                                    >
+                                        <X className="w-4 h-4 mr-1" />
+                                        გასუფთავება ({activeFiltersCount})
+                                    </Button>
+                                )}
+                                <SheetClose asChild>
+                                    <Button className="flex-1">დახურვა</Button>
+                                </SheetClose>
+                            </SheetFooter>
                         </SheetContent>
                     </Sheet>
                 ) : (
@@ -186,7 +349,7 @@ const ProductsHorizontalFilters = () => {
                                                 />
                                             </div>
                                         )}
-                                        <div className="space-y-1 max-h-[300px]  pr-1">
+                                        <div className="space-y-1 max-h-[300px] pr-1">
                                             {filteredBrands?.map((brand) => (
                                                 <label
                                                     key={brand.uid}
@@ -228,7 +391,7 @@ const ProductsHorizontalFilters = () => {
                                         <ChevronDown className="ml-1 w-4 h-4" />
                                     </Button>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent className="w-72 mt-4  p-4">
+                                <DropdownMenuContent className="w-72 mt-4 p-4">
                                     <div className="space-y-4">
                                         <div>
                                             <div className="text-sm font-medium mb-3">
