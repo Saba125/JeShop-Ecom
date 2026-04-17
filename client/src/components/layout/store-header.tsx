@@ -11,7 +11,17 @@ import { useGetProducts } from '@/api/products/get';
 import type { TGetProducts } from '@/types';
 import { useNavigate } from 'react-router-dom';
 import { API_URL } from '@/constants';
-
+import {
+    Sheet,
+    SheetClose,
+    SheetContent,
+    SheetDescription,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from '@/components/ui/sheet';
+import { Input } from '../ui/input';
 const StoreHeader = () => {
     const navigate = useNavigate();
     const isMobile = useIsMobile();
@@ -138,7 +148,26 @@ const StoreHeader = () => {
             </div>
 
             <CFlex align="center" gap="15px">
-                {isMobile && <SearchIcon />}
+                {isMobile && (
+                    <Sheet>
+                        <SheetTrigger>
+                            <SearchIcon />
+                        </SheetTrigger>
+                        <SheetContent className='pt-7'  side='left'>
+                            <SheetHeader>
+                                <SheetTitle>
+                                     <div className="relative mb-2">
+                                            <Search className="absolute left-2 top-2.5 w-3.5 h-3.5 text-muted-foreground" />
+                                            <Input
+                                                placeholder="ძიება..."
+                                                className="h-9 pl-8 text-sm"
+                                            />
+                                        </div>
+                                </SheetTitle>
+                            </SheetHeader>
+                        </SheetContent>
+                    </Sheet>
+                )}
                 {isMobile ? null : (
                     <CFlex align="center" gap="10px">
                         <Headphones className="w-7 h-7" strokeWidth={1.5} />
