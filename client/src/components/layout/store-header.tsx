@@ -153,16 +153,85 @@ const StoreHeader = () => {
                         <SheetTrigger>
                             <SearchIcon />
                         </SheetTrigger>
-                        <SheetContent className='pt-7'  side='left'>
+                        <SheetContent className="pt-7" side="left">
                             <SheetHeader>
                                 <SheetTitle>
-                                     <div className="relative mb-2">
-                                            <Search className="absolute left-2 top-2.5 w-3.5 h-3.5 text-muted-foreground" />
-                                            <Input
-                                                placeholder="ძიება..."
-                                                className="h-9 pl-8 text-sm"
-                                            />
-                                        </div>
+                                    <div className="relative mb-2">
+                                        <Search className="absolute left-2 top-2.5 w-3.5 h-3.5 text-muted-foreground" />
+                                        <Input
+                                            value={searchValue}
+                                            onChange={(e) => {
+                                                setSearchValue(e.target.value);
+                                                setShowResults(e.target.value.length > 0);
+                                            }}
+                                            onFocus={() => searchValue && setShowResults(true)}
+                                            onBlur={() =>
+                                                setTimeout(() => setShowResults(false), 200)
+                                            }
+                                            placeholder="პროდუქტების ძებნა..."
+                                            className="h-9 pl-8 text-sm"
+                                        />
+                                        {searchValue && (
+                                            <button
+                                                onClick={handleClearSearch}
+                                                className="absolute right-3 p-0.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
+                                            >
+                                                <X className="w-4 h-4 text-gray-400" />
+                                            </button>
+                                        )}
+                                        {showResults && searchValue && (
+                                            <div
+                                                className="absolute top-full left-0 right-0 mt-2 border rounded-lg shadow-lg overflow-hidden z-50"
+                                                style={{
+                                                    backgroundColor:
+                                                        theme === 'dark' ? '#1e1e1e' : '#ffffff',
+                                                }}
+                                            >
+                                                {isLoading ? (
+                                                    <div className="px-4 py-6 text-center text-sm text-gray-500">
+                                                        იტვირთება...
+                                                    </div>
+                                                ) : filteredProducts.length > 0 ? (
+                                                    <div className="max-h-96 overflow-y-auto ">
+                                                        {filteredProducts.map((product) => (
+                                                            <div
+                                                                key={product.uid}
+                                                                onMouseDown={() =>
+                                                                    handleProductClick(product)
+                                                                }
+                                                                className="px-4 py-3 w-full hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer flex items-center gap-3 border-b last:border-b-0"
+                                                            >
+                                                                {product.image ? (
+                                                                    <img
+                                                                        src={`${API_URL}${product.image}`}
+                                                                        alt={product.name}
+                                                                        className="w-12 h-12 object-cover rounded-lg flex-shrink-0"
+                                                                    />
+                                                                ) : (
+                                                                    <div className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-lg flex-shrink-0" />
+                                                                )}
+                                                                <div className="flex-1">
+                                                                    <div className="text-sm font-medium">
+                                                                        {product.name}
+                                                                    </div>
+                                                                    <div className="text-xs text-gray-500">
+                                                                        {product.category.name}
+                                                                    </div>
+                                                                </div>
+                                                                <div className="text-sm font-semibold text-blue-600">
+                                                                    {product.price}₾
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    <div className="px-4 py-6 text-center text-sm text-gray-500">
+                                                        პროდუქტი ვერ მოიძებნა
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
                                 </SheetTitle>
                             </SheetHeader>
                         </SheetContent>
