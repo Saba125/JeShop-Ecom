@@ -168,15 +168,15 @@ const ProductsSection = ({ name }: { name: string }) => {
                             <div className="p-2 bg-cyan-50 rounded-lg">
                                 <Icon className="h-6 w-6 text-[#0083EF]" />
                             </div>
-                            <h2 className="text-3xl font-bold">{title}</h2>
+                            <h2 className="text-2xl md:text-3xl font-bold">{title}</h2>
                         </div>
                         <div className="h-0.5 w-[50%] bg-gradient-to-r from-[#0083EF] to-transparent" />
-                        <p className="text-muted-foreground mt-4">
+                        <p className="text-muted-foreground  mt-4">
                             აღმოაჩინეთ ჩვენი საუკეთესო შეთავაზებები
                         </p>
                     </div>
-                    <Button onClick={() => navigate(`/products/category/${name}`)} variant="ghost">
-                        ყველას ნახვა <ArrowRight className="ml-2 h-4 w-4" />
+                    <Button className=''  onClick={() => navigate(`/products/category/${name}`)} variant="ghost">
+                        <span>ყველას ნახვა</span> <ArrowRight className="ml-0 h-4 w-4" />
                     </Button>
                 </div>
 
