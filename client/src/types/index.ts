@@ -65,6 +65,10 @@ export type TGetProductsPaginated = {
     data: TGetProducts[];
     pagination: Pagination;
 };
+export type TGetProductsPaginatedSingle = {
+    data: TGetProducts;
+    pagination: Pagination;
+};
 export type TGetCategoriesPaginated = {
     data: Category[];
     pagination: Pagination;
