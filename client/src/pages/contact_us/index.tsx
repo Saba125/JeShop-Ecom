@@ -15,8 +15,11 @@ import {
     Twitter,
 } from 'lucide-react';
 import { CButton } from '@/components/common/custom-button';
-import { FB_LINK } from '@/constants';
-
+import { FB_LINK, IG_LINK } from '@/constants';
+const SOCIALS = [
+  { label: "Facebook",  href: FB_LINK,  hoverClass: "hover:bg-[#1877F2] hover:border-[#1877F2]", icon: <Facebook className="w-4 h-4" /> },
+  { label: "Instagram", href: IG_LINK,  hoverClass: "hover:bg-[#E1306C] hover:border-[#E1306C]", icon: <Instagram className="w-4 h-4" /> },
+];
 const ContactUs = () => {
     const [formData, setFormData] = useState({
         name: '',
@@ -123,30 +126,7 @@ const ContactUs = () => {
                             </CardContent>
                         </Card>
 
-                        <Card className="bg-white dark:bg-slate-900">
-                            <CardContent className="p-6">
-                                <h2 className="text-xl font-semibold mb-4">სოციალური ქსელები</h2>
-                                <div className="flex gap-3">
-                                    <Button
-                                        variant="outline"
-                                        className="hover:bg-primary w-12 h-12  hover:text-white hover:border-primary transition-colors"
-                                    >
-                                        <a href={FB_LINK}>
-                                            <Facebook className="h-4 w-4" />
-                                        </a>
-                                    </Button>
-                                    <button className="w-12 h-12 bg-[#006FEAFF] bg-opacity-10 hover:bg-[#006FEAFF] hover:text-white rounded-lg flex items-center justify-center transition-colors">
-                                        <Instagram className="w-5 h-5" />
-                                    </button>
-                                    <button className="w-12 h-12 bg-[#006FEAFF] bg-opacity-10 hover:bg-[#006FEAFF] hover:text-white rounded-lg flex items-center justify-center transition-colors">
-                                        <Twitter className="w-5 h-5" />
-                                    </button>
-                                    <button className="w-12 h-12 bg-[#006FEAFF] bg-opacity-10 hover:bg-[#006FEAFF] hover:text-white rounded-lg flex items-center justify-center transition-colors">
-                                        <MessageCircle className="w-5 h-5" />
-                                    </button>
-                                </div>
-                            </CardContent>
-                        </Card>
+                       
                     </div>
 
                     {/* Contact Form */}
@@ -261,6 +241,41 @@ const ContactUs = () => {
                     </div>
                 </div>
 
+<Card className="bg-white dark:bg-slate-900">
+  <CardContent className="p-6">
+    <p className="text-[11px] font-medium uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-6">
+      სოციალური ქსელები
+    </p>
+
+    <div className="grid grid-cols-4 gap-4">
+      {SOCIALS.map(({ label, href, icon }) => (
+        <a
+          key={label}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group flex flex-col items-center justify-center gap-2 p-4 rounded-2xl 
+          bg-gray-50 dark:bg-slate-800 
+          border border-gray-200 dark:border-slate-700
+          hover:border-[#006FEA]/40 
+          hover:shadow-lg hover:shadow-[#006FEA]/10
+          transition-all duration-200"
+        >
+          <div className="w-10 h-10 flex items-center justify-center rounded-xl 
+            bg-white dark:bg-slate-900 
+            group-hover:scale-110 transition"
+          >
+            {icon}
+          </div>
+
+          <span className="text-xs text-gray-500 dark:text-gray-400 group-hover:text-[#006FEA] transition">
+            {label}
+          </span>
+        </a>
+      ))}
+    </div>
+  </CardContent>
+</Card>
                 {/* Map Section */}
                 <div className="mt-8">
                     <Card className="bg-white dark:bg-slate-900 overflow-hidden">

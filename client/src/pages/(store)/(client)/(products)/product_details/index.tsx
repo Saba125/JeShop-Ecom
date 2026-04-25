@@ -33,8 +33,10 @@ import { CButton } from '@/components/common/custom-button';
 import ReviewsModal from '@/components/common/review-modal';
 import { useGetReviews } from '@/api/reviews/get';
 import type { RootState } from '@/store/store';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const ProductDetails = () => {
+    const isMobile = useIsMobile();
     const params = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -660,7 +662,7 @@ const ProductDetails = () => {
                                 <div className="text-muted-foreground">იტვირთება...</div>
                             </div>
                         ) : similarProducts && similarProducts.length > 0 ? (
-                            <div className="relative px-10">
+                            <div className={`relative ${isMobile ? "px-0" : "px-10"}  `}>
                                 {/* Prev */}
                                 <button
                                     onClick={() => setSimCurrent((c) => Math.max(0, c - 1))}
@@ -699,7 +701,7 @@ const ProductDetails = () => {
                                             return (
                                                 <div
                                                     key={similarProduct.uid}
-                                                    className="flex-none w-[calc(25%-6px)] mr-3 last:mr-0 group bg-white dark:bg-slate-900 rounded-lg overflow-hidden border-2 hover:border-[#006FEAFF] transition-all duration-300 hover:shadow-xl cursor-pointer"
+                                                    className={`flex-none w-[calc(${isMobile ? "50%" : "25%"}-6px)] mr-3 last:mr-0 group bg-white dark:bg-slate-900 rounded-lg overflow-hidden border-2 hover:border-[#006FEAFF] transition-all duration-300 hover:shadow-xl cursor-pointer`}
                                                     onClick={() =>
                                                         navigate(
                                                             `/product/${pLink}/${similarProduct.uid}`
@@ -817,10 +819,11 @@ const ProductDetails = () => {
                                                             }}
                                                         >
                                                             <span className="relative z-10 flex items-center justify-center gap-2">
-                                                                <ShoppingCart className="w-4 h-4" />
+                                                                <ShoppingCart className="w-4 h-4" 
+                                                                />
                                                                 {simInStock
-                                                                    ? 'კალათაში დამატება'
-                                                                    : 'არ არის მარაგში'}
+                                                                    ? <span className='text-[11px] md:text-lg'>კალათაში დამატება</span>
+                                                                    : <span>არ არის მარაგში</span>}
                                                             </span>
                                                         </Button>
                                                     </div>
