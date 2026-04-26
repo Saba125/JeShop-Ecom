@@ -5,7 +5,7 @@ import { reviewsSchema } from "../../../lib/validation";
 import helpers from "../../../lib/helpers";
 import { IUser } from "../../../interfaces/user";
 const addReview = async(req:Request, res:Response) => {
-  console.log(`i am here`)
+  console.log(`i am here saba`)
   const db:IDbTools = req.app.locals.db;
   const body = req.body;
   const user: IUser = req.user as IUser;

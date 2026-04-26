@@ -59,7 +59,7 @@ const ReviewsModal = ({ isOpen, setIsOpen, product_uid, review }: ReviewsModalPr
         }
     };
     if (isAddSuccess || isEditSuccess) {
-        // setIsOpen(false);
+        setIsOpen(false);
     }
     return (
         <CDialog

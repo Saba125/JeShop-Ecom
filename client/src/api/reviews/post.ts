@@ -9,6 +9,7 @@ export const useAddReviews = () => {
     const mutation = useMutation({
         mutationFn: async (data: z.infer<typeof formSchema>) => {
             console.log(data)
+            console.log(`saba magari`)
             const response = await Api.post('review', data);
             return response.data;
         },

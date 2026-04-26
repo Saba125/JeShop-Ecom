@@ -93,7 +93,7 @@ export const userEditSchema = z.object({
   status: z.string().min(1, "აირჩიეთ სტატუსი!"),
 });
 export const reviewsSchema = z.object({
-  uid: z.number().optional(),
+  uid: z.number().optional().nullable(),
   username: z
     .string()
     .optional(),
