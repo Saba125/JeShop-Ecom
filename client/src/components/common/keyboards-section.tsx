@@ -2,10 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useGetProductsByCategory } from '@/api/products/get_by_category';
 import {
     LucideKeyboard,
-    ShoppingCart,
-    Heart,
-    Eye,
-    Sparkles,
     Keyboard,
     ArrowRight,
     Mouse,
@@ -14,16 +10,13 @@ import {
     ChevronRight,
     ChevronLeft,
 } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { addItemToCart } from '@/store/cartSlice';
 import { addItemToWishlist } from '@/store/wishListSlice';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { API_URL } from '@/constants';
 import type { TGetProducts } from '@/types';
 import CCard from './cart';
+import { calculateDiscountedPrice, getActiveSale } from '@/lib/utils';
 
 const titleMap: Record<string, string> = {
     keyboards: 'კლავიატურები',
@@ -103,26 +96,9 @@ const ProductsSection = ({ name }: { name: string }) => {
         );
     };
 
-    const getActiveSale = (product: TGetProducts) => {
-        return product.sales_items?.find((sale) => sale.is_active === 1);
-    };
 
-    const calculateDiscountedPrice = (product: TGetProducts) => {
-        const activeSale = getActiveSale(product);
-        if (!activeSale) return null;
-        const price = parseFloat(product.price);
-        if (activeSale.type === 1) return price - (price * activeSale.amount) / 100;
-        if (activeSale.type === 2) return price - activeSale.amount;
-        return null;
-    };
-
-    const getDiscountPercentage = (product: TGetProducts) => {
-        const activeSale = getActiveSale(product);
-        const discountedPrice = calculateDiscountedPrice(product);
-        if (!discountedPrice || !activeSale) return 0;
-        const originalPrice = parseFloat(product.price);
-        return Math.round(((originalPrice - discountedPrice) / originalPrice) * 100);
-    };
+  
+  
 
     if (isLoading) {
         return (
@@ -181,14 +157,7 @@ const ProductsSection = ({ name }: { name: string }) => {
                     </Button>
                 </div>
 
-                {/* 
-                    THE CORRECT APPROACH:
-                    The outer div is position:relative + overflow:hidden — this is the CLIP boundary.
-                    The track (ref) is overflow-x-auto — this is where scrolling happens.
-                    Cards use scroll-snap-align so scrolling snaps cleanly.
-                    Card width is set via inline style as a % of the TRACK (not viewport).
-                    No transforms on nav buttons — they sit inside the clip boundary.
-                */}
+               
                 <div className="relative">
                     <button
                         onClick={() => scroll('prev')}
@@ -197,24 +166,16 @@ const ProductsSection = ({ name }: { name: string }) => {
                         <ChevronLeft className="w-4 h-4" />
                     </button>
 
-                    {/* Track — clips overflow, scrolls internally */}
                     <div
                         ref={trackRef}
                         className="overflow-x-hidden"
                         style={{ scrollbarWidth: 'none' }}
                     >
-                        {/* 
-                            Inner flex row — this is what actually scrolls.
-                            overflow-x-auto is on this element via JS scrollBy on the ref.
-                            Cards are sized to exactly 1/4 of the TRACK width using js-calculated style.
-                        */}
+
                         <div
                             className="flex flex-col md:flex-row transition-all"
                             style={{
                                 gap: '16px',
-                                // We scroll the parent (trackRef), not this div
-                                // Cards shrink to fit: each is 25% of container minus gaps
-                                // This formula is purely about the track div, not viewport
                             }}
                         >
                             {products?.data?.map((product) => {

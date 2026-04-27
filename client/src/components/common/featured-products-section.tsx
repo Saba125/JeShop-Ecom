@@ -93,14 +93,6 @@ const FeaturedProductsSection = () => {
         return null;
     };
 
-    const getDiscountPercentage = (product: TGetProducts) => {
-        const activeSale = getActiveSale(product);
-        const discountedPrice = calculateDiscountedPrice(product);
-        if (!discountedPrice || !activeSale) return 0;
-        const originalPrice = parseFloat(product.price);
-        return Math.round(((originalPrice - discountedPrice) / originalPrice) * 100);
-    };
-
     if (isPending) {
         return (
             <section className="container mx-auto px-4 py-16">
@@ -152,15 +144,16 @@ const FeaturedProductsSection = () => {
                 >
                     <div className="flex transition-all" style={{ gap: '16px' }}>
                         {products?.map((product) => {
-                            const activeSale = getActiveSale(product);
-                            const discountedPrice = calculateDiscountedPrice(product);
-                            const discountPercent = getDiscountPercentage(product);
-                            const isHovered = hoveredId === product.uid;
-                            const isFavorite = favorites.includes(product.uid);
-                            const inStock = product.stock > 0;
-                            const originalPrice = parseFloat(product.price);
-
-                            return <CCard favorites={favorites} product={product} toggleFavorite={toggleFavorite} hoveredId={hoveredId} setHoveredId={setHoveredId} key={product.uid} />;
+                            return (
+                                <CCard
+                                    favorites={favorites}
+                                    product={product}
+                                    toggleFavorite={toggleFavorite}
+                                    hoveredId={hoveredId}
+                                    setHoveredId={setHoveredId}
+                                    key={product.uid}
+                                />
+                            );
                         })}
                     </div>
                 </div>

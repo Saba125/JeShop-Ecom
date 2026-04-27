@@ -34,6 +34,8 @@ import ReviewsModal from '@/components/common/review-modal';
 import { useGetReviews } from '@/api/reviews/get';
 import type { RootState } from '@/store/store';
 import { useIsMobile } from '@/hooks/use-mobile';
+import clsx from 'clsx';
+import reviewsSchema from '@/schemas/reviews';
 
 const ProductDetails = () => {
     const isMobile = useIsMobile();
@@ -539,7 +541,7 @@ const ProductDetails = () => {
                                 ) : (
                                     /* Actual Reviews */
                                     <>
-                                        {reviews.map((review) => {
+                                        {reviews.map((review, idx) => {
                                             const getAvatarColor = (username: string) => {
                                                 const colors = [
                                                     'bg-teal-600',
@@ -568,11 +570,12 @@ const ProductDetails = () => {
                                                 'MMM DD, YYYY'
                                             );
                                             console.log(review)
+                                            
                                             return (
                                                 <div className="flex justify-between">
                                                     <div
                                                         key={review.uid}
-                                                        className="border-b pb-6 last:border-b-0"
+                                                        className={clsx(" w-full pb-6", idx === reviews.length - 1? "border-0" : "border-b")}
                                                     >
                                                         <div className="flex gap-4">
                                                             {/* Avatar */}
@@ -633,7 +636,7 @@ const ProductDetails = () => {
                                         })}
 
                                         {/* Add Review Button at bottom */}
-                                        <div className="pt-4 border-t">
+                                        <div className="pt-4">
                                             <CButton
                                                 icon={StarIcon}
                                                 text="შეფასების დამატება"
