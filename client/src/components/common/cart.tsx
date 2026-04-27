@@ -19,7 +19,6 @@ interface CCardProps {
     isSpecialSale?: boolean
 }
 const CCard = ({ product, hoveredId, setHoveredId, favorites, toggleFavorite, onClick, isSpecialSale = false }: CCardProps) => {
-    const navigate = useNavigate();
     const getActiveSale = () => {
         return product.sales_items?.find((sale) => sale.is_active === 1);
     };

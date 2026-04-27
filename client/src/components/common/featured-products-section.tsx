@@ -20,6 +20,7 @@ import { API_URL } from '@/constants';
 import type { TGetProducts } from '@/types';
 import { useNavigate } from 'react-router-dom';
 import CCard from './cart';
+import { redirectToPPage } from '@/lib/utils';
 
 const FeaturedProductsSection = () => {
     const { data: products, isPending } = useGetProducts({});
@@ -146,6 +147,9 @@ const FeaturedProductsSection = () => {
                         {products?.map((product) => {
                             return (
                                 <CCard
+                                    onClick={() =>  {
+                                        redirectToPPage(product, navigate)
+                                    }}
                                     favorites={favorites}
                                     product={product}
                                     toggleFavorite={toggleFavorite}

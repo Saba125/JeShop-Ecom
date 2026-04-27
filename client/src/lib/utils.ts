@@ -1,7 +1,7 @@
 import type { TGetProducts } from '@/types';
 import { clsx, type ClassValue } from 'clsx';
+import { useNavigate, type NavigateFunction } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
-
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
@@ -25,4 +25,10 @@ export const getDiscountPercentage = (product: TGetProducts) => {
     if (!discountedPrice || !activeSale) return 0;
     const originalPrice = parseFloat(product.price);
     return Math.round(((originalPrice - discountedPrice) / originalPrice) * 100);
+};
+// პროდუქტზე გადამისამართების ფუნქცია
+
+export const redirectToPPage = (product: TGetProducts, navigate: NavigateFunction) => {
+    const pLink = product.name.toLowerCase().trim().replace(/\s+/g, '-');
+    navigate(`/product/${pLink}/${product.uid}`);
 };

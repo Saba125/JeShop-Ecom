@@ -1,17 +1,19 @@
 import { useState } from 'react';
-import {  Clock, FlameIcon, ArrowRight } from 'lucide-react';
+import { Clock, FlameIcon, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useDispatch } from 'react-redux';
 import { useGetProducts } from '@/api/products/get';
 import type { TGetProducts } from '@/types';
 import { useNavigate } from 'react-router-dom';
 import CCard from './cart';
-
-const SaleProductsSection = () => {
+import { redirectToPPage } from '@/lib/utils';
+interface SaleProductsSection {
+    isFullPage: boolean;
+}
+const SaleProductsSection = ({ isFullPage }: SaleProductsSection) => {
     const { data: products, isPending } = useGetProducts();
     const [hoveredId, setHoveredId] = useState<number | null>(null);
     const [favorites, setFavorites] = useState<number[]>([]);
-
+    const navigate = useNavigate();
     const getActiveSale = (product: TGetProducts) => {
         return product.sales_items?.find((sale) => sale.is_active === 1);
     };
@@ -29,7 +31,7 @@ const SaleProductsSection = () => {
     }
 
     if (saleProducts.length === 0) {
-        return null; 
+        return null;
     }
 
     return (
@@ -50,22 +52,26 @@ const SaleProductsSection = () => {
                         აღმოაჩინეთ ჩვენი საუკეთესო შეთავაზებები
                     </p>
                 </div>
-                <Button variant="ghost">
-                    ყველას ნახვა <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+                {isFullPage ? null : (
+                    <Button variant="ghost">
+                        ყველას ნახვა <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {saleProducts.map((product) => {
-
                     return (
                         <CCard
-                        favorites={favorites}
-                        isSpecialSale
-                        product={product}
-                        toggleFavorite={() => {}}
-                        hoveredId={hoveredId}
-                        setHoveredId={setHoveredId}
+                            onClick={() => {
+                                redirectToPPage(product, navigate);
+                            }}
+                            favorites={favorites}
+                            isSpecialSale
+                            product={product}
+                            toggleFavorite={() => {}}
+                            hoveredId={hoveredId}
+                            setHoveredId={setHoveredId}
                         />
                     );
                 })}

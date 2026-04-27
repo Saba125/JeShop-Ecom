@@ -16,7 +16,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import type { TGetProducts } from '@/types';
 import CCard from './cart';
-import { calculateDiscountedPrice, getActiveSale } from '@/lib/utils';
+import { calculateDiscountedPrice, getActiveSale, redirectToPPage } from '@/lib/utils';
 
 const titleMap: Record<string, string> = {
     keyboards: 'კლავიატურები',
@@ -181,6 +181,9 @@ const ProductsSection = ({ name }: { name: string }) => {
                             {products?.data?.map((product) => {
                                 return (
                                   <CCard
+                                  onClick={() => {
+                                    redirectToPPage(product, navigate)
+                                  }}
                                   favorites={favorites}
                                   product={product}
                                   toggleFavorite={() => toggleFavorite(product)}
