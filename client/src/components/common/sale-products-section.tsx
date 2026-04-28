@@ -6,11 +6,15 @@ import type { TGetProducts } from '@/types';
 import { useNavigate } from 'react-router-dom';
 import CCard from './cart';
 import { redirectToPPage } from '@/lib/utils';
+import CPagination from './custom-pagination';
+import { useGetSalesPaginated } from '@/api/sales/get_paginated';
 interface SaleProductsSection {
     isFullPage: boolean;
 }
 const SaleProductsSection = ({ isFullPage }: SaleProductsSection) => {
+    const [page, setPage] = useState(1)
     const { data: products, isPending } = useGetProducts();
+    const {data: productsPaginated, isPending: isProductsPaginatedPending} = useGetSalesPaginated(page, 10)
     const [hoveredId, setHoveredId] = useState<number | null>(null);
     const [favorites, setFavorites] = useState<number[]>([]);
     const navigate = useNavigate();
@@ -30,7 +34,7 @@ const SaleProductsSection = ({ isFullPage }: SaleProductsSection) => {
         );
     }
 
-    if (saleProducts.length === 0) {
+    if (!isFullPage && saleProducts.length === 0) {
         return null;
     }
 
@@ -83,6 +87,16 @@ const SaleProductsSection = ({ isFullPage }: SaleProductsSection) => {
                     <span>ფასდაკლებები მოქმედებს შეზღუდული დროით</span>
                 </div>
             </div>
+            {isFullPage && (
+                 <div className='mt-10'>
+                <CPagination
+                    align="center"
+                    page={page}
+                    setPage={setPage}
+                    totalPages={productsPaginated?.pagination.totalPages!}
+                />
+            </div>
+            )}
         </section>
     );
 };
