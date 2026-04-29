@@ -1,27 +1,24 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import {
-    ShoppingCart,
-    Heart,
-    Eye,
-    Sparkles,
     ComputerIcon,
     ArrowRight,
-    ChevronLeft,
-    ChevronRight,
 } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { addItemToCart } from '@/store/cartSlice';
+import {
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+    CarouselNext,
+    CarouselPrevious,
+} from '@/components/ui/carousel';
 import { addItemToWishlist } from '@/store/wishListSlice';
 import { useDispatch } from 'react-redux';
 import { useGetProducts } from '@/api/products/get';
-import { API_URL } from '@/constants';
 import type { TGetProducts } from '@/types';
 import { useNavigate } from 'react-router-dom';
 import CCard from './cart';
 import { redirectToPPage } from '@/lib/utils';
-import { CButton } from './custom-button';
+import Autoplay from 'embla-carousel-autoplay';
 
 const FeaturedProductsSection = () => {
     const { data: products, isPending } = useGetProducts({});
@@ -29,35 +26,23 @@ const FeaturedProductsSection = () => {
     const favoritesArray: number[] = favoritesss?.map((item: any) => item.product_uid);
     const [hoveredId, setHoveredId] = useState<number | null>(null);
     const [favorites, setFavorites] = useState<number[]>(favoritesArray || []);
-    const [isHoveringCarousel, setIsHoveringCarousel] = useState(false);
-    const trackRef = useRef<HTMLDivElement>(null);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const scroll = (dir: 'prev' | 'next') => {
-        if (!trackRef.current) return;
-        const card = trackRef.current.querySelector('[data-card]') as HTMLElement;
-        const amount = card ? card.offsetWidth + 16 : 300;
-        trackRef.current.scrollBy({
-            left: dir === 'next' ? amount : -amount,
-            behavior: 'smooth',
-        });
+    const autoplayPlugin = Autoplay({ delay: 3000, stopOnInteraction: false, stopOnMouseEnter: true });
+
+    const getActiveSale = (product: TGetProducts) => {
+        return product.sales_items?.find((sale) => sale.is_active === 1);
     };
 
-    useEffect(() => {
-        if (isHoveringCarousel) return;
-        const interval = setInterval(() => {
-            if (!trackRef.current) return;
-            const { scrollLeft, scrollWidth, clientWidth } = trackRef.current;
-            const atEnd = scrollLeft + clientWidth >= scrollWidth - 1;
-            if (atEnd) {
-                trackRef.current.scrollTo({ left: 0, behavior: 'smooth' });
-            } else {
-                scroll('next');
-            }
-        }, 3000);
-        return () => clearInterval(interval);
-    }, [isHoveringCarousel]);
+    const calculateDiscountedPrice = (product: TGetProducts) => {
+        const activeSale = getActiveSale(product);
+        if (!activeSale) return null;
+        const price = parseFloat(product.price);
+        if (activeSale.type === 1) return price - (price * activeSale.amount) / 100;
+        if (activeSale.type === 2) return price - activeSale.amount;
+        return null;
+    };
 
     const toggleFavorite = (product: TGetProducts) => {
         const discountedPrice = calculateDiscountedPrice(product);
@@ -80,19 +65,6 @@ const FeaturedProductsSection = () => {
                 stock: product.stock,
             })
         );
-    };
-
-    const getActiveSale = (product: TGetProducts) => {
-        return product.sales_items?.find((sale) => sale.is_active === 1);
-    };
-
-    const calculateDiscountedPrice = (product: TGetProducts) => {
-        const activeSale = getActiveSale(product);
-        if (!activeSale) return null;
-        const price = parseFloat(product.price);
-        if (activeSale.type === 1) return price - (price * activeSale.amount) / 100;
-        if (activeSale.type === 2) return price - activeSale.amount;
-        return null;
     };
 
     if (isPending) {
@@ -127,49 +99,34 @@ const FeaturedProductsSection = () => {
             </div>
 
             {/* Carousel */}
-            <div
-                className="relative"
-                onMouseEnter={() => setIsHoveringCarousel(true)}
-                onMouseLeave={() => setIsHoveringCarousel(false)}
+            <Carousel
+                opts={{
+                    align: 'start',
+                    loop: true,
+                }}
+                plugins={[autoplayPlugin]}
+                className="w-full"
             >
-                <CButton
-                    icon={ChevronLeft}
-                    onClick={() => scroll('prev')}
-                    className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-700 transition-all"
-                >
-                </CButton>
-
-                <div
-                    ref={trackRef}
-                    className="overflow-x-hidden"
-                    style={{ scrollbarWidth: 'none' }}
-                >
-                    <div className="flex transition-all" style={{ gap: '16px' }}>
-                        {products?.map((product) => {
-                            return (
-                                <CCard
-                                    onClick={() =>  {
-                                        redirectToPPage(product, navigate)
-                                    }}
-                                    favorites={favorites}
-                                    product={product}
-                                    toggleFavorite={toggleFavorite}
-                                    hoveredId={hoveredId}
-                                    setHoveredId={setHoveredId}
-                                    key={product.uid}
-                                />
-                            );
-                        })}
-                    </div>
-                </div>
-
-                <button
-                    onClick={() => scroll('next')}
-                    className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-700 transition-all"
-                >
-                    <ChevronRight className="w-4 h-4" />
-                </button>
-            </div>
+                <CarouselContent className="-ml-4">
+                    {products?.map((product) => (
+                        <CarouselItem
+                            key={product.uid}
+                            className="pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
+                        >
+                            <CCard
+                                onClick={() => redirectToPPage(product, navigate)}
+                                favorites={favorites}
+                                product={product}
+                                toggleFavorite={() => toggleFavorite(product)}
+                                hoveredId={hoveredId}
+                                setHoveredId={setHoveredId}
+                            />
+                        </CarouselItem>
+                    ))}
+                </CarouselContent>
+                <CarouselPrevious className="left-0 size-11 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-lg hover:bg-slate-50 dark:hover:bg-slate-700" />
+                <CarouselNext className="right-0 size-11 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-lg hover:bg-slate-50 dark:hover:bg-slate-700" />
+            </Carousel>
         </section>
     );
 };

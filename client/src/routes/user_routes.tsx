@@ -1,6 +1,5 @@
 import ErrorElement from '@/error-element';
 import ProductsLayout from '@/pages/(store)/(client)/(products)/layout';
-import KeyboardsPage from '@/pages/(store)/(client)/(products)/keyboards';
 import { lazy } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import ProductDetails from '@/pages/(store)/(client)/(products)/product_details';

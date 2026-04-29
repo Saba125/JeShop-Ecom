@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useGetProductsByCategory } from '@/api/products/get_by_category';
 import {
     LucideKeyboard,
@@ -7,16 +7,23 @@ import {
     Mouse,
     Headphones,
     SquareMousePointer,
-    ChevronRight,
-    ChevronLeft,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+    CarouselNext,
+    CarouselPrevious,
+    type CarouselApi,
+} from '@/components/ui/carousel';
 import { addItemToWishlist } from '@/store/wishListSlice';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import type { TGetProducts } from '@/types';
 import CCard from './cart';
 import { calculateDiscountedPrice, getActiveSale, redirectToPPage } from '@/lib/utils';
+import Autoplay from 'embla-carousel-autoplay';
 
 const titleMap: Record<string, string> = {
     keyboards: 'კლავიატურები',
@@ -38,45 +45,20 @@ const ProductsSection = ({ name }: { name: string }) => {
     const { data: products, isLoading } = useGetProductsByCategory(name);
     const [hoveredId, setHoveredId] = useState<number | null>(null);
     const [favorites, setFavorites] = useState<number[]>(favoritesArray || []);
-    const trackRef = useRef<HTMLDivElement>(null);
+    const [api, setApi] = useState<CarouselApi>();
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
-    const [isHoveringCarousel, setIsHoveringCarousel] = useState(false);
 
     const Icon = iconMap[name] ?? Keyboard;
     const title = titleMap[name] ?? name;
 
-    const scroll = (dir: 'prev' | 'next') => {
-        if (!trackRef.current) return;
-        const card = trackRef.current.querySelector('[data-card]') as HTMLElement;
-        const amount = card ? card.offsetWidth + 16 : 300; // 16 = gap
-        trackRef.current.scrollBy({
-            left: dir === 'next' ? amount : -amount,
-            behavior: 'smooth',
-        });
-    };
-
-    useEffect(() => {
-        if (isHoveringCarousel) return;
-        const interval = setInterval(() => {
-            if (!trackRef.current) return;
-            const { scrollLeft, scrollWidth, clientWidth } = trackRef.current;
-            const atEnd = scrollLeft + clientWidth >= scrollWidth - 1;
-            if (atEnd) {
-                trackRef.current.scrollTo({ left: 0, behavior: 'smooth' });
-            } else {
-                scroll('next');
-            }
-        }, 3000);
-        return () => clearInterval(interval);
-    }, [isHoveringCarousel]);
+    // Autoplay plugin — pauses on hover automatically via the plugin's options
+    const autoplayPlugin = Autoplay({ delay: 3000, stopOnInteraction: false, stopOnMouseEnter: true });
 
     const toggleFavorite = (product: TGetProducts) => {
         const discountedPrice = calculateDiscountedPrice(product);
         const activeSale = getActiveSale(product);
         const originalPrice = parseFloat(product.price);
-        console.log(favorites);
         setFavorites((prev) =>
             prev.includes(product.uid)
                 ? prev.filter((fav) => fav !== product.uid)
@@ -95,10 +77,6 @@ const ProductsSection = ({ name }: { name: string }) => {
             })
         );
     };
-
-
-  
-  
 
     if (isLoading) {
         return (
@@ -148,60 +126,45 @@ const ProductsSection = ({ name }: { name: string }) => {
                             <h2 className="text-2xl md:text-3xl font-bold">{title}</h2>
                         </div>
                         <div className="h-0.5 w-[50%] bg-gradient-to-r from-[#0083EF] to-transparent" />
-                        <p className="text-muted-foreground  mt-4">
+                        <p className="text-muted-foreground mt-4">
                             აღმოაჩინეთ ჩვენი საუკეთესო შეთავაზებები
                         </p>
                     </div>
-                    <Button className=''  onClick={() => navigate(`/products/category/${name}`)} variant="ghost">
-                        <span>ყველას ნახვა</span> <ArrowRight className="ml-0 h-4 w-4" />
+                    <Button onClick={() => navigate(`/products/category/${name}`)} variant="ghost">
+                        <span>ყველას ნახვა</span> <ArrowRight className="ml-1 h-4 w-4" />
                     </Button>
                 </div>
 
-               
-                <div className="relative">
-                    <button
-                        onClick={() => scroll('prev')}
-                        className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-700 transition-all"
-                    >
-                        <ChevronLeft className="w-4 h-4" />
-                    </button>
-
-                    <div
-                        ref={trackRef}
-                        className="overflow-x-hidden"
-                        style={{ scrollbarWidth: 'none' }}
-                    >
-
-                        <div
-                            className="flex flex-col md:flex-row transition-all"
-                            style={{
-                                gap: '16px',
-                            }}
-                        >
-                            {products?.data?.map((product) => {
-                                return (
-                                  <CCard
-                                  onClick={() => {
-                                    redirectToPPage(product, navigate)
-                                  }}
-                                  favorites={favorites}
-                                  product={product}
-                                  toggleFavorite={() => toggleFavorite(product)}
-                                  hoveredId={hoveredId}
-                                  setHoveredId={setHoveredId}
-                                  />
-                                );
-                            })}
-                        </div>
-                    </div>
-
-                    <button
-                        onClick={() => scroll('next')}
-                        className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-700 transition-all"
-                    >
-                        <ChevronRight className="w-4 h-4" />
-                    </button>
-                </div>
+                {/* Carousel */}
+                <Carousel
+                    setApi={setApi}
+                    opts={{
+                        align: 'start',
+                        loop: true,
+                    }}
+                    plugins={[autoplayPlugin]}
+                    className="w-full"
+                >
+                    <CarouselContent className="-ml-4">
+                        {products?.data?.map((product) => (
+                            <CarouselItem
+                                key={product.uid}
+                                className="pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
+                            >
+                                <CCard
+                                    onClick={() => redirectToPPage(product, navigate)}
+                                    favorites={favorites}
+                                    product={product}
+                                    toggleFavorite={() => toggleFavorite(product)}
+                                    hoveredId={hoveredId}
+                                    setHoveredId={setHoveredId}
+                                />
+                            </CarouselItem>
+                        ))}
+                    </CarouselContent>
+                    <CarouselPrevious className="left-0 size-11 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-lg hover:bg-slate-50 dark:hover:bg-slate-700" />
+                    <CarouselNext className="right-0 size-11 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-lg hover:bg-slate-50 dark:hover:bg-slate-700" />
+                </Carousel>
             </div>
         </section>
     );

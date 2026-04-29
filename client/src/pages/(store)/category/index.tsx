@@ -11,6 +11,7 @@ import { useDispatch } from 'react-redux';
 import { API_URL } from '@/constants';
 import type { TGetProducts } from '@/types';
 import CPagination from '@/components/common/custom-pagination';
+import Empty from '@/components/common/empty';
 
 export type FiltersContext = {
     priceRange: number[];
@@ -124,18 +125,13 @@ const Category = () => {
             </div>
         );
     }
-    if (!products || products.data.length === 0) {
+    if (!products || products.data.length !== 0) {
         return (
             <div className="p-6">
-                <Card className="border-2">
-                    <CardContent className="text-center py-12">
-                        <LayoutGrid className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-                        <p className="text-lg font-semibold mb-2">პროდუქტები ვერ მოიძებნა</p>
-                        <p className="text-sm text-muted-foreground">
-                            ამ კატეგორიაში პროდუქტები არ არის ხელმისაწვდომი
-                        </p>
-                    </CardContent>
-                </Card>
+                <Empty
+                title='პროდუქტები ვერ მოიძებნა'
+                subTitle='ამ კატეგორიაში პროდუქტები არ არის ხელმისაწვდომი'
+                 />
             </div>
         );
     }
@@ -177,9 +173,7 @@ const Category = () => {
                             onMouseEnter={() => setHoveredId(product.uid)}
                             onMouseLeave={() => setHoveredId(null)}
                         >
-                            {/* Image Section */}
                             <div className="relative h-72 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 overflow-hidden">
-                                {/* Badges */}
                                 <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
                                     {activeSale && discountDisplay && (
                                         <Badge className="bg-red-500 text-white shadow-lg">
@@ -192,7 +186,6 @@ const Category = () => {
                                         </Badge>
                                     )}
                                 </div>
-                                {/* Action Buttons */}
                                 <div
                                     className={`absolute top-3 right-3 z-10 flex flex-col gap-2 transition-all duration-300 ${isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'}`}
                                 >
@@ -254,17 +247,14 @@ const Category = () => {
                                     )}
                                 </div>
 
-                                {/* Product Name */}
                                 <h3 className="font-semibold text-lg mb-3 line-clamp-2 group-hover:text-primary transition-colors">
                                     {product.name}
                                 </h3>
 
-                                {/* Weight/Unit */}
                                 <p className="text-xs text-muted-foreground mb-3">
                                     {product.weight} {product.unit.name}
                                 </p>
 
-                                {/* Price Section */}
                                 <div className="flex items-end gap-2 mb-4">
                                     {discountedPrice ? (
                                         <>
@@ -282,7 +272,6 @@ const Category = () => {
                                     )}
                                 </div>
 
-                                {/* Add to Cart Button */}
                                 <Button
                                     className="w-full group/btn relative overflow-hidden"
                                     size="lg"
@@ -318,7 +307,6 @@ const Category = () => {
                                     <div className="absolute inset-0 bg-primary-foreground/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
                                 </Button>
 
-                                {/* Quick Info on Hover */}
                                 <div
                                     className={`mt-3 pt-3 border-t transition-all duration-300 overflow-hidden ${isHovered ? 'max-h-20 opacity-100' : 'max-h-0 opacity-0'}`}
                                 >
