@@ -21,6 +21,7 @@ import type { TGetProducts } from '@/types';
 import { useNavigate } from 'react-router-dom';
 import CCard from './cart';
 import { redirectToPPage } from '@/lib/utils';
+import { CButton } from './custom-button';
 
 const FeaturedProductsSection = () => {
     const { data: products, isPending } = useGetProducts({});
@@ -131,12 +132,12 @@ const FeaturedProductsSection = () => {
                 onMouseEnter={() => setIsHoveringCarousel(true)}
                 onMouseLeave={() => setIsHoveringCarousel(false)}
             >
-                <button
+                <CButton
+                    icon={ChevronLeft}
                     onClick={() => scroll('prev')}
                     className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-700 transition-all"
                 >
-                    <ChevronLeft className="w-4 h-4" />
-                </button>
+                </CButton>
 
                 <div
                     ref={trackRef}

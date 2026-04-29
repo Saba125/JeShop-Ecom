@@ -7,7 +7,6 @@ const Api = axios.create({
   withCredentials: true,
 });
 
-// Add token before every request
 Api.interceptors.request.use((config) => {
   const token = localStorage.getItem('accessToken');
   if (token && config.headers)
@@ -15,13 +14,11 @@ Api.interceptors.request.use((config) => {
   return config;
 });
 
-// Handle responses + errors
 Api.interceptors.response.use(
   (res) => res,
   async (error) => {
     const originalRequest = error.config;
 
-    // 🔁 Token refresh logic
     if (error.response?.status === 401 && !originalRequest._retry) {
       try {
         originalRequest._retry = true;
@@ -39,7 +36,6 @@ Api.interceptors.response.use(
       }
     }
 
-    // ❌ Handle all other errors
     const message =
       error.response?.data?.message ||
       error.response?.data?.error ||

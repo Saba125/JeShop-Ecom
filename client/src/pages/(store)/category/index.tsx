@@ -50,7 +50,6 @@ const Category = () => {
     const [favorites, setFavorites] = useState<number[]>([]);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    console.log(page);
     const toggleFavorite = (product: TGetProducts) => {
         const discountedPrice = calculateDiscountedPrice(product);
         const activeSale = getActiveSale(product);
@@ -110,7 +109,6 @@ const Category = () => {
         return null;
     };
 
-    // Initial loading state (no data yet)
     if (isLoading) {
         return (
             <div className="p-6">

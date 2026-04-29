@@ -10,14 +10,15 @@ interface CButtonProps extends ButtonProps {
     text?: string;
     icon?: LucideIcon | IconType;
     loading?: boolean;
+    iconCn?: string;
 }
 
-export const CButton = ({ loading, text, icon: Icon, ...props }: CButtonProps) => {
+export const CButton = ({ loading, text, icon: Icon, iconCn, ...props }: CButtonProps) => {
     return (
         <Button {...props} disabled={loading || props.disabled}>
             <CFlex align='center' justify='center' gap='5px'>
                 {loading && <Loader2 className="animate-spin" />}
-                {Icon && <Icon />}
+                {Icon && <Icon className={iconCn} />}
                 {text}
             </CFlex>
         </Button>
