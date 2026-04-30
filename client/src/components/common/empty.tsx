@@ -25,8 +25,8 @@ const Empty = ({ cn = 'border-2', title, subTitle, icon: Icon, iconCn, extraBtn,
                 </p>
              )}
                 {extraBtn && (
-                    <Button>
-                        {IConb ? <IConb  /> :  null}
+                    <Button className={extraBtnCn}>
+                        {IConb ? <IConb className={extraBtnIconCn}  /> :  null}
                     </Button>
                 )}
             </CardContent>
