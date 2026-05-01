@@ -24,7 +24,6 @@ import type { TGetProducts } from '@/types';
 import CCard from './cart';
 import { calculateDiscountedPrice, getActiveSale, redirectToPPage } from '@/lib/utils';
 import Autoplay from 'embla-carousel-autoplay';
-
 const titleMap: Record<string, string> = {
     keyboards: 'კლავიატურები',
     mouses: 'მაუსები',

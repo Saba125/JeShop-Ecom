@@ -12,11 +12,12 @@ interface EmptyProps {
     extraBtnCn?: string;
     extraBtnIcon?: LucideIcon;
     extraBtnIconCn?: string;
+    onClick?: () => void;
 }
-const Empty = ({ cn = 'border-2', title, subTitle, icon: Icon, iconCn, extraBtn,extraBtnCn,extraBtnIcon: IConb,extraBtnIconCn}: EmptyProps) => {
+const Empty = ({ cn = 'border-2', title, subTitle, icon: Icon, iconCn, extraBtn,extraBtnCn,extraBtnIcon: IConb,extraBtnIconCn, onClick}: EmptyProps) => {
     return (
         <Card className={cn}>
-            <CardContent className="text-center py-12">
+            <CardContent className="text-center  py-12">
                {Icon ? <Icon className={iconCn} /> : <LayoutGrid className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />}
                 <p className="text-lg font-semibold mb-2">{title}</p>
              {subTitle && (
@@ -25,8 +26,9 @@ const Empty = ({ cn = 'border-2', title, subTitle, icon: Icon, iconCn, extraBtn,
                 </p>
              )}
                 {extraBtn && (
-                    <Button className={extraBtnCn}>
+                    <Button onClick={onClick} className={extraBtnCn}>
                         {IConb ? <IConb className={extraBtnIconCn}  /> :  null}
+                        {extraBtn}
                     </Button>
                 )}
             </CardContent>

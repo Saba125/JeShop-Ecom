@@ -12,6 +12,7 @@ import { API_URL } from '@/constants';
 import type { TGetProducts } from '@/types';
 import CPagination from '@/components/common/custom-pagination';
 import Empty from '@/components/common/empty';
+import CCard from '@/components/common/cart';
 
 export type FiltersContext = {
     priceRange: number[];
@@ -125,12 +126,15 @@ const Category = () => {
             </div>
         );
     }
-    if (!products || products.data.length !== 0) {
+    if (!products || products.data.length === 0) {
         return (
             <div className="p-6">
                 <Empty
                 title='პროდუქტები ვერ მოიძებნა'
                 subTitle='ამ კატეგორიაში პროდუქტები არ არის ხელმისაწვდომი'
+                extraBtn='უკან დაბრუნება'
+                extraBtnCn='mt-5'
+                onClick={() => navigate("/")}
                  />
             </div>
         );
@@ -138,7 +142,6 @@ const Category = () => {
 
     return (
         <div className="p-6">
-            {/* Loading indicator for filter changes */}
             {isFetching && (
                 <div className="flex items-center gap-2 mb-4 text-sm text-muted-foreground">
                     <Loader2 className="w-4 h-4 animate-spin" />
