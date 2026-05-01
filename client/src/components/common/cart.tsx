@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '../ui/button';
 import { API_URL } from '@/constants';
 import { Badge } from '../ui/badge';
-import { Eye, Heart, ShoppingCart, Sparkles } from 'lucide-react';
+import { Eye, Flame, Heart, ShoppingCart, Sparkles } from 'lucide-react';
 import { addItemToCart } from '@/store/cartSlice';
 import { useDispatch } from 'react-redux';
 import clsx from 'clsx';
@@ -56,7 +56,7 @@ const CCard = ({ product, hoveredId, setHoveredId, favorites, toggleFavorite, on
                 minWidth: '0',
                 scrollSnapAlign: 'start',
             }}
-            className="cursor-pointer relative overflow-hidden border-2 hover:border-primary/60 transition-all duration-300 hover:shadow-2xl group rounded-2xl"
+            className={clsx("cursor-pointer relative overflow-hidden border-2 hover:border-primary/60 transition-all duration-300 hover:shadow-2xl group rounded-2xl", isSpecialSale && "hover:border-red-500")}
             onMouseEnter={() => setHoveredId && setHoveredId(product.uid)}
             onMouseLeave={() => setHoveredId && setHoveredId(null)}
         >
@@ -95,8 +95,8 @@ const CCard = ({ product, hoveredId, setHoveredId, favorites, toggleFavorite, on
                 {/* Sale sparkle badge */}
                 {activeSale && (
                     <div className="absolute bottom-2.5 left-2.5 z-10">
-                        <Badge className="bg-primary/90 text-white shadow text-[11px] px-2 py-0.5 gap-1">
-                            <Sparkles className="w-3 h-3" />
+                        <Badge className={clsx("bg-primary/90 text-white shadow text-[11px] px-2 py-0.5 gap-1", isSpecialSale && "bg-red-500")}>
+                            <Flame className="w-3 text-yellow-500 h-3" />
                             ფასდაკლება
                         </Badge>
                     </div>
@@ -178,7 +178,7 @@ const CCard = ({ product, hoveredId, setHoveredId, favorites, toggleFavorite, on
                 </div>
 
                 {/* Product Name */}
-                <h3 className="font-semibold text-base mb-1.5 line-clamp-2 group-hover:text-primary transition-colors leading-snug">
+                <h3 className={clsx("font-semibold text-base mb-1.5 line-clamp-2 group-hover:text-primary transition-colors leading-snug", isSpecialSale && "group-hover:text-red-500")}>
                     {product.name}
                 </h3>
 

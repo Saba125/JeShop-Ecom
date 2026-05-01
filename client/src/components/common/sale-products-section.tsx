@@ -57,7 +57,7 @@ const SaleProductsSection = ({ isFullPage }: SaleProductsSection) => {
                     </p>
                 </div>
                 {isFullPage ? null : (
-                    <Button variant="ghost">
+                    <Button onClick={() => navigate("/deals")} variant="ghost">
                         ყველას ნახვა <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                 )}

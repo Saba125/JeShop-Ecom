@@ -130,12 +130,12 @@ const Category = () => {
         return (
             <div className="p-6">
                 <Empty
-                title='პროდუქტები ვერ მოიძებნა'
-                subTitle='ამ კატეგორიაში პროდუქტები არ არის ხელმისაწვდომი'
-                extraBtn='უკან დაბრუნება'
-                extraBtnCn='mt-5'
-                onClick={() => navigate("/")}
-                 />
+                    title="პროდუქტები ვერ მოიძებნა"
+                    subTitle="ამ კატეგორიაში პროდუქტები არ არის ხელმისაწვდომი"
+                    extraBtn="უკან დაბრუნება"
+                    extraBtnCn="mt-5"
+                    onClick={() => navigate('/')}
+                />
             </div>
         );
     }
@@ -153,179 +153,19 @@ const Category = () => {
             <div
                 className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ${isFetching ? 'opacity-60' : ''}`}
             >
-                {products.data.map((product) => {
-                    const activeSale = getActiveSale(product);
-                    const discountedPrice = calculateDiscountedPrice(product);
-                    const discountDisplay = getDiscountDisplay(product);
-                    const isHovered = hoveredId === product.uid;
-                    const isFavorite = favorites.includes(product.uid);
-                    const inStock = product.stock > 0;
-                    const originalPrice = parseFloat(product.price);
-
-                    return (
-                        <Card
-                            key={product.uid}
-                            onClick={() => {
-                                const pLink = product.name
-                                    .toLowerCase()
-                                    .trim()
-                                    .replace(/\s+/g, '-');
-                                navigate(`/product/${pLink}/${product.uid}`);
-                            }}
-                            className="group cursor-pointer relative overflow-hidden border-2 hover:border-primary/50 transition-all duration-300 hover:shadow-2xl"
-                            onMouseEnter={() => setHoveredId(product.uid)}
-                            onMouseLeave={() => setHoveredId(null)}
-                        >
-                            <div className="relative h-72 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 overflow-hidden">
-                                <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
-                                    {activeSale && discountDisplay && (
-                                        <Badge className="bg-red-500 text-white shadow-lg">
-                                            <Sparkles className="w-3 h-3 mr-1" />-{discountDisplay}
-                                        </Badge>
-                                    )}
-                                    {!inStock && (
-                                        <Badge className="bg-slate-500 text-white shadow-lg">
-                                            ამოიწურა
-                                        </Badge>
-                                    )}
-                                </div>
-                                <div
-                                    className={`absolute top-3 right-3 z-10 flex flex-col gap-2 transition-all duration-300 ${isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'}`}
-                                >
-                                    <Button
-                                        size="icon"
-                                        variant="secondary"
-                                        className={`rounded-full shadow-lg ${isFavorite ? 'bg-red-500 text-white hover:bg-red-600' : ''}`}
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            toggleFavorite(product);
-                                        }}
-                                    >
-                                        <Heart
-                                            className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`}
-                                        />
-                                    </Button>
-                                    <Button
-                                        size="icon"
-                                        variant="secondary"
-                                        className="rounded-full shadow-lg"
-                                    >
-                                        <Eye className="w-4 h-4" />
-                                    </Button>
-                                </div>
-                                {/* Product Image */}
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    {product.image ? (
-                                        <img
-                                            src={`${API_URL}${product.image}`}
-                                            alt={product.name}
-                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                                        />
-                                    ) : (
-                                        <ShoppingCart className="w-20 h-20 text-slate-300 dark:text-slate-700" />
-                                    )}
-                                </div>
-                                {/* Gradient Overlay */}
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                                {!inStock && (
-                                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                                        <Badge variant="secondary" className="text-lg px-4 py-2">
-                                            არ არის მარაგში
-                                        </Badge>
-                                    </div>
-                                )}
-                            </div>
-
-                            <CardContent className="p-5">
-                                {/* Category and Brand */}
-                                <div className="flex items-center gap-2 mb-2">
-                                    <Badge variant="outline" className="text-xs">
-                                        {product?.category.name}
-                                    </Badge>
-                                    {product.brand && (
-                                        <Badge variant="outline" className="text-xs">
-                                            {product.brand.name}
-                                        </Badge>
-                                    )}
-                                </div>
-
-                                <h3 className="font-semibold text-lg mb-3 line-clamp-2 group-hover:text-primary transition-colors">
-                                    {product.name}
-                                </h3>
-
-                                <p className="text-xs text-muted-foreground mb-3">
-                                    {product.weight} {product.unit.name}
-                                </p>
-
-                                <div className="flex items-end gap-2 mb-4">
-                                    {discountedPrice ? (
-                                        <>
-                                            <span className="text-3xl font-bold text-primary">
-                                                {discountedPrice.toFixed(2)}₾
-                                            </span>
-                                            <span className="text-sm text-muted-foreground line-through mb-1">
-                                                {originalPrice.toFixed(2)}₾
-                                            </span>
-                                        </>
-                                    ) : (
-                                        <span className="text-3xl font-bold text-primary">
-                                            {originalPrice.toFixed(2)}₾
-                                        </span>
-                                    )}
-                                </div>
-
-                                <Button
-                                    className="w-full group/btn relative overflow-hidden"
-                                    size="lg"
-                                    disabled={!inStock}
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        if (inStock) {
-                                            dispatch(
-                                                addItemToCart({
-                                                    product_uid: product.uid,
-                                                    product_image: product.image || '',
-                                                    has_sale: !!activeSale,
-                                                    new_price: discountedPrice || originalPrice,
-                                                    old_price: discountedPrice
-                                                        ? originalPrice
-                                                        : null,
-                                                    product_name: product.name,
-                                                    quantity: 1,
-                                                    stock: product.stock,
-                                                })
-                                            );
-                                        }
-                                    }}
-                                >
-                                    <span className="relative z-10 flex items-center justify-center gap-2">
-                                        <ShoppingCart className="w-4 h-4" />
-                                        {inStock ? (
-                                            <span>კალათაში დამატება</span>
-                                        ) : (
-                                            <span>არ არის მარაგში</span>
-                                        )}
-                                    </span>
-                                    <div className="absolute inset-0 bg-primary-foreground/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
-                                </Button>
-
-                                <div
-                                    className={`mt-3 pt-3 border-t transition-all duration-300 overflow-hidden ${isHovered ? 'max-h-20 opacity-100' : 'max-h-0 opacity-0'}`}
-                                >
-                                    <p className="text-xs text-muted-foreground">
-                                        ✓ უფასო მიწოდება 100₾-ზე მეტი შეძენისას
-                                    </p>
-                                    <p className="text-xs text-muted-foreground">
-                                        ✓ 14 დღიანი დაბრუნების პოლიტიკა
-                                    </p>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    );
-                })}
+                {products.data.map((product) => (
+                    <CCard
+                        favorites={favorites}
+                        product={product}
+                        hoveredId={hoveredId}
+                        isSpecialSale={false}
+                        onClick={() => {}}
+                        setHoveredId={setHoveredId}
+                        toggleFavorite={toggleFavorite}
+                    />
+                ))}
             </div>
-            <div className='mt-10'>
+            <div className="mt-10">
                 <CPagination
                     align="center"
                     page={page}

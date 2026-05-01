@@ -9,6 +9,7 @@ import Wishlist from '@/pages/(store)/wishlist';
 import Category from '@/pages/(store)/category';
 import TermsPage from '@/pages/terms';
 import SaleProductsSection from '@/components/common/sale-products-section';
+import FeaturedProductsSection from '@/components/common/featured-products-section';
 const AuthLayout = lazy(() => import('../pages/(auth)/layout'));
 const SignIn = lazy(() => import('../pages/(auth)/sign-in'));
 const SignUp = lazy(() => import('../pages/(auth)/sign-up'));
@@ -47,6 +48,10 @@ const UserRoutes = () => {
                 {
                     path: 'deals',
                     element: <SaleProductsSection isFullPage />,
+                },
+                {
+                    path: 'featured',
+                    element: <FeaturedProductsSection isFullPage />,
                 },
 
                 {

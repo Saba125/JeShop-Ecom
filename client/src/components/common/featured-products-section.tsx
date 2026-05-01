@@ -1,8 +1,5 @@
 import { useState } from 'react';
-import {
-    ComputerIcon,
-    ArrowRight,
-} from 'lucide-react';
+import { ComputerIcon, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
     Carousel,
@@ -19,8 +16,10 @@ import { useNavigate } from 'react-router-dom';
 import CCard from './cart';
 import { redirectToPPage } from '@/lib/utils';
 import Autoplay from 'embla-carousel-autoplay';
-
-const FeaturedProductsSection = () => {
+interface FeaturedProductsSectionProps {
+    isFullPage: boolean;
+}
+const FeaturedProductsSection = ({ isFullPage }: FeaturedProductsSectionProps) => {
     const { data: products, isPending } = useGetProducts({});
     const favoritesss: [] = JSON.parse(localStorage.getItem('wishlist')!);
     const favoritesArray: number[] = favoritesss?.map((item: any) => item.product_uid);
@@ -29,7 +28,11 @@ const FeaturedProductsSection = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const autoplayPlugin = Autoplay({ delay: 3000, stopOnInteraction: false, stopOnMouseEnter: true });
+    const autoplayPlugin = Autoplay({
+        delay: 3000,
+        stopOnInteraction: false,
+        stopOnMouseEnter: true,
+    });
 
     const getActiveSale = (product: TGetProducts) => {
         return product.sales_items?.find((sale) => sale.is_active === 1);
@@ -69,15 +72,15 @@ const FeaturedProductsSection = () => {
 
     if (isPending) {
         return (
-             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {[...Array(6)].map((_, i) => (
-                        <div key={i} className="border-2 rounded-lg p-4 animate-pulse">
-                            <div className="w-full h-72 bg-gray-200 rounded-lg mb-4" />
-                            <div className="h-4 bg-gray-200 rounded mb-2" />
-                            <div className="h-4 bg-gray-200 rounded w-2/3" />
-                        </div>
-                    ))}
-                </div>  
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[...Array(6)].map((_, i) => (
+                    <div key={i} className="border-2 rounded-lg p-4 animate-pulse">
+                        <div className="w-full h-72 bg-gray-200 rounded-lg mb-4" />
+                        <div className="h-4 bg-gray-200 rounded mb-2" />
+                        <div className="h-4 bg-gray-200 rounded w-2/3" />
+                    </div>
+                ))}
+            </div>
         );
     }
 
@@ -96,9 +99,11 @@ const FeaturedProductsSection = () => {
                         აღმოაჩინეთ ჩვენი საუკეთესო შეთავაზებები
                     </p>
                 </div>
-                <Button variant="ghost">
-                    ყველას ნახვა <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+                {isFullPage ? null : (
+                    <Button onClick={() => navigate("/featured")} variant="ghost">
+                        ყველას ნახვა <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                )}
             </div>
 
             <Carousel
