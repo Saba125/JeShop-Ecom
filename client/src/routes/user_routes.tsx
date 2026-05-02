@@ -10,6 +10,7 @@ import Category from '@/pages/(store)/category';
 import TermsPage from '@/pages/terms';
 import SaleProductsSection from '@/components/common/sale-products-section';
 import FeaturedProductsSection from '@/components/common/featured-products-section';
+import ProfilePage from '@/pages/profile';
 const AuthLayout = lazy(() => import('../pages/(auth)/layout'));
 const SignIn = lazy(() => import('../pages/(auth)/sign-in'));
 const SignUp = lazy(() => import('../pages/(auth)/sign-up'));
@@ -57,6 +58,10 @@ const UserRoutes = () => {
                 {
                     path: 'contact',
                     element: <ContactUs />,
+                },
+                {
+                    path: 'profile',
+                    element: <ProfilePage />,
                 },
 
                 {
