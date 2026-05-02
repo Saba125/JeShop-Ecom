@@ -10,6 +10,5 @@ const formSchema = z.object({
         .string()
         .min(9, 'ნომერი უნდა შეიცავდეს მინიმუმ 9 სიმბოლოს')
         .max(20, 'ნომერი უნდა შეიცავდეს მაქსიმუმ 20 სიმბოლოს'),
-    image: z.string().optional() 
 });
 export default formSchema;
