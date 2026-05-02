@@ -16,17 +16,35 @@ import {
     Truck,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { useSelector } from 'react-redux';
 import type { RootState } from '@/store/store';
+import getAvatarUrl from '@/lib/get_avatar_url';
 
 type Tab = 'overview' | 'orders' | 'wishlist' | 'settings';
 
 const mockOrders = [
-    { id: '#GE-4821', name: 'Logitech G Pro X Keyboard', status: 'delivered', date: '28 აპრ, 2025', price: '₾ 289' },
-    { id: '#GE-4756', name: 'Razer DeathAdder V3', status: 'shipped', date: '01 მაი, 2025', price: '₾ 149' },
-    { id: '#GE-4700', name: 'HyperX Cloud II Headset', status: 'processing', date: '02 მაი, 2025', price: '₾ 199' },
+    {
+        id: '#GE-4821',
+        name: 'Logitech G Pro X Keyboard',
+        status: 'delivered',
+        date: '28 აპრ, 2025',
+        price: '₾ 289',
+    },
+    {
+        id: '#GE-4756',
+        name: 'Razer DeathAdder V3',
+        status: 'shipped',
+        date: '01 მაი, 2025',
+        price: '₾ 149',
+    },
+    {
+        id: '#GE-4700',
+        name: 'HyperX Cloud II Headset',
+        status: 'processing',
+        date: '02 მაი, 2025',
+        price: '₾ 199',
+    },
 ];
 
 const statusConfig: Record<string, { label: string; icon: React.ElementType; color: string }> = {
@@ -38,7 +56,9 @@ const statusConfig: Record<string, { label: string; icon: React.ElementType; col
 const ProfilePage = () => {
     const [activeTab, setActiveTab] = useState<Tab>('overview');
     const [editMode, setEditMode] = useState(false);
-    const user = useSelector((state: RootState) => state.user)
+    const [openProfileModal, setOpenProfileModal] = useState(false)
+    const user = useSelector((state: RootState) => state.user);
+    const wishlist = useSelector((state: RootState) => state.wishlist.products);
     const tabs: { id: Tab; label: string; icon: React.ElementType }[] = [
         { id: 'overview', label: 'მიმოხილვა', icon: User },
         { id: 'orders', label: 'შეკვეთები', icon: Package },
@@ -47,10 +67,12 @@ const ProfilePage = () => {
     ];
 
     return (
+        <>
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
             {/* Hero Banner */}
             <div className="relative h-40 bg-gradient-to-r from-[#0083EF] via-[#0060c0] to-slate-900 overflow-hidden">
-                <div className="absolute inset-0 opacity-20"
+                <div
+                    className="absolute inset-0 opacity-20"
                     style={{
                         backgroundImage: `radial-gradient(circle at 20% 50%, white 1px, transparent 1px),
                                          radial-gradient(circle at 80% 20%, white 1px, transparent 1px)`,
@@ -65,7 +87,10 @@ const ProfilePage = () => {
                 <div className="relative flex items-end gap-5 -mt-12 mb-8">
                     <div className="relative shrink-0">
                         <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-[#0083EF] to-[#0060c0] flex items-center justify-center shadow-xl ring-4 ring-slate-50 dark:ring-slate-950">
-                            <span className="text-white text-3xl font-bold">{user.username.slice(0, 1)}</span>
+                            <span className="text-white text-3xl font-bold">
+                                {/* {user.username.slice(0, 1)} */}
+                                <img className='aspect-square size-full' src={getAvatarUrl(user)} />
+                            </span>
                         </div>
                         <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-400 rounded-full ring-2 ring-slate-50 dark:ring-slate-950" />
                     </div>
@@ -74,12 +99,14 @@ const ProfilePage = () => {
                             <h1 className="text-xl font-bold text-slate-900 dark:text-white leading-tight">
                                 {user.username}
                             </h1>
-                            <p className="text-sm text-slate-500 dark:text-slate-400">{user.user_type === 1 ? "ადმინი" : "მომხარებელი"}</p>
+                            <p className="text-sm text-slate-500 dark:text-slate-400">
+                                {user.user_type === 1 ? 'ადმინი' : 'მომხარებელი'}
+                            </p>
                         </div>
                         <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => setEditMode(!editMode)}
+                            onClick={() => setOpenProfileModal(true)}
                             className="hidden sm:flex items-center gap-1.5 text-xs"
                         >
                             <Edit3 className="w-3.5 h-3.5" />
@@ -92,15 +119,19 @@ const ProfilePage = () => {
                 <div className="grid grid-cols-3 gap-3 mb-8">
                     {[
                         { label: 'შეკვეთები', value: '12' },
-                        { label: 'სურვილები', value: '5' },
+                        { label: 'სურვილები', value: wishlist?.length },
                         { label: 'დახარჯული', value: '₾ 1,240' },
                     ].map((stat) => (
                         <div
                             key={stat.label}
                             className="bg-white dark:bg-slate-900 rounded-xl p-4 text-center border border-slate-100 dark:border-slate-800 shadow-sm"
                         >
-                            <p className="text-xl font-bold text-slate-900 dark:text-white">{stat.value}</p>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{stat.label}</p>
+                            <p className="text-xl font-bold text-slate-900 dark:text-white">
+                                {stat.value}
+                            </p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                                {stat.label}
+                            </p>
                         </div>
                     ))}
                 </div>
@@ -128,7 +159,9 @@ const ProfilePage = () => {
                     {activeTab === 'overview' && (
                         <div className="grid sm:grid-cols-2 gap-4">
                             <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm p-5">
-                                <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4">პირადი ინფორმაცია</h3>
+                                <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4">
+                                    პირადი ინფორმაცია
+                                </h3>
                                 <div className="space-y-3">
                                     {[
                                         { icon: User, label: 'სახელი', value: user.username },
@@ -142,7 +175,9 @@ const ProfilePage = () => {
                                             </div>
                                             <div>
                                                 <p className="text-xs text-slate-400">{label}</p>
-                                                <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{value}</p>
+                                                <p className="text-sm font-medium text-slate-800 dark:text-slate-200">
+                                                    {value}
+                                                </p>
                                             </div>
                                         </div>
                                     ))}
@@ -150,18 +185,32 @@ const ProfilePage = () => {
                             </div>
 
                             <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm p-5">
-                                <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4">ბოლო შეკვეთები</h3>
+                                <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4">
+                                    ბოლო შეკვეთები
+                                </h3>
                                 <div className="space-y-3">
                                     {mockOrders.slice(0, 2).map((order) => {
                                         const s = statusConfig[order.status];
                                         const SIcon = s.icon;
                                         return (
-                                            <div key={order.id} className="flex items-center justify-between py-2 border-b border-slate-50 dark:border-slate-800 last:border-0">
+                                            <div
+                                                key={order.id}
+                                                className="flex items-center justify-between py-2 border-b border-slate-50 dark:border-slate-800 last:border-0"
+                                            >
                                                 <div>
-                                                    <p className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate max-w-[160px]">{order.name}</p>
-                                                    <p className="text-xs text-slate-400">{order.id} · {order.date}</p>
+                                                    <p className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate max-w-[160px]">
+                                                        {order.name}
+                                                    </p>
+                                                    <p className="text-xs text-slate-400">
+                                                        {order.id} · {order.date}
+                                                    </p>
                                                 </div>
-                                                <div className={cn('flex items-center gap-1 text-xs font-medium', s.color)}>
+                                                <div
+                                                    className={cn(
+                                                        'flex items-center gap-1 text-xs font-medium',
+                                                        s.color
+                                                    )}
+                                                >
                                                     <SIcon className="w-3.5 h-3.5" />
                                                     {s.label}
                                                 </div>
@@ -186,17 +235,31 @@ const ProfilePage = () => {
                                 const s = statusConfig[order.status];
                                 const SIcon = s.icon;
                                 return (
-                                    <div key={order.id} className="flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer">
+                                    <div
+                                        key={order.id}
+                                        className="flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer"
+                                    >
                                         <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-950 flex items-center justify-center shrink-0">
                                             <ShoppingBag className="w-5 h-5 text-[#0083EF]" />
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate">{order.name}</p>
-                                            <p className="text-xs text-slate-400">{order.id} · {order.date}</p>
+                                            <p className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate">
+                                                {order.name}
+                                            </p>
+                                            <p className="text-xs text-slate-400">
+                                                {order.id} · {order.date}
+                                            </p>
                                         </div>
                                         <div className="text-right shrink-0">
-                                            <p className="text-sm font-semibold text-slate-800 dark:text-white">{order.price}</p>
-                                            <div className={cn('flex items-center gap-1 text-xs font-medium justify-end mt-0.5', s.color)}>
+                                            <p className="text-sm font-semibold text-slate-800 dark:text-white">
+                                                {order.price}
+                                            </p>
+                                            <div
+                                                className={cn(
+                                                    'flex items-center gap-1 text-xs font-medium justify-end mt-0.5',
+                                                    s.color
+                                                )}
+                                            >
                                                 <SIcon className="w-3 h-3" />
                                                 {s.label}
                                             </div>
@@ -212,8 +275,13 @@ const ProfilePage = () => {
                     {activeTab === 'wishlist' && (
                         <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm p-8 text-center">
                             <Heart className="w-12 h-12 text-slate-200 dark:text-slate-700 mx-auto mb-3" />
-                            <p className="text-slate-500 dark:text-slate-400 text-sm">სურვილების სია ცარიელია</p>
-                            <Button size="sm" className="mt-4 bg-[#0083EF] hover:bg-[#0060c0] text-white">
+                            <p className="text-slate-500 dark:text-slate-400 text-sm">
+                                სურვილების სია ცარიელია
+                            </p>
+                            <Button
+                                size="sm"
+                                className="mt-4 bg-[#0083EF] hover:bg-[#0060c0] text-white"
+                            >
                                 პროდუქტების დათვალიერება
                             </Button>
                         </div>
@@ -223,9 +291,21 @@ const ProfilePage = () => {
                     {activeTab === 'settings' && (
                         <div className="space-y-3">
                             {[
-                                { label: 'პაროლის შეცვლა', desc: 'განაახლეთ თქვენი პაროლი', icon: Settings },
-                                { label: 'შეტყობინებები', desc: 'მართეთ ელ-ფოსტის შეტყობინებები', icon: Mail },
-                                { label: 'მისამართები', desc: 'მიტანის მისამართების მართვა', icon: MapPin },
+                                {
+                                    label: 'პაროლის შეცვლა',
+                                    desc: 'განაახლეთ თქვენი პაროლი',
+                                    icon: Settings,
+                                },
+                                {
+                                    label: 'შეტყობინებები',
+                                    desc: 'მართეთ ელ-ფოსტის შეტყობინებები',
+                                    icon: Mail,
+                                },
+                                {
+                                    label: 'მისამართები',
+                                    desc: 'მიტანის მისამართების მართვა',
+                                    icon: MapPin,
+                                },
                             ].map(({ label, desc, icon: Icon }) => (
                                 <div
                                     key={label}
@@ -235,7 +315,9 @@ const ProfilePage = () => {
                                         <Icon className="w-4 h-4 text-[#0083EF]" />
                                     </div>
                                     <div className="flex-1">
-                                        <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{label}</p>
+                                        <p className="text-sm font-medium text-slate-800 dark:text-slate-200">
+                                            {label}
+                                        </p>
                                         <p className="text-xs text-slate-400">{desc}</p>
                                     </div>
                                     <ChevronRight className="w-4 h-4 text-slate-300" />
@@ -253,6 +335,8 @@ const ProfilePage = () => {
                 </div>
             </div>
         </div>
+        
+        </>
     );
 };
 
