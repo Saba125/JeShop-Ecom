@@ -71,7 +71,7 @@ const Cart = () => {
                 </CFlex>
             </SheetTrigger>
 
-            <SheetContent side="right" className="w-full max-w-md flex flex-col p-0">
+            <SheetContent side="right" className="w-full max-w-md flex flex-col overflow-y-scroll p-0">
                 <SheetHeader className="px-6 pt-6 pb-4">
                     <div className="flex items-center justify-between">
                         <div>
