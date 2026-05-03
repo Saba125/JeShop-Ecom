@@ -12,6 +12,6 @@ const formSchema = z.object({
         .max(20, 'ნომერი უნდა შეიცავდეს მაქსიმუმ 20 სიმბოლოს'),
     user_type: z
         .string().min(1, "აირჩიეთ ტიპი"),
-    status: z.string().min(1, "აირჩიეთ სტატუსი!")    
+    status: z.string().min(1, "აირჩიეთ სტატუსი!").optional()   
 });
 export default formSchema;

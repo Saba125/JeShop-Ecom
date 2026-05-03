@@ -14,13 +14,20 @@ import {
     Clock,
     CheckCircle,
     Truck,
+    X,
+    ShoppingCart,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '@/store/store';
 import getAvatarUrl from '@/lib/get_avatar_url';
 import EditProfileModal from '@/components/common/edit-profile-modal';
+import { useNavigate } from 'react-router-dom';
+import { API_URL } from '@/constants';
+import { addItemToCart } from '@/store/cartSlice';
+import { removeItemFromWishlist } from '@/store/wishListSlice';
+import type { WishlistItems } from '@/types';
 
 type Tab = 'overview' | 'orders' | 'wishlist' | 'settings';
 
@@ -57,16 +64,24 @@ const statusConfig: Record<string, { label: string; icon: React.ElementType; col
 const ProfilePage = () => {
     const [activeTab, setActiveTab] = useState<Tab>('overview');
     const [editMode, setEditMode] = useState(false);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+        const wishlist = useSelector((state: RootState) => state.wishlist.products);
     const [openProfileModal, setOpenProfileModal] = useState(false);
     const user = useSelector((state: RootState) => state.user);
-    const wishlist = useSelector((state: RootState) => state.wishlist.products);
     const tabs: { id: Tab; label: string; icon: React.ElementType }[] = [
         { id: 'overview', label: 'მიმოხილვა', icon: User },
         { id: 'orders', label: 'შეკვეთები', icon: Package },
         { id: 'wishlist', label: 'სურვილები', icon: Heart },
         { id: 'settings', label: 'პარამეტრები', icon: Settings },
     ];
-
+  const handleAddToCart = (item: any) => {
+        dispatch(addItemToCart(item));
+    };
+      const handleRemove = (product: WishlistItems) => {
+            dispatch(removeItemFromWishlist(product));
+        };
+    
     return (
         <>
             <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
@@ -279,17 +294,139 @@ const ProfilePage = () => {
 
                         {/* Wishlist */}
                         {activeTab === 'wishlist' && (
-                            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm p-8 text-center">
-                                <Heart className="w-12 h-12 text-slate-200 dark:text-slate-700 mx-auto mb-3" />
-                                <p className="text-slate-500 dark:text-slate-400 text-sm">
-                                    სურვილების სია ცარიელია
-                                </p>
-                                <Button
-                                    size="sm"
-                                    className="mt-4 bg-[#0083EF] hover:bg-[#0060c0] text-white"
-                                >
-                                    პროდუქტების დათვალიერება
-                                </Button>
+                            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm  text-center">
+                                {wishlist.map((item) => (
+                        <div
+                            key={item.product_uid}
+                            className="border-b last:border-b-0 hover:bg-gray-50 transition-colors"
+                        >
+                            <div className="hidden md:grid grid-cols-12 gap-4 p-4 items-center">
+                                <div className="col-span-5 flex items-center gap-4">
+                                    <button
+                                        onClick={() => handleRemove(item)}
+                                        className="text-gray-400 hover:text-red-500 transition-colors"
+                                    >
+                                        <X className="w-5 h-5" />
+                                    </button>
+                                    <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                                        {item.product_image ? (
+                                            <img
+                                                src={`${API_URL}${item.product_image}`}
+                                                alt={item.product_name}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center">
+                                                <ShoppingCart className="w-8 h-8 text-gray-300" />
+                                            </div>
+                                        )}
+                                    </div>
+                                    <h3 className="font-semibold text-gray-900">
+                                        {item.product_name}
+                                    </h3>
+                                </div>
+
+                                <div className="col-span-2 text-center">
+                                    <div className="flex flex-col items-center gap-1">
+                                        <span className="text-lg font-bold text-primary">
+                                            {item.new_price.toFixed(2)} ₾
+                                        </span>
+                                        {item.has_sale && item.old_price && (
+                                            <span className="text-sm text-gray-400 line-through">
+                                                {item.old_price.toFixed(2)} ₾
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="col-span-2 text-center">
+                                    <span
+                                        className={`text-sm font-medium ${
+                                            item.stock > 0 ? 'text-green-600' : 'text-red-600'
+                                        }`}
+                                    >
+                                        {item.stock > 0
+                                            ? `${item.stock} ერთეული`
+                                            : 'არ არის მარაგში'}
+                                    </span>
+                                </div>
+
+                                <div className="col-span-2 flex justify-end">
+                                    <Button
+                                        // onClick={() => handleAddToCart(item)}
+                                        disabled={item.stock === 0}
+                                    >   
+                                        კალათაში დამატება
+                                    </Button>
+                                </div>
+                            </div>
+
+                            {/* Mobile layout */}
+                            <div className="flex md:hidden gap-3 p-4">
+                                {/* Image */}
+                                <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                                    {item.product_image ? (
+                                        <img
+                                            src={`${API_URL}${item.product_image}`}
+                                            alt={item.product_name}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center">
+                                            <ShoppingCart className="w-8 h-8 text-gray-300" />
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Info */}
+                                <div className="flex-1 min-w-0">
+                                    <div className="flex items-start justify-between gap-2">
+                                        <h3 className="font-semibold text-gray-900 text-sm leading-tight">
+                                            {item.product_name}
+                                        </h3>
+                                        <button
+                                            // onClick={() => handleRemove(item)}
+                                            className="text-gray-400 hover:text-red-500 transition-colors flex-shrink-0"
+                                        >
+                                            <X className="w-4 h-4" />
+                                        </button>
+                                    </div>
+
+                                    <div className="mt-1 flex items-center gap-2">
+                                        <span className="text-base font-bold text-primary">
+                                            {item.new_price.toFixed(2)} ₾
+                                        </span>
+                                        {item.has_sale && item.old_price && (
+                                            <span className="text-xs text-gray-400 line-through">
+                                                {item.old_price.toFixed(2)} ₾
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    <span
+                                        className={`text-xs font-medium mt-1 inline-block ${
+                                            item.stock > 0 ? 'text-green-600' : 'text-red-600'
+                                        }`}
+                                    >
+                                        {item.stock > 0
+                                            ? `${item.stock} ერთეული`
+                                            : 'არ არის მარაგში'}
+                                    </span>
+
+                                    <div className="mt-2">
+                                        <Button
+                                            size="sm"
+                                            className="w-full"
+                                            onClick={() => handleAddToCart(item)}
+                                            disabled={item.stock === 0}
+                                        >
+                                            კალათაში დამატება
+                                        </Button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
                             </div>
                         )}
 

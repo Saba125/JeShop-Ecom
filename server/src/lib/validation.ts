@@ -90,7 +90,7 @@ export const userEditSchema = z.object({
     .min(9, "ნომერი უნდა შეიცავდეს მინიმუმ 9 სიმბოლოს")
     .max(20, "ნომერი უნდა შეიცავდეს მაქსიმუმ 20 სიმბოლოს"),
   user_type: z.string().min(1, "აირჩიეთ ტიპი"),
-  status: z.string().min(1, "აირჩიეთ სტატუსი!"),
+  status: z.string().min(1, "აირჩიეთ სტატუსი!").optional()
 });
 export const reviewsSchema = z.object({
   uid: z.number().optional().nullable(),
