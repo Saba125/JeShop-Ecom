@@ -26,7 +26,6 @@ const WishlistTab = ({ wishlist }: WishlistTabProps) => {
         page * ITEMS_PER_PAGE
     );
 
-    // جلوگیری page overflow-ზე (თუ item წაიშალა)
     useEffect(() => {
         if (page > totalPages) {
             setPage(totalPages || 1);
