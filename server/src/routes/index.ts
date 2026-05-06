@@ -20,7 +20,7 @@ Router.post("/users", authMiddleware, UsersRes.getUsers);
 Router.get("/users/all/paginated", authMiddleware, UsersRes.getAllUsersPaginated);
 Router.put("/user", authMiddleware, UsersRes.editUser);
 Router.delete("/user/:uid", authMiddleware, UsersRes.deleteUser);
-
+Router.post("/user/change_password", authMiddleware, UsersRes.changePassword);
 // Google Auth
 
 Router.post("/auth/google/callback", googleAuth);

@@ -1,4 +1,5 @@
 import { validateRefreshToken } from "../tokens/refresh_token";
+import changePassword from "./change_password";
 import deleteUser from "./delete_";
 import editUser from "./edit";
 import getAllUsersPaginated from "./get_all";
@@ -19,6 +20,7 @@ const UsersRes = {
   getUsers,
   getAllUsersPaginated,
   editUser,
-  googleAuth
+  googleAuth,
+  changePassword
 };
 export default UsersRes;

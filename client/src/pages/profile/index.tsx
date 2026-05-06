@@ -25,6 +25,7 @@ import { useNavigate } from 'react-router-dom';
 import WishlistTab from './wishlist_tab';
 import OverviewTab from './overview';
 import OrdersTab from './orders';
+import ChangePasswordModal from '@/components/common/change-password-modal';
 
 export type Tab = 'overview' | 'orders' | 'wishlist' | 'settings';
 
@@ -42,6 +43,7 @@ const ProfilePage = () => {
     const dispatch = useDispatch();
     const wishlist = useSelector((state: RootState) => state.wishlist.products);
     const [openProfileModal, setOpenProfileModal] = useState(false);
+    const [openPassChangeModal, setPassChangeModal] = useState(false);
     const user = useSelector((state: RootState) => state.user);
     const tabs: { id: Tab; label: string; icon: React.ElementType }[] = [
         { id: 'overview', label: 'მიმოხილვა', icon: User },
@@ -165,6 +167,7 @@ const ProfilePage = () => {
                                         label: 'პაროლის შეცვლა',
                                         desc: 'განაახლეთ თქვენი პაროლი',
                                         icon: Settings,
+                                        action: "change_password"
                                     },
                                     {
                                         label: 'შეტყობინებები',
@@ -176,10 +179,15 @@ const ProfilePage = () => {
                                         desc: 'მიტანის მისამართების მართვა',
                                         icon: MapPin,
                                     },
-                                ].map(({ label, desc, icon: Icon }) => (
+                                ].map(({ label, desc, icon: Icon, action }) => (
                                     <div
                                         key={label}
                                         className="flex items-center gap-4 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl p-4 cursor-pointer hover:border-[#0083EF]/40 transition-colors shadow-sm"
+                                        onClick={() => {
+                                            if (action === "change_password") {
+                                                setPassChangeModal(true)
+                                            }
+                                        }}
                                     >
                                         <div className="w-9 h-9 rounded-lg bg-blue-50 dark:bg-blue-950 flex items-center justify-center shrink-0">
                                             <Icon className="w-4 h-4 text-[#0083EF]" />
@@ -210,6 +218,14 @@ const ProfilePage = () => {
                     data={user}
                     isOpen={openProfileModal}
                     onClose={() => setOpenProfileModal(false)}
+                />
+            )}
+            {openPassChangeModal && (
+                <ChangePasswordModal
+                isOpen={openPassChangeModal}
+                onClose={() => {
+                    setPassChangeModal(false)
+                }}
                 />
             )}
         </>
