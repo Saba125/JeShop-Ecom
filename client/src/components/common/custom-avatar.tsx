@@ -76,7 +76,7 @@ export const CAvatar = ({ onLogout }: CAvatarProps) => {
                         <Heart className="mr-2 h-4 w-4" />
                         <span>სურვილების სია</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/settings')}>
+                    <DropdownMenuItem onClick={() => navigate('/profile?activeTab=settings')}>
                         <Settings className="mr-2 h-4 w-4" />
                         <span>პარამეტრები</span>
                     </DropdownMenuItem>

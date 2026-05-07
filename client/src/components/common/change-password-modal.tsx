@@ -13,12 +13,13 @@ import {
 import type z from 'zod';
 import { Input } from '../ui/input';
 import { useChangePassword } from '@/api/users/change_password';
+import { useEffect } from 'react';
 interface ChangePasswordProps {
     isOpen: boolean;
     onClose: () => void;
 }
 const ChangePasswordModal = ({ isOpen, onClose }: ChangePasswordProps) => {
-    const {mutate: changePassword} = useChangePassword()
+    const {mutate: changePassword, isSuccess: isChangeSuccess, isPending: isChangePending} = useChangePassword()
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -30,8 +31,14 @@ const ChangePasswordModal = ({ isOpen, onClose }: ChangePasswordProps) => {
     const handleSubmit = async (data: z.infer<typeof formSchema>) => {
         changePassword(data)
     };
+    useEffect(() => {
+        if (isChangeSuccess) {
+            onClose();
+        }
+    }, [isChangeSuccess])
     return (
         <CDialog
+        loading={isChangePending}
         title="პაროლის შეცვლა"
             open={isOpen}
             onOpenChange={onClose}
