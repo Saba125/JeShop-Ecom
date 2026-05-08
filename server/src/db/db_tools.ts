@@ -14,7 +14,8 @@ export type TTableNames =
   | "users"
   | "user_logs"
   | "email_notifications"
-  | "category";
+  | "category"
+  | "addresses"
 async function getConnection(): Promise<PoolConnection | undefined> {
   let conn: PoolConnection | undefined;
 

@@ -68,11 +68,11 @@ export const CAvatar = ({ onLogout }: CAvatarProps) => {
                         <User className="mr-2 h-4 w-4" />
                         <span>პროფილი</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/orders')}>
+                    <DropdownMenuItem onClick={() => navigate('/profile?activeTab=orders')}>
                         <ShoppingBag className="mr-2 h-4 w-4" />
                         <span>ჩემი შეკვეთები</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/wishlist')}>
+                    <DropdownMenuItem onClick={() => navigate('/profile?activeTab=wishlist')}>
                         <Heart className="mr-2 h-4 w-4" />
                         <span>სურვილების სია</span>
                     </DropdownMenuItem>

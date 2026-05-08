@@ -26,6 +26,8 @@ interface CDialogProps {
         variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost';
         icon: LucideIcon;
     };
+    disabled1Btn?: boolean;
+    disabled2Btn?: boolean;
 }
 
 const CDialog = ({
@@ -36,8 +38,11 @@ const CDialog = ({
     children,
     onSubmit,
     width,
+    height,
     loading,
     extraButton,
+    disabled1Btn = false,
+    disabled2Btn = false,
 }: CDialogProps) => {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -45,6 +50,7 @@ const CDialog = ({
                 className="sm:max-w-none"
                 style={{
                     maxWidth: width ?? '500px', // default width when none is passed
+                    maxHeight: height ?? 'auto',
                 }}
             >
                 <DialogHeader>
@@ -56,7 +62,8 @@ const CDialog = ({
                     <CButton
                         variant="outline"
                         text="გაუქმება"
-                        onClick={() => onOpenChange(false)} // Or directly closeDialog()
+                        onClick={() => onOpenChange(false)}
+                        disabled={disabled2Btn}
                     />
                     {extraButton?.render && (
                         <CButton
@@ -74,6 +81,7 @@ const CDialog = ({
                         }}
                         loading={loading}
                         text="შენახვა"
+                        disabled={disabled1Btn}
                     />
                 </DialogFooter>
             </DialogContent>

@@ -20,7 +20,7 @@ export const login = async (req: Request, res: Response) => {
   if (!validateBody.success) {
     return helpers.sendError(res, validateBody.error);
   }
-  const existingUser = (await db.selectSingle("select * from users where email = :email", {
+  const existingUser = (await db.selectSingle("select u.* from users u left join where email = :email", {
     email: data?.email,
   })) as IUser;
   if (!existingUser) {

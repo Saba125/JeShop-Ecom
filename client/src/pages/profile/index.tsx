@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     User,
     Mail,
@@ -26,7 +26,8 @@ import WishlistTab from './wishlist_tab';
 import OverviewTab from './overview';
 import OrdersTab from './orders';
 import ChangePasswordModal from '@/components/common/change-password-modal';
-
+import { useSearchParams } from 'react-router-dom';
+import AddressModal from '@/components/common/address_modal';
 export type Tab = 'overview' | 'orders' | 'wishlist' | 'settings';
 
 const statusConfig: Record<string, { label: string; icon: React.ElementType; color: string }> = {
@@ -37,6 +38,8 @@ const statusConfig: Record<string, { label: string; icon: React.ElementType; col
 
 
 const ProfilePage = () => {
+    const [searchParams] = useSearchParams()
+    const tabStatusFromParams: Tab = searchParams.get("activeTab") as Tab
     const [activeTab, setActiveTab] = useState<Tab>('overview');
     const [editMode, setEditMode] = useState(false);
     const navigate = useNavigate();
@@ -44,6 +47,7 @@ const ProfilePage = () => {
     const wishlist = useSelector((state: RootState) => state.wishlist.products);
     const [openProfileModal, setOpenProfileModal] = useState(false);
     const [openPassChangeModal, setPassChangeModal] = useState(false);
+    const [openAddressChangeModal, setAddressChangeModal] = useState(false);
     const user = useSelector((state: RootState) => state.user);
     const tabs: { id: Tab; label: string; icon: React.ElementType }[] = [
         { id: 'overview', label: 'მიმოხილვა', icon: User },
@@ -51,7 +55,11 @@ const ProfilePage = () => {
         { id: 'wishlist', label: 'სურვილები', icon: Heart },
         { id: 'settings', label: 'პარამეტრები', icon: Settings },
     ];
-  
+    useEffect(() => {
+        if (tabStatusFromParams) {
+            setActiveTab(tabStatusFromParams)
+        } 
+    }, [tabStatusFromParams])
     return (
         <>
             <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
@@ -178,6 +186,7 @@ const ProfilePage = () => {
                                         label: 'მისამართები',
                                         desc: 'მიტანის მისამართების მართვა',
                                         icon: MapPin,
+                                        action: "change_address"
                                     },
                                 ].map(({ label, desc, icon: Icon, action }) => (
                                     <div
@@ -186,6 +195,8 @@ const ProfilePage = () => {
                                         onClick={() => {
                                             if (action === "change_password") {
                                                 setPassChangeModal(true)
+                                            } else if(action === "change_address") {
+                                                setAddressChangeModal(true)
                                             }
                                         }}
                                     >
@@ -225,6 +236,14 @@ const ProfilePage = () => {
                 isOpen={openPassChangeModal}
                 onClose={() => {
                     setPassChangeModal(false)
+                }}
+                />
+            )}
+            {openAddressChangeModal && (
+                <AddressModal
+                isOpen={openAddressChangeModal}
+                onClose={() => {
+                    setAddressChangeModal(false)
                 }}
                 />
             )}

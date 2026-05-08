@@ -95,12 +95,17 @@ export const userEditSchema = z.object({
 export const reviewsSchema = z.object({
   uid: z.number().optional().nullable(),
   username: z
-    .string()
-    .optional(),
+  .string()
+  .optional(),
   email: z.email("იმეილი არასწორია, გთხოვ სწორად შეიყვანო").optional(),
   product_uid: z.number(),
   rating: z.number(),
   description: z.string().min(1, "შეიყვანეთ აღწერა!")
+});
+export const addressSchema = z.object({
+  address_text: z.string().min(1),
+  address_lat: z.number().min(1),
+  address_lng: z.number().min(1),
 });
 export const validateSchema = <T>(schema: z.ZodSchema<T>, data: any) => {
   const result = schema.safeParse(data);
