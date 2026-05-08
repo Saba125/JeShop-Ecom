@@ -4,8 +4,9 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import CDialog from './custom-dialog';
 import { useAddAddress } from '@/api/address/post_';
+import { useSelector } from 'react-redux';
+import type { RootState } from '@/store/store';
 
-// Fix default marker icons (Leaflet + bundlers issue)
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
     iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -21,6 +22,13 @@ interface LatLng {
 interface SelectedAddress {
     formatted: string;
     latlng: LatLng;
+}
+
+interface SavedAddress {
+    uid: number;
+    address_lat: number;
+    address_lng: number;
+    address_text: string;
 }
 
 interface AddressModalProps {
@@ -81,17 +89,18 @@ function FlyToPosition({ position }: { position: LatLng | null }) {
 }
 
 const AddressModal = ({ isOpen, onClose, onConfirm }: AddressModalProps) => {
+    const user = useSelector((state: RootState) => state.user);
+    const addresses: SavedAddress[] = user?.addresses ?? [];
+
     const { mutate: addAddress, isPending, isSuccess } = useAddAddress();
     const [selected, setSelected] = useState<SelectedAddress | null>(null);
     const [markerPos, setMarkerPos] = useState<LatLng | null>(null);
     const [flyTo, setFlyTo] = useState<LatLng | null>(null);
-
     const [query, setQuery] = useState('');
     const [suggestions, setSuggestions] = useState<{ label: string; latlng: LatLng }[]>([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    // Reset state when modal closes
     useEffect(() => {
         if (!isOpen) {
             setSelected(null);
@@ -102,7 +111,6 @@ const AddressModal = ({ isOpen, onClose, onConfirm }: AddressModalProps) => {
         }
     }, [isOpen]);
 
-    // Debounced search
     useEffect(() => {
         if (debounceRef.current) clearTimeout(debounceRef.current);
         if (!query.trim()) {
@@ -134,12 +142,11 @@ const AddressModal = ({ isOpen, onClose, onConfirm }: AddressModalProps) => {
     };
 
     const handleConfirm = () => {
-        console.log(selected);
         if (!selected) return;
         addAddress({
             address_lat: selected.latlng.lat,
             address_lng: selected.latlng.lng,
-            address_text: selected?.formatted,
+            address_text: selected.formatted,
         });
     };
 
@@ -151,9 +158,11 @@ const AddressModal = ({ isOpen, onClose, onConfirm }: AddressModalProps) => {
             open={isOpen}
             onOpenChange={onClose}
             width="1000px"
+            height=""
             onSubmit={handleConfirm}
         >
             <div className="flex flex-col gap-3">
+
                 {/* Search input with suggestions */}
                 <div className="relative">
                     <input
@@ -180,8 +189,34 @@ const AddressModal = ({ isOpen, onClose, onConfirm }: AddressModalProps) => {
                     )}
                 </div>
 
+                {/* Saved addresses */}
+                {addresses.length > 0 && (
+                    <div className="flex flex-col gap-1">
+                        <p className="text-xs text-gray-500 font-medium">შენახული მისამართები</p>
+                        <div className="flex flex-col gap-1 max-h-32 overflow-y-auto">
+                            {addresses.map((addr) => (
+                                <div
+                                    key={addr.uid}
+                                    onClick={() =>
+                                        handleSuggestionSelect({
+                                            label: addr.address_text,
+                                            latlng: {
+                                                lat: addr.address_lat,
+                                                lng: addr.address_lng,
+                                            },
+                                        })
+                                    }
+                                    className="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 hover:bg-blue-50 cursor-pointer text-sm text-gray-700 truncate"
+                                >
+                                    📍 {addr.address_text}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
                 {/* Map */}
-                <div className="relative w-full h-64 rounded-lg overflow-hidden border border-gray-200 z-0">
+                <div className="relative w-full h-99 rounded-lg overflow-hidden border border-gray-200 z-0">
                     <MapContainer
                         center={[DEFAULT_CENTER.lat, DEFAULT_CENTER.lng]}
                         zoom={13}
@@ -205,14 +240,6 @@ const AddressModal = ({ isOpen, onClose, onConfirm }: AddressModalProps) => {
                     </p>
                 )}
 
-                {/* Confirm button */}
-                {/* <button
-          onClick={handleConfirm}
-          disabled={!selected}
-          className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg py-2 transition-colors"
-        >
-          დადასტურება
-        </button> */}
             </div>
         </CDialog>
     );

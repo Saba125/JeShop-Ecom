@@ -109,6 +109,11 @@ export type TGetBrand = {
     created_at: string;
     image?: string;
 };
+export type Addresses = {
+    address_text: string;
+    address_lng: number;
+    address_lat: number;
+}
 export type TGetSales = {
     uid: number;
     code: string;
@@ -130,6 +135,7 @@ export type User = {
     is_active: number;
     email_verified_date: string;
     create_date: string;
+    addresses: Addresses[]
 };
 export type Cart = {
     products: CartItems[];

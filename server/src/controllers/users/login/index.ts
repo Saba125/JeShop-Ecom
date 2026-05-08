@@ -20,9 +20,34 @@ export const login = async (req: Request, res: Response) => {
   if (!validateBody.success) {
     return helpers.sendError(res, validateBody.error);
   }
-  const existingUser = (await db.selectSingle("select u.* from users u left join where email = :email", {
+const existingUser = (await db.selectSingle(
+  `
+  SELECT
+    u.*,
+    COALESCE(
+      JSON_ARRAYAGG(
+        CASE
+          WHEN a.uid IS NOT NULL THEN JSON_OBJECT(
+            'uid', a.uid,
+            'address_text', a.address_text,
+            'address_lng', a.address_lng,
+            'address_lat', a.address_lat
+          )
+        END
+      ),
+      JSON_ARRAY()
+    ) AS addresses
+  FROM users u
+  LEFT JOIN addresses a
+    ON a.user_uid = u.uid
+  WHERE u.email = :email
+  GROUP BY u.uid
+  `,
+  {
     email: data?.email,
-  })) as IUser;
+  }
+)) as IUser;
+console.log(existingUser)
   if (!existingUser) {
     return helpers.sendError(res, "User not found");
   }

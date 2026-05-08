@@ -14,6 +14,7 @@ const initialState: User = {
     is_active: 1,
     email_verified_date: '',
     create_date: '',
+    addresses: []
 };
 
 export const userSlice = createSlice({
@@ -29,6 +30,7 @@ export const userSlice = createSlice({
             state.is_active = action.payload.is_active;
             state.email_verified_date = action.payload.email_verified_date;
             state.create_date = action.payload.create_date;
+            state.addresses = action.payload.addresses;
        },
        clearUser: (state: User) => {
             state.uid = null;
