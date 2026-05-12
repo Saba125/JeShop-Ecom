@@ -12,6 +12,9 @@ import AdminRoutes from './routes/admin_routes';
 import UserRoutes from './routes/user_routes';
 import type { RootState } from './store/store';
 import { RouterProvider } from 'react-router-dom';
+
+
+
 function App() {
     const accessToken = localStorage.getItem(AUTH_TOKEN);
     const { isOpen, closeDialog, onFinish, title, description } = useDialog();

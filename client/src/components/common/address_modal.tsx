@@ -216,7 +216,7 @@ const AddressModal = ({ isOpen, onClose, onConfirm }: AddressModalProps) => {
                 )}
 
                 {/* Map */}
-                <div className="relative w-full h-99 rounded-lg overflow-hidden border border-gray-200 z-0">
+                <div className="relative w-full h-74 rounded-lg overflow-hidden border border-gray-200 z-0">
                     <MapContainer
                         center={[DEFAULT_CENTER.lat, DEFAULT_CENTER.lng]}
                         zoom={13}

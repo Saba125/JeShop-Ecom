@@ -5,6 +5,7 @@ import StoreHeader from '@/components/layout/store-header';
 import Footer from '@/components/common/footer-section';
 import sidebarItems from '@/lib/sidebar-items';
 import clsx from 'clsx';
+import ScrollToTop from '@/components/common/scroll-to-top';
 const StoreLayout = () => {
     const location = useLocation();
     const currentPath = location.pathname;
@@ -12,6 +13,7 @@ const StoreLayout = () => {
     const normalized = currentPath.startsWith('/') ? currentPath : `/${currentPath}`;
     return (
         <>
+        <ScrollToTop />
             <SidebarProvider>
                 <AppSidebar sidebarItems={sidebarItems.clientSidebarItems} />
                 <main className="min-h-screen w-full overflow-x-hidden overflow-y-hidden">
