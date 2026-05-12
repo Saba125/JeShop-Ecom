@@ -1,5 +1,6 @@
+import Empty from "@/components/common/empty";
 import { cn } from "@/lib/utils";
-import { CheckCircle, ChevronRight, Clock, ShoppingBag, Truck } from "lucide-react";
+import { Box, CheckCircle, ChevronRight, Clock, ShoppingBag, Truck } from "lucide-react";
 
 const mockOrders = [
     {
@@ -33,7 +34,8 @@ const statusConfig: Record<string, { label: string; icon: React.ElementType; col
 const OrdersTab = () => {
   return (
        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm divide-y divide-slate-50 dark:divide-slate-800">
-                                {mockOrders.map((order) => {
+                                {mockOrders.length > 0 ? (
+                                    mockOrders.map((order) => {
                                     const s = statusConfig[order.status];
                                     const SIcon = s.icon;
                                     return (
@@ -69,7 +71,15 @@ const OrdersTab = () => {
                                             <ChevronRight className="w-4 h-4 text-slate-300 shrink-0" />
                                         </div>
                                     );
-                                })}
+                                })
+                                ) : (
+                                    <Empty
+                                    title="ორდერები ვერ მოიძებნა!"
+                                    icon={Box}
+                                    />
+
+
+                                )}
                             </div>
   )
 }
