@@ -16,8 +16,11 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import Logo from '@/components/common/logo';
 import { FB_LINK, IG_LINK } from '@/constants';
-
-export default function Footer() {
+import clsx from 'clsx';
+interface FooterProps {
+    isFromAuthForm?: boolean;
+}
+export default function Footer({isFromAuthForm} : FooterProps) {
     const quickLinks = [
         { title: 'მთავარი', url: '/' },
         { title: 'კლავიატურები', url: '/products/category/keyboards' },
@@ -54,7 +57,7 @@ export default function Footer() {
         <footer className="bg-muted/50 border-t">
             {/* Trust Badges */}
             <div className="bg-background border-b">
-                <div className="container mx-auto px-4 py-6">
+                <div className={clsx("mx-auto px-4 py-6", isFromAuthForm ? "max-w-7xl" : "container" )}>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                         <div className="flex items-center gap-3">
                             <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">

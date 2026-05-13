@@ -8,7 +8,7 @@ interface AuthFormProps {
 
 const AuthForm = ({ title, subtitle, body }: AuthFormProps) => {
     return (
-        <Card className="w-full max-w-md border-0 shadow-lg rounded-2xl">
+        <Card className="w-full max-w-lg border-0 shadow-lg rounded-2xl">
             <div className="px-8 py-10">
                 <div className="mb-7">
                     <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>

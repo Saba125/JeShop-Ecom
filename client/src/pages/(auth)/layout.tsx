@@ -29,7 +29,7 @@ const AuthLayout = () => {
             <div className="mt-6 mb-6 flex justify-center">
                 <Outlet />
             </div>
-            <Footer />
+            <Footer isFromAuthForm />
         </div>
     );
 };

@@ -109,13 +109,13 @@ const SignIn = () => {
                                 ან
                                 <div className="bg-border h-[1px] w-full" />
                             </CFlex>
-                            <CFlex align="center" justify="center" gap="15px">
+                            <CFlex align="center"  justify="center" gap="15px">
                                 <CButton
                                     disabled={isPending}
                                     type="button"
                                     size="lg"
                                     variant="outline"
-                                    text="Google"
+                                    text="Continue With Google"
                                     icon={FcGoogle}
                                     onClick={() => googleAuth()}
                                 />
@@ -124,7 +124,7 @@ const SignIn = () => {
                                     type="button"
                                     size="lg"
                                     variant="outline"
-                                    text="Github"
+                                    text="Continue With Github"
                                     icon={FaGithub}
                                 />
                             </CFlex>

@@ -26,7 +26,29 @@
 }
 
 @custom-variant dark (&:is(.dark *));
+[data-sonner-toast] {
+  border-radius: 14px !important;
+  border: 0.5px solid rgba(0,0,0,0.08) !important;
+  font-size: 13.5px !important;
+}
 
+/* Colored left accent stripe */
+[data-type="success"] { border-left: 3px solid #3B6D11 !important; }
+[data-type="error"]   { border-left: 3px solid #A32D2D !important; }
+[data-type="warning"] { border-left: 3px solid #854F0B !important; }
+[data-type="info"]    { border-left: 3px solid #185FA5 !important; }
+
+/* Icon badge backgrounds */
+[data-type="success"] [data-icon] { background: #eaf3de; border-radius: 8px; padding: 6px; color: #3B6D11; }
+[data-type="error"]   [data-icon] { background: #fcebeb; border-radius: 8px; padding: 6px; color: #A32D2D; }
+[data-type="warning"] [data-icon] { background: #faeeda; border-radius: 8px; padding: 6px; color: #854F0B; }
+[data-type="info"]    [data-icon] { background: #e6f1fb; border-radius: 8px; padding: 6px; color: #185FA5; }
+
+/* Action buttons */
+[data-type="success"] [data-button] { border-color: #3B6D11; color: #3B6D11; }
+[data-type="error"]   [data-button] { border-color: #A32D2D; color: #A32D2D; }
+[data-type="warning"] [data-button] { border-color: #854F0B; color: #854F0B; }
+[data-type="info"]    [data-button] { border-color: #185FA5; color: #185FA5; }
 @theme inline {
     --radius-sm: calc(var(--radius) - 4px);
     --radius-md: calc(var(--radius) - 2px);
