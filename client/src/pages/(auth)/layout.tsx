@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Loading from '@/components/common/loading';
+import Footer from '@/components/common/footer-section';
 
 const AuthLayout = () => {
     const user = useSelector((state: RootState) => state.user);
@@ -25,9 +26,10 @@ const AuthLayout = () => {
     return (
         <div>
             <AuthHeader />
-            <div className="mt-6 flex justify-center">
+            <div className="mt-6 mb-6 flex justify-center">
                 <Outlet />
             </div>
+            <Footer />
         </div>
     );
 };
