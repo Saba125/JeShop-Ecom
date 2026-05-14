@@ -1,15 +1,16 @@
 import clsx from 'clsx';
 interface CSkeletonProps {
     amount?: number;
-    height?: number;
-    width?: number;
-    stickWidth?: number;
-    stickHeight?: number;
+    height?: string;
+    width?: string;
+    stickWidth?: string;
+    stickHeight?: string;
+    lgGrid?: string
 }
-const CSkeleton = ({ amount = 3, height, stickHeight, stickWidth, width }: CSkeletonProps) => {
+const CSkeleton = ({ amount = 3, height, stickHeight, stickWidth, width, lgGrid }: CSkeletonProps) => {
     return (
         <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+            <div className={clsx("grid grid-cols-1 md:grid-cols-2  gap-6",lgGrid ? `lg:grid-cols-${lgGrid}` : "lg:grid-cols-5"  )}>
                 {[...Array(amount)].map((_, i) => (
                     <div key={i} className="border-2 rounded-lg p-4 animate-pulse">
                         <div

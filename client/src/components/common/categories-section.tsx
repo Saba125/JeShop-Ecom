@@ -15,6 +15,7 @@ import {
     CarouselPrevious,
 } from '@/components/ui/carousel';
 import { useNavigate } from 'react-router-dom';
+import CSkeleton from './custom-skeleton';
 
 const CategoriesSection = () => {
     const plugin = React.useRef(Autoplay({ delay: 3000, stopOnInteraction: true }));
@@ -22,7 +23,11 @@ const CategoriesSection = () => {
     const { data: categories, isLoading } = useGetCategories();
 
     if (isLoading) {
-        return <Loading />;
+        return (
+            <div className='mb-10 mt-10'>
+                <CSkeleton amount={3} height="h-32" lgGrid='3' />
+            </div>
+        )
     }
 
     return (
@@ -39,7 +44,6 @@ const CategoriesSection = () => {
                     <div className="h-0.5 w-[50%] bg-gradient-to-r from-[#0083EF] to-transparent"></div>
                     <p className="text-muted-foreground mt-4">აირჩიე შენთვის სასურველი კატეგორია</p>
                 </div>
-            
             </div>
             <div className="relative ">
                 <Carousel
@@ -57,10 +61,11 @@ const CategoriesSection = () => {
                                 className="pl-4 md:basis-1/2 lg:basis-1/3"
                             >
                                 <Card
-                                onClick={() => {
-                                    navigate(category.url)
-                                }}
-                                className="group cursor-pointer overflow-hidden border-2 hover:border-primary transition-all hover:shadow-xl">
+                                    onClick={() => {
+                                        navigate(category.url);
+                                    }}
+                                    className="group cursor-pointer overflow-hidden border-2 hover:border-primary transition-all hover:shadow-xl"
+                                >
                                     <div
                                         style={{
                                             backgroundImage: `url(${API_URL}${category.image})`,

@@ -17,11 +17,15 @@ import CCard from './cart';
 import { redirectToPPage } from '@/lib/utils';
 import Autoplay from 'embla-carousel-autoplay';
 import CSkeleton from './custom-skeleton';
+import { useGetProductsPaginated } from '@/api/products/get_paginated';
 interface FeaturedProductsSectionProps {
     isFullPage: boolean;
 }
 const FeaturedProductsSection = ({ isFullPage }: FeaturedProductsSectionProps) => {
+    const [page, setPage] = useState(1);
+    const pageSize = 10;
     const { data: products, isPending } = useGetProducts({});
+    const {data: productsPaginated} = useGetProductsPaginated(page, pageSize)
     const favoritesss: [] = JSON.parse(localStorage.getItem('wishlist')!);
     const favoritesArray: number[] = favoritesss?.map((item: any) => item.product_uid);
     const [hoveredId, setHoveredId] = useState<number | null>(null);
@@ -72,11 +76,7 @@ const FeaturedProductsSection = ({ isFullPage }: FeaturedProductsSectionProps) =
     };
 
     if (isPending) {
-        return (
-            <CSkeleton
-            amount={5}
-            />
-        );
+        return <CSkeleton amount={5} />;
     }
 
     return (
@@ -95,40 +95,56 @@ const FeaturedProductsSection = ({ isFullPage }: FeaturedProductsSectionProps) =
                     </p>
                 </div>
                 {isFullPage ? null : (
-                    <Button onClick={() => navigate("/featured")} variant="ghost">
+                    <Button onClick={() => navigate('/featured')} variant="ghost">
                         ყველას ნახვა <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                 )}
             </div>
-
-            <Carousel
-                opts={{
-                    align: 'start',
-                    loop: true,
-                }}
-                plugins={[autoplayPlugin]}
-                className="w-full"
-            >
-                <CarouselContent className="-ml-4">
+            {isFullPage ? (
+                <div
+                    className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ${isPending ? 'opacity-60' : ''}`}
+                >
                     {products?.map((product) => (
-                        <CarouselItem
-                            key={product.uid}
-                            className="pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
-                        >
-                            <CCard
-                                onClick={() => redirectToPPage(product, navigate)}
-                                favorites={favorites}
-                                product={product}
-                                toggleFavorite={() => toggleFavorite(product)}
-                                hoveredId={hoveredId}
-                                setHoveredId={setHoveredId}
-                            />
-                        </CarouselItem>
+                        <CCard
+                            onClick={() => redirectToPPage(product, navigate)}
+                            favorites={favorites}
+                            product={product}
+                            toggleFavorite={() => toggleFavorite(product)}
+                            hoveredId={hoveredId}
+                            setHoveredId={setHoveredId}
+                        />
                     ))}
-                </CarouselContent>
-                <CarouselPrevious className="left-0 size-11 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-lg hover:bg-slate-50 dark:hover:bg-slate-700" />
-                <CarouselNext className="right-0 size-11 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-lg hover:bg-slate-50 dark:hover:bg-slate-700" />
-            </Carousel>
+                </div>
+            ) : (
+                <Carousel
+                    opts={{
+                        align: 'start',
+                        loop: true,
+                    }}
+                    plugins={[autoplayPlugin]}
+                    className="w-full"
+                >
+                    <CarouselContent className="-ml-4">
+                        {products?.map((product) => (
+                            <CarouselItem
+                                key={product.uid}
+                                className="pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
+                            >
+                                <CCard
+                                    onClick={() => redirectToPPage(product, navigate)}
+                                    favorites={favorites}
+                                    product={product}
+                                    toggleFavorite={() => toggleFavorite(product)}
+                                    hoveredId={hoveredId}
+                                    setHoveredId={setHoveredId}
+                                />
+                            </CarouselItem>
+                        ))}
+                    </CarouselContent>
+                    <CarouselPrevious className="left-0 size-11 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-lg hover:bg-slate-50 dark:hover:bg-slate-700" />
+                    <CarouselNext className="right-0 size-11 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-lg hover:bg-slate-50 dark:hover:bg-slate-700" />
+                </Carousel>
+            )}
         </section>
     );
 };
