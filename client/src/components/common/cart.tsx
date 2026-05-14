@@ -1,11 +1,10 @@
 import React from 'react';
 import { Card, CardContent } from '../ui/card';
-import type { TGetProducts, TGetProductsPaginatedSingle } from '@/types';
-import { useNavigate } from 'react-router-dom';
+import type { TGetProducts } from '@/types';
 import { Button } from '../ui/button';
 import { API_URL } from '@/constants';
 import { Badge } from '../ui/badge';
-import { Eye, Flame, Heart, ShoppingCart, Sparkles } from 'lucide-react';
+import { Eye, Flame, Heart, ShoppingCart } from 'lucide-react';
 import { addItemToCart } from '@/store/cartSlice';
 import { useDispatch } from 'react-redux';
 import clsx from 'clsx';
@@ -22,7 +21,6 @@ const CCard = ({ product, hoveredId, setHoveredId, favorites, toggleFavorite, on
     const getActiveSale = () => {
         return product.sales_items?.find((sale) => sale.is_active === 1);
     };
-
     const calculateDiscountedPrice = () => {
         if (!activeSale) return null;
         const price = parseFloat(product.price);
@@ -60,9 +58,7 @@ const CCard = ({ product, hoveredId, setHoveredId, favorites, toggleFavorite, on
             onMouseEnter={() => setHoveredId && setHoveredId(product.uid)}
             onMouseLeave={() => setHoveredId && setHoveredId(null)}
         >
-            {/* Image */}
             <div className="relative h-52 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 overflow-hidden">
-                {/* Discount ribbon */}
                 {isSpecialSale ? (
                      <div className="absolute top-0 left-0 z-10">
                                     <div className="relative">
