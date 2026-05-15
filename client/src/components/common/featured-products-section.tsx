@@ -81,7 +81,7 @@ const FeaturedProductsSection = ({ isFullPage }: FeaturedProductsSectionProps) =
     if (isPending) {
         return <CSkeleton amount={5} />;
     }
-
+    console.log(productsPaginated)
     return (
         <section className="container mx-auto px-4 py-16">
             <div className="flex items-center justify-between mb-8">
@@ -122,6 +122,7 @@ const FeaturedProductsSection = ({ isFullPage }: FeaturedProductsSectionProps) =
                 <CPagination
                 page={page}
                 setPage={setPage}
+                totalPages={productsPaginated?.pagination?.totalPages}
                 />
                 </>
             ) : (

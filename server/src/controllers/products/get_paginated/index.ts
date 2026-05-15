@@ -13,7 +13,7 @@ const getProductsPaginated = async (req: Request, res: Response) => {
   )) as { total: number };
 
   const total = totalCount.total;
-
+  console.log(total);
   const dbRes = await db.select(`
     SELECT
       p.uid,
