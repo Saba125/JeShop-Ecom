@@ -24,6 +24,7 @@ import type { TGetProducts } from '@/types';
 import CCard from './cart';
 import { calculateDiscountedPrice, getActiveSale, redirectToPPage } from '@/lib/utils';
 import Autoplay from 'embla-carousel-autoplay';
+import CSkeleton from './custom-skeleton';
 const titleMap: Record<string, string> = {
     keyboards: 'კლავიატურები',
     mouses: 'მაუსები',
@@ -52,7 +53,11 @@ const ProductsSection = ({ name }: { name: string }) => {
     const title = titleMap[name] ?? name;
 
     // Autoplay plugin — pauses on hover automatically via the plugin's options
-    const autoplayPlugin = Autoplay({ delay: 3000, stopOnInteraction: false, stopOnMouseEnter: true });
+    const autoplayPlugin = Autoplay({
+        delay: 3000,
+        stopOnInteraction: false,
+        stopOnMouseEnter: true,
+    });
 
     const toggleFavorite = (product: TGetProducts) => {
         const discountedPrice = calculateDiscountedPrice(product);
@@ -79,13 +84,9 @@ const ProductsSection = ({ name }: { name: string }) => {
 
     if (isLoading) {
         return (
-            <section className="w-full py-16">
-                <div className="container mx-auto px-4">
-                    <div className="flex items-center justify-center h-64">
-                        <div className="text-muted-foreground">იტვირთება...</div>
-                    </div>
-                </div>
-            </section>
+            <div className="mb-10 mt-10">
+                <CSkeleton amount={5} />
+            </div>
         );
     }
 

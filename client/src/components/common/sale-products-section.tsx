@@ -8,6 +8,7 @@ import CCard from './cart';
 import { redirectToPPage } from '@/lib/utils';
 import CPagination from './custom-pagination';
 import { useGetSalesPaginated } from '@/api/sales/get_paginated';
+import CSkeleton from './custom-skeleton';
 interface SaleProductsSection {
     isFullPage: boolean;
 }
@@ -26,11 +27,12 @@ const SaleProductsSection = ({ isFullPage }: SaleProductsSection) => {
 
     if (isPending) {
         return (
-            <section className="container mx-auto px-4 py-16">
-                <div className="flex items-center justify-center h-64">
-                    <div className="text-muted-foreground">იტვირთება...</div>
-                </div>
-            </section>
+            <div className='mb-10 mt-10'>
+                <CSkeleton
+                amount={5}
+                />
+
+            </div>
         );
     }
 

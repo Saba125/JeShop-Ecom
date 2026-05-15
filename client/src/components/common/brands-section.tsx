@@ -12,13 +12,18 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from '@/components/ui/carousel';
+import CSkeleton from './custom-skeleton';
 
 const BrandsSection = () => {
     const plugin = React.useRef(Autoplay({ delay: 3000, stopOnInteraction: true }));
     const { data: brands, isLoading } = useGetBrands();
     
     if (isLoading) {
-        return <Loading />;
+        return (
+              <div className='mb-10 mt-10'>
+                <CSkeleton amount={3} height="h-32" lgGrid='3' />
+            </div>
+        )
     }
     
     return (
