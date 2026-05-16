@@ -15,8 +15,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import Logo from '@/components/common/logo';
-import { FB_LINK, IG_LINK } from '@/constants';
+import { FB_LINK, IG_LINK, TT_LINK } from '@/constants';
 import clsx from 'clsx';
+import { FaTiktok } from 'react-icons/fa';
 interface FooterProps {
     isFromAuthForm?: boolean;
 }
@@ -161,6 +162,16 @@ export default function Footer({isFromAuthForm} : FooterProps) {
                             >
                                 <a href={IG_LINK}>
                                     <Instagram className="h-4 w-4" />
+                                </a>
+                            </Button>
+                            <Button
+                                asChild
+                                size="icon"
+                                variant="outline"
+                                className="hover:bg-primary hover:text-white hover:border-primary transition-colors"
+                            >
+                                <a href={TT_LINK}>
+                                    <FaTiktok className="h-4 w-4" />
                                 </a>
                             </Button>
                         </div>

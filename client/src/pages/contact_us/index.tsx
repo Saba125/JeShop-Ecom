@@ -12,13 +12,14 @@ import {
     MessageCircle,
     Facebook,
     Instagram,
-    Twitter,
 } from 'lucide-react';
-import { CButton } from '@/components/common/custom-button';
-import { FB_LINK, IG_LINK } from '@/constants';
+import { FB_LINK, IG_LINK, TT_LINK } from '@/constants';
+import { FaTiktok } from 'react-icons/fa';
 const SOCIALS = [
   { label: "Facebook",  href: FB_LINK,  hoverClass: "hover:bg-[#1877F2] hover:border-[#1877F2]", icon: <Facebook className="w-4 h-4" /> },
   { label: "Instagram", href: IG_LINK,  hoverClass: "hover:bg-[#E1306C] hover:border-[#E1306C]", icon: <Instagram className="w-4 h-4" /> },
+  { label: "Tiktok", href: TT_LINK,  hoverClass: "hover:bg-[#E1306C] hover:border-[#E1306C]", icon: <FaTiktok className="w-4 h-4" /> },
+
 ];
 const ContactUs = () => {
     const [formData, setFormData] = useState({
